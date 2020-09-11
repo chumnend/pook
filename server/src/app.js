@@ -3,6 +3,7 @@
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
+const mongoose = require('mongoose');
 const morgan = require('morgan');
 const config = require('./config');
 
@@ -12,9 +13,15 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cors());
 app.use(helmet());
-if(config.env !== 'test') {
+if (config.env !== 'test') {
   app.use(morgan('common'));
-} 
+}
+
+// connect to database
+mongoose.connect(config.db, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 // route configurations
 app.get('/status', (req, res) => {
