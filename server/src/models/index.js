@@ -1,5 +1,5 @@
 'use strict';
 
-modules.exports = {
-  User: require('./User'),
+module.exports = {
+  User: require('./user'),
 };
