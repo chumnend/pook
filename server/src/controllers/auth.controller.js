@@ -31,10 +31,7 @@ module.exports = {
         throw new HttpException(400, 'invalid inputs', errors);
       }
 
-      const token = await authService.login(
-        req.body.email,
-        req.body.password,
-      );
+      const token = await authService.login(req.body.email, req.body.password);
 
       return res.status(200).json(token);
     } catch (err) {

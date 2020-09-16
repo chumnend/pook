@@ -1,7 +1,7 @@
 'use strict';
 
 class HttpError extends Error {
-  constructor(status, message, errors={}) {
+  constructor(status, message, errors = {}) {
     super(message);
 
     this.status = status;
