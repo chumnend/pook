@@ -12,13 +12,13 @@ module.exports = {
         throw new HttpException(400, 'invalid inputs', errors);
       }
 
-      const user = await authService.register(
+      const token = await authService.register(
         req.body.name,
         req.body.email,
         req.body.password,
       );
 
-      return res.status(200).json(user);
+      return res.status(200).json({ token });
     } catch (err) {
       return next(err);
     }
@@ -33,7 +33,7 @@ module.exports = {
 
       const token = await authService.login(req.body.email, req.body.password);
 
-      return res.status(200).json(token);
+      return res.status(200).json({ token });
     } catch (err) {
       return next(err);
     }
