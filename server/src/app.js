@@ -9,6 +9,7 @@ const passport = require('passport');
 const passportStrategy = require('./config/passport');
 const config = require('./config');
 const { authRouter } = require('./routes');
+const { HttpException } = require('./utils/exceptions');
 
 // app configuraions
 const app = express();
@@ -37,9 +38,8 @@ app.get('/status', (req, res) => {
 app.use('/api/users', authRouter);
 
 app.all('*', (req, res, next) => {
-  const err = new Error('Path Not Found');
-  err.status = 404;
-  next(err);
+  const err = new HttpException(404, 'Page Not Found');
+  return next(err);
 });
 
 app.use((err, req, res, next) => {

@@ -20,7 +20,11 @@ module.exports = {
       password,
     });
 
-    const payload = { id: newUser.id, name: newUser.name };
+    const payload = {
+      id: newUser.id,
+      name: newUser.name,
+      email: newUser.email,
+    };
     const token = jwt.sign(payload, config.secret);
 
     return token;
@@ -36,7 +40,11 @@ module.exports = {
 
     const isMatch = await user.comparePassword(password);
     if (isMatch) {
-      const payload = { id: user.id, name: user.name };
+      const payload = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      };
       const token = jwt.sign(payload, config.secret);
 
       return token;
