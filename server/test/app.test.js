@@ -3,16 +3,14 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const faker = require('faker');
-const jwt = require('jsonwebtoken');
 const app = require('../src/app');
 const db = require('../src/models');
-const config = require('../src/config');
 
 const expect = chai.expect;
 chai.use(chaiHttp);
 
 describe('Application', () => {
-  let user, token;
+  let user;
   
   before('setting up db', async () => {
     await db.User.deleteMany();
@@ -24,9 +22,6 @@ describe('Application', () => {
     }
     const createdUser = await db.User.create(user);
     user.id = createdUser.id;
-
-    const payload = { id: user.id, name: user.name };
-    token = jwt.sign(payload, config.secret);
   });
 
   after('cleaning up', async () => {
@@ -52,7 +47,7 @@ describe('Application', () => {
         name: faker.name.findName(),
         email: faker.internet.email(),
         password: '123456',
-        password2: '123456'
+        password2: '123456',
       };
 
       chai
@@ -62,9 +57,7 @@ describe('Application', () => {
         .end((err, res) => {
           expect(err).to.be.null;
           expect(res).to.have.status(200);
-          expect(res.body).to.have.property('_id');
-          expect(res.body).to.have.property('name', newUser.name);
-          expect(res.body).to.have.property('email', newUser.email);
+          expect(res.body).to.have.property('token');
           done();
         });
     });
@@ -72,7 +65,7 @@ describe('Application', () => {
       const newUser = {
         email: faker.internet.email(),
         password: '123456',
-        password2: '123456'
+        password2: '123456',
       };
 
       chai
@@ -90,7 +83,7 @@ describe('Application', () => {
       const newUser = {
         name: faker.name.findName(),
         password: '123456',
-        password2: '123456'
+        password2: '123456',
       };
 
       chai
@@ -108,7 +101,7 @@ describe('Application', () => {
       const newUser = {
         name: faker.name.findName(),
         email: faker.internet.email(),
-        password2: '123456'
+        password2: '123456',
       };
 
       chai
@@ -145,7 +138,7 @@ describe('Application', () => {
         name: faker.name.findName(),
         email: faker.internet.email(),
         password: '123456',
-        password2: '654321'
+        password2: '654321',
       };
 
       chai
@@ -164,7 +157,7 @@ describe('Application', () => {
         name: faker.name.findName(),
         email: user.email,
         password: '123456',
-        password2: '123456'
+        password2: '123456',
       };
 
       chai
@@ -183,7 +176,7 @@ describe('Application', () => {
         name: faker.name.findName(),
         email: faker.internet.email(),
         password: '123',
-        password2: '123'
+        password2: '123',
       };
 
       chai
@@ -213,7 +206,7 @@ describe('Application', () => {
         .end((err, res) => {
           expect(err).to.be.null;
           expect(res).to.have.status(200);
-          expect(res.body).to.equal(token);
+          expect(res.body).to.have.property('token');
           done();
         })
     })
