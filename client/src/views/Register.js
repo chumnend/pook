@@ -1,6 +1,64 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import styled from 'styled-components';
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
+
+const StyledRegister = styled.div`
+  width: 100%;
+  height: 100%;
+  padding-top: 2rem;
+`;
+
+const StyledForm = styled.form`
+  width: 50%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
+  border: 1px solid #000;
+  & p {
+    text-align: center;
+  }
+`;
+
+const StyledFormHeader = styled.div`
+  margin-bottom: 1rem;
+  text-align: center;
+  & h2 {
+    font-size: 1.5rem;
+  }
+  & p {
+    margin: 1rem 0;
+    background: red;
+    color: #000;
+  }
+`;
+
+const StyledFormGroup = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+  & label {
+    margin-bottom: 0.3rem;
+    font-size: 1rem;
+  }
+  & input {
+    padding: 0.8rem;
+  }
+  & small {
+    font-size: 0.8rem;
+    color: red;
+  }
+`;
+
+const StyledButton = styled.button`
+  width: 100%;
+  margin: 1rem auto;
+  padding: 0.8rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+`;
 
 function Register() {
   const [name, setName] = useState('');
@@ -42,10 +100,13 @@ function Register() {
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        {errors.message && <p>{errors.message}</p>}
-        <div>
+    <StyledRegister>
+      <StyledForm onSubmit={handleSubmit}>
+        <StyledFormHeader>
+          <h2>Start an account</h2>
+          {errors.message && <p>{errors.message}</p>}
+        </StyledFormHeader>
+        <StyledFormGroup>
           <label htmlFor="name">Name</label>
           <input
             required
@@ -57,8 +118,8 @@ function Register() {
             onChange={(e) => setName(e.target.value)}
           />
           {errors.name && <small>{errors.name}</small>}
-        </div>
-        <div>
+        </StyledFormGroup>
+        <StyledFormGroup>
           <label htmlFor="email">Email</label>
           <input
             required
@@ -70,8 +131,8 @@ function Register() {
             onChange={(e) => setEmail(e.target.value)}
           />
           {errors.email && <small>{errors.email}</small>}
-        </div>
-        <div>
+        </StyledFormGroup>
+        <StyledFormGroup>
           <label htmlFor="password">Password</label>
           <input
             required
@@ -83,8 +144,8 @@ function Register() {
             onChange={(e) => setPassword(e.target.value)}
           />
           {errors.password && <small>{errors.password}</small>}
-        </div>
-        <div>
+        </StyledFormGroup>
+        <StyledFormGroup>
           <label htmlFor="password2">Confirm password</label>
           <input
             required
@@ -96,13 +157,16 @@ function Register() {
             onChange={(e) => setPassword2(e.target.value)}
           />
           {errors.password2 && <small>{errors.password2}</small>}
-        </div>
+        </StyledFormGroup>
 
-        <button type="submit" disabled={isLoading}>
-          Sign Up
-        </button>
-      </form>
-    </div>
+        <StyledButton type="submit" disabled={isLoading}>
+          Register
+        </StyledButton>
+        <p>
+          Already have an account? <Link to="/login">Sign In</Link>
+        </p>
+      </StyledForm>
+    </StyledRegister>
   );
 }
 
