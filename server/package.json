@@ -7,7 +7,7 @@
     "dev": "nodemon src/app.js",
     "lint": "npx eslint 'src/**/*.js'",
     "lint:fix": "prettier --write 'src/**/*.js'",
-    "test": "NODE_ENV=test mocha './{,!(node_modules)/**}/*.test.js'"
+    "test": "NODE_ENV=test mocha './{,!(node_modules)/**}/*.test.js' --exit"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
