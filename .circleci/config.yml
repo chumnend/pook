@@ -1,7 +1,24 @@
-version: 2.1
-orbs:
-  node: circleci/node@3.0.0
-workflows:
-  node-tests:
-    jobs:
-      - node/test
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:12.18.4
+      - image: circleci/mongo:4.4.1
+    steps:
+      - checkout
+      - run:
+        name: update-npm
+        command: "sudo npm install -g n"
+      - run:
+        name: update-npm
+        command: "sudo n stable"
+      - restore_cache:
+        key: dependency-cache-{{ checksum "server/package.json" }}
+      - run: cd server && npm install
+      - save_cache:
+        key: dependency-cache-{{ checksum "server/package.json" }}
+        paths:
+          - server/node_modules
+      - run:
+        name: test
+        command: cd erver && npm test
