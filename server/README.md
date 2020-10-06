@@ -1,2 +1,0 @@
-# Hotelio Backend
-TBD

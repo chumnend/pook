@@ -9,9 +9,7 @@ module.exports = {
   async register(name, email, password) {
     const user = await User.findOne({ email });
     if (user) {
-      throw new HttpException(400, 'User already exists', {
-        email: 'Email already in use',
-      });
+      throw new HttpException(400, 'User already exists');
     }
 
     const newUser = await User.create({
@@ -33,9 +31,7 @@ module.exports = {
   async login(email, password) {
     const user = await User.findOne({ email });
     if (!user) {
-      throw new HttpException(404, 'User does not exist', {
-        email: 'Email was not found',
-      });
+      throw new HttpException(404, 'User does not exist');
     }
 
     const isMatch = await user.comparePassword(password);
@@ -49,9 +45,7 @@ module.exports = {
 
       return token;
     } else {
-      throw new HttpException(400, 'Invalid email and/or password', {
-        password: 'Incorrect password',
-      });
+      throw new HttpException(400, 'Invalid email and/or password');
     }
   },
 };
