@@ -1,10 +1,11 @@
 import React from 'react';
+import { PageContent } from './styles';
 
 function NotFound() {
   return (
-    <div>
+    <PageContent>
       <h1>Sorry, page was not found.</h1>
-    </div>
+    </PageContent>
   );
 }
 

@@ -1,12 +1,12 @@
 'use strict';
 
 class HttpError extends Error {
-  constructor(status, message, errors = {}) {
+  constructor(status, message, extra = {}) {
     super(message);
 
     this.status = status;
     this.message = message;
-    this.errors = errors;
+    this.extra = extra;
   }
 }
 

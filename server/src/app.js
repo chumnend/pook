@@ -46,7 +46,7 @@ app.use((err, req, res, next) => {
   return res.status(err.status || 500).json({
     error: {
       message: err.message || 'something went wrong',
-      errors: err.errors || err,
+      extra: err.extra,
     },
   });
 });

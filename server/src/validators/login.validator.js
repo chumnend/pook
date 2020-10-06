@@ -5,6 +5,7 @@ const isEmpty = require('is-empty');
 
 module.exports = function validateLogin(data) {
   const errors = {};
+
   // check for empty strings
   data.email = !isEmpty(data.email) ? data.email : '';
   data.password = !isEmpty(data.password) ? data.password : '';

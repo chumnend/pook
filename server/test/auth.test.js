@@ -9,7 +9,7 @@ const db = require('../src/models');
 const expect = chai.expect;
 chai.use(chaiHttp);
 
-describe('Application', () => {
+describe('Auth Routes', () => {
   let user;
   
   before('setting up db', async () => {
@@ -27,19 +27,6 @@ describe('Application', () => {
   after('cleaning up', async () => {
     await db.User.deleteMany();
   })
-
-  describe('GET /status', () => {
-    it('expects to get status OK', (done) => {
-      chai
-        .request(app)
-        .get('/status')
-        .end((err, res) => {
-          expect(err).to.be.null;
-          expect(res).to.have.status(200)
-          done();
-        });
-    });
-  });
 
   describe('POST /api/users/register', () => {
     it('expects to register a new user', (done) => {
@@ -76,6 +63,7 @@ describe('Application', () => {
           expect(err).to.be.null;
           expect(res).to.have.status(400);
           expect(res.body).to.have.property('error');
+          expect(res.body.error.extra).to.have.property('name');
           done();
         });
     });
@@ -94,6 +82,7 @@ describe('Application', () => {
           expect(err).to.be.null;
           expect(res).to.have.status(400);
           expect(res.body).to.have.property('error');
+          expect(res.body.error.extra).to.have.property('email');
           done();
         });
     });
@@ -112,8 +101,9 @@ describe('Application', () => {
           expect(err).to.be.null;
           expect(res).to.have.status(400);
           expect(res.body).to.have.property('error');
+          expect(res.body.error.extra).to.have.property('password');
           done();
-        })
+        });
     });
     it('expects to fail if missing password2 field', (done) => {
       const newUser = {
@@ -130,8 +120,9 @@ describe('Application', () => {
           expect(err).to.be.null;
           expect(res).to.have.status(400);
           expect(res.body).to.have.property('error');
+          expect(res.body.error.extra).to.have.property('password2');
           done();
-        })
+        });
     });
     it('expects to fail if password does not match password2', (done) => {
       const newUser = {
@@ -150,7 +141,7 @@ describe('Application', () => {
           expect(res).to.have.status(400);
           expect(res.body).to.have.property('error');
           done();
-        })
+        });
     });
     it('expects to fail if email is already taken', (done) => {
       const newUser = {
@@ -169,7 +160,7 @@ describe('Application', () => {
           expect(res).to.have.status(400);
           expect(res.body).to.have.property('error');
           done();
-        })
+        });
     });
     it('expects to fail if password is invalid (too short)', (done) => {
       const newUser = {
@@ -187,8 +178,9 @@ describe('Application', () => {
           expect(err).to.be.null;
           expect(res).to.have.status(400);
           expect(res.body).to.have.property('error');
+          expect(res.body.error.extra).to.have.property('password');
           done();
-        })
+        });
     });
   });
 
@@ -208,12 +200,12 @@ describe('Application', () => {
           expect(res).to.have.status(200);
           expect(res.body).to.have.property('token');
           done();
-        })
-    })
+        });
+    });
     it('expects to fail if missing email', (done) => {
       const login = {
         password: user.password,
-      }
+      };
 
       chai
         .request(app)
@@ -223,13 +215,14 @@ describe('Application', () => {
           expect(err).to.be.null;
           expect(res).to.have.status(400);
           expect(res.body).to.have.property('error');
+          expect(res.body.error.extra).to.have.property('email');
           done();
-        })
-    })
+        });
+    });
     it('expects to fail if missing password', (done) => {
       const login = {
         email: user.email,
-      }
+      };
 
       chai
         .request(app)
@@ -239,9 +232,10 @@ describe('Application', () => {
           expect(err).to.be.null;
           expect(res).to.have.status(400);
           expect(res.body).to.have.property('error');
+          expect(res.body.error.extra).to.have.property('password');
           done();
-        })
-    })
+        });
+    });
     it('expects to fail if user does not exist', (done) => {
       const login = {
         email: faker.internet.email(),
@@ -257,13 +251,13 @@ describe('Application', () => {
           expect(res).to.have.status(404);
           expect(res.body).to.have.property('error');
           done();
-        })
-    })
+        });
+    });
     it('expects to fail if password in incorrect', (done) => {
       const login = {
         email: user.email,
         password: user.password + '1',
-      }
+      };
 
       chai
         .request(app)
@@ -274,21 +268,7 @@ describe('Application', () => {
           expect(res).to.have.status(400);
           expect(res.body).to.have.property('error');
           done();
-        })
-    })
-  });
-
-  describe('GET /not-a-path', () => {
-    it('expects to get 404 error', (done) => {
-      chai
-        .request(app)
-        .get('/not-a-path')
-        .end((err, res) => {
-          expect(err).to.be.null;
-          expect(res).to.have.status(404);
-          expect(res.body).to.have.property('error');
-          done();
-        })
-    })
+        });
+    });
   });
 });
