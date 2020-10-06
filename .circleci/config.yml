@@ -7,18 +7,20 @@ jobs:
     steps:
       - checkout
       - run:
-        name: update-npm
-        command: "sudo npm install -g n"
+          name: update-npm
+          command: "sudo npm install -g n"
       - run:
-        name: update-npm
-        command: "sudo n stable"
+          name: update-npm
+          command: "sudo n stable"
       - restore_cache:
-        key: dependency-cache-{{ checksum "server/package.json" }}
-      - run: cd server && npm install
+          key: dependency-cache-{{ checksum "server/package.json" }}
+      - run: 
+          name: install-npm
+          command: "cd server && npm install"
       - save_cache:
-        key: dependency-cache-{{ checksum "server/package.json" }}
-        paths:
-          - server/node_modules
+          key: dependency-cache-{{ checksum "server/package.json" }}
+          paths:
+            - server/node_modules
       - run:
-        name: test
-        command: cd erver && npm test
+          name: test
+          command: cd server && npm test
