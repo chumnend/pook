@@ -1,9 +1,8 @@
-import { AUTH_SUCCESS, AUTH_ERROR, LOGOUT, SET_USER } from './auth.types';
+import { AUTH_SUCCESS, AUTH_ERROR, LOGOUT } from './auth.types';
 
 const initialState = {
   isLoggedIn: false,
   user: {},
-  token: localStorage.getItem('token') || '',
 };
 
 const authReducer = (state = initialState, action) => {
@@ -12,25 +11,16 @@ const authReducer = (state = initialState, action) => {
       return {
         isLoggedIn: true,
         user: action.user,
-        token: action.token,
       };
     case AUTH_ERROR:
       return {
         isLoggedIn: false,
         user: {},
-        token: '',
       };
     case LOGOUT:
       return {
         isLoggedIn: false,
         user: {},
-        token: '',
-      };
-    case SET_USER:
-      return {
-        isLoggedIn: true,
-        user: action.user,
-        token: action.token,
       };
     default:
       return state;

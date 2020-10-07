@@ -14,10 +14,8 @@ function App() {
   const { authState, setUser, logout } = useContext(AuthContext);
 
   useEffect(() => {
-    if (authState.token) {
-      setUser(authState.token);
-    }
-  }, [authState, setUser]);
+    setUser();
+  });
 
   return (
     <>

@@ -21,7 +21,7 @@ function NavBar() {
               <Link to="/">Contact</Link>
             </li>
             <li>
-              <S.StyledLink to="/login">Book Now</S.StyledLink>
+              <S.StyledLink to="/">Book Now</S.StyledLink>
             </li>
           </S.NavLinks>
         </S.NavWrap>
