@@ -1,4 +1,4 @@
-import { AUTH_SUCCESS, AUTH_ERROR, LOGOUT } from './auth.types';
+import { AUTH_SUCCESS, AUTH_ERROR, LOGOUT, SET_USER } from './auth.types';
 
 const initialState = {
   isLoggedIn: false,
@@ -25,6 +25,12 @@ const authReducer = (state = initialState, action) => {
         isLoggedIn: false,
         user: {},
         token: '',
+      };
+    case SET_USER:
+      return {
+        isLoggedIn: true,
+        user: action.user,
+        token: action.token,
       };
     default:
       return state;

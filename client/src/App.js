@@ -11,13 +11,13 @@ import NotFound from './containers/NotFound';
 import { AuthContext } from './context/auth';
 
 function App() {
-  const { authState, logout } = useContext(AuthContext);
+  const { authState, setUser, logout } = useContext(AuthContext);
 
   useEffect(() => {
     if (authState.token) {
-      console.log('TODO: validate token');
+      setUser(authState.token);
     }
-  }, [authState]);
+  }, [authState, setUser]);
 
   return (
     <>

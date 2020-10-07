@@ -2,7 +2,7 @@ import React, { createContext, useReducer } from 'react';
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
 import { initialState, authReducer } from './auth.reducer';
-import { AUTH_SUCCESS, AUTH_ERROR, LOGOUT } from './auth.types';
+import { AUTH_SUCCESS, AUTH_ERROR, LOGOUT, SET_USER } from './auth.types';
 import config from '../../config';
 
 const AuthContext = createContext();
@@ -39,6 +39,15 @@ function AuthProvider(props) {
     }
   };
 
+  const setUser = (token) => {
+    const user = jwt_decode(token);
+    dispatch({
+      type: SET_USER,
+      user,
+      token,
+    });
+  };
+
   // log out a user
   const logout = () => {
     localStorage.removeItem('token');
@@ -47,7 +56,7 @@ function AuthProvider(props) {
   };
 
   return (
-    <AuthContext.Provider value={{ authState, authorizeUser, logout }}>
+    <AuthContext.Provider value={{ authState, authorizeUser, setUser, logout }}>
       {props.children}
     </AuthContext.Provider>
   );
