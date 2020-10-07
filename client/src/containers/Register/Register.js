@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
-import jwt_decode from 'jwt-decode';
+import { AuthContext } from '../../context/auth';
 import {
   PageContent,
   StyledForm,
@@ -10,28 +9,28 @@ import {
   StyledButton,
 } from './styles';
 
-function Register() {
+function Register(props) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
   const [isLoading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const { authorizeUser } = useContext(AuthContext);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
 
     try {
-      const res = await axios.post('http://localhost:8081/api/users/register', {
+      await authorizeUser('register', {
         name,
         email,
         password,
         password2,
       });
 
-      const user = jwt_decode(res.data.token);
-      console.log(user);
+      props.history.push('/');
     } catch (error) {
       if (error.response !== undefined) {
         const errorObj = error.response.data.error;
