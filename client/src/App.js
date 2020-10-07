@@ -15,7 +15,7 @@ function App() {
 
   useEffect(() => {
     setUser();
-  }, []);
+  });
 
   return (
     <>
