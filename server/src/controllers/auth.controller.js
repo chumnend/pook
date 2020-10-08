@@ -41,32 +41,27 @@ module.exports = {
     }
   },
 
-  async logout(req, res, next) {
+  logout(req, res, next) {
     res.clearCookie('token');
-    return res.json({ success: true });
+    return res.send();
   },
 
   validate(req, res, next) {
     try {
       const token = req.cookies.token;
       if (!token) {
-        return res.status(200).json({
-          isValid: false,
-        });
+        return res.status(200).json({ success: false });
       }
 
       const user = authService.validate(token);
-      console.log(user);
-      if (user) {
+      if (user !== null) {
         return res.status(200).json({
-          isValid: true,
+          success: true,
           user,
         });
       }
 
-      return res.status(200).json({
-        isValid: false,
-      });
+      return res.status(200).json({ success: false });
     } catch (err) {
       return next(err);
     }
