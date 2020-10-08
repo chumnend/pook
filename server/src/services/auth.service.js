@@ -63,6 +63,14 @@ module.exports = {
 
   validate(token) {
     const decoded = jwt.verify(token, config.secret);
-    return decoded;
+    if (
+      decoded.id !== undefined &&
+      decoded.name !== undefined &&
+      decoded.email !== undefined
+    ) {
+      return decoded;
+    }
+
+    return null;
   },
 };

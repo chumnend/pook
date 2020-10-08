@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useRef } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 import UserBar from './components/UserBar';
@@ -11,15 +11,16 @@ import NotFound from './containers/NotFound';
 import { AuthContext } from './context/auth';
 
 function App() {
-  const { authState, setUser, logout } = useContext(AuthContext);
+  const auth = useContext(AuthContext);
+  const authRef = useRef(auth);
 
   useEffect(() => {
-    setUser();
-  });
+    authRef.current.setUser();
+  }, []);
 
   return (
     <>
-      <UserBar isLoggedIn={authState.isLoggedIn} logout={logout} />
+      <UserBar isLoggedIn={auth.isLoggedIn} logout={auth.logout} />
       <NavBar />
       <Switch>
         <Route exact path="/register" component={Register} />

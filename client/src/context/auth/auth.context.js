@@ -1,4 +1,4 @@
-import React, { createContext, useReducer } from 'react';
+import React, { useReducer } from 'react';
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
 import { initialState, authReducer } from './auth.reducer';
@@ -7,61 +7,67 @@ import config from '../../config';
 
 axios.defaults.withCredentials = true;
 
-const AuthContext = createContext();
+const AuthContext = React.createContext();
+
 const AuthProvider = (props) => {
-  const [authState, dispatch] = useReducer(authReducer, initialState);
+  const [state, dispatch] = useReducer(authReducer, initialState);
 
-  // sign in the user
-  const authorizeUser = async (authType, payload) => {
-    try {
-      const res = await axios.post(
-        `${config.url}/api/users/${authType}`,
-        payload,
-      );
+  const context = {
+    isLoggedIn: state.isLoggedIn,
+    user: state.user,
 
-      // decode the token and set in store
-      const token = res.data.token;
-      const user = jwt_decode(token);
-      dispatch({
-        type: AUTH_SUCCESS,
-        user,
-      });
+    async authorizeUser(authType, payload) {
+      try {
+        const res = await axios.post(
+          `${config.url}/api/users/${authType}`,
+          payload,
+        );
 
-      return;
-    } catch (err) {
-      dispatch({ type: AUTH_ERROR });
-      throw err;
-    }
-  };
-
-  const setUser = async () => {
-    try {
-      const res = await axios.post(`${config.url}/api/users/validate`);
-      const { isValid, user } = res.data;
-
-      if (isValid) {
+        // decode the token and set in store
+        const token = res.data.token;
+        const user = jwt_decode(token);
         dispatch({
           type: AUTH_SUCCESS,
           user,
         });
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
-  // log out a user
-  const logout = async () => {
-    try {
-      await axios.post(`${config.url}/api/users/logout`);
-      dispatch({ type: LOGOUT });
-    } catch (err) {
-      console.error(err);
-    }
+        return;
+      } catch (err) {
+        dispatch({ type: AUTH_ERROR });
+        throw err;
+      }
+    },
+
+    async setUser() {
+      try {
+        const res = await axios.post(`${config.url}/api/users/validate`);
+        const { success, user } = res.data;
+
+        if (success) {
+          dispatch({
+            type: AUTH_SUCCESS,
+            user,
+          });
+        }
+      } catch (err) {
+        dispatch({ type: AUTH_ERROR });
+        console.error(err);
+      }
+    },
+
+    async logout() {
+      try {
+        await axios.post(`${config.url}/api/users/logout`);
+        dispatch({ type: LOGOUT });
+      } catch (err) {
+        dispatch({ type: AUTH_ERROR });
+        console.error(err);
+      }
+    },
   };
 
   return (
-    <AuthContext.Provider value={{ authState, authorizeUser, setUser, logout }}>
+    <AuthContext.Provider value={context}>
       {props.children}
     </AuthContext.Provider>
   );
