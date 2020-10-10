@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import * as S from './styles';
+import { Nav, NavWrap, NavLinks } from './styles';
 
 function UserBar(props) {
   const handleLogout = () => {
@@ -9,32 +9,32 @@ function UserBar(props) {
   };
 
   return (
-    <S.Nav>
-      <S.NavWrap>
-        <S.NavLinks>
+    <Nav>
+      <NavWrap>
+        <NavLinks>
           <li>
             <Link to="/">Payment Options</Link>
           </li>
           <li>
             <Link to="/">Terms/Conditions</Link>
           </li>
-        </S.NavLinks>
+        </NavLinks>
         {!props.isLoggedIn ? (
-          <S.NavLinks>
+          <NavLinks>
             <li>
               <Link to="/login">Login</Link>
             </li>
             <li>
               <Link to="/register">Register</Link>
             </li>
-          </S.NavLinks>
+          </NavLinks>
         ) : (
-          <S.NavLinks>
+          <NavLinks>
             <button onClick={handleLogout}>Logout</button>
-          </S.NavLinks>
+          </NavLinks>
         )}
-      </S.NavWrap>
-    </S.Nav>
+      </NavWrap>
+    </Nav>
   );
 }
 

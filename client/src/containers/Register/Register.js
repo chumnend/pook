@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../context/auth';
 import {
-  PageContent,
+  Page,
   StyledForm,
   StyledFormGroup,
   StyledFormHeader,
@@ -49,7 +49,7 @@ function Register(props) {
   };
 
   return (
-    <PageContent>
+    <Page>
       <StyledForm onSubmit={handleSubmit}>
         <StyledFormHeader>
           <h2>Start an account</h2>
@@ -115,7 +115,7 @@ function Register(props) {
           Already have an account? <Link to="/login">Sign In</Link>
         </p>
       </StyledForm>
-    </PageContent>
+    </Page>
   );
 }
 

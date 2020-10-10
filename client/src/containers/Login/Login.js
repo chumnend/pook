@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../context/auth';
 import {
-  PageContent,
+  Page,
   StyledForm,
   StyledFormGroup,
   StyledFormHeader,
@@ -45,7 +45,7 @@ function Login(props) {
   };
 
   return (
-    <PageContent>
+    <Page>
       <StyledForm onSubmit={handleSubmit}>
         <StyledFormHeader>
           <h2>Sign in to your account</h2>
@@ -85,7 +85,7 @@ function Login(props) {
           Don't have an account? <Link to="/register">Sign Up</Link>
         </p>
       </StyledForm>
-    </PageContent>
+    </Page>
   );
 }
 

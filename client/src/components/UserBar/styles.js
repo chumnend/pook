@@ -1,10 +1,11 @@
 import styled from 'styled-components';
+import { color } from '../../theme';
 
 export const Nav = styled.nav`
   width: 100%;
   height: 100%;
-  background: #fff;
-  color: #000;
+  background: ${color.white};
+  color: ${color.black};
 `;
 
 export const NavWrap = styled.div`

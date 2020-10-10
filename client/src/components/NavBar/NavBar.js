@@ -1,16 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import * as S from './styles';
+import { Nav, NavWrap, NavBrand, NavLinks, StyledLink } from './styles';
 
 function NavBar() {
   return (
     <>
-      <S.Nav>
-        <S.NavWrap>
-          <S.NavBrand>
+      <Nav>
+        <NavWrap>
+          <NavBrand>
             <Link to="/">Hotelio</Link>
-          </S.NavBrand>
-          <S.NavLinks>
+          </NavBrand>
+          <NavLinks>
             <li>
               <Link to="/">Home</Link>
             </li>
@@ -21,11 +21,11 @@ function NavBar() {
               <Link to="/">Contact</Link>
             </li>
             <li>
-              <S.StyledLink to="/">Book Now</S.StyledLink>
+              <StyledLink to="/">Book Now</StyledLink>
             </li>
-          </S.NavLinks>
-        </S.NavWrap>
-      </S.Nav>
+          </NavLinks>
+        </NavWrap>
+      </Nav>
     </>
   );
 }

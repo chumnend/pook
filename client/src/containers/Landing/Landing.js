@@ -1,11 +1,11 @@
 import React from 'react';
-import { PageContent } from './styles';
+import { Page } from './styles';
 
 function Landing() {
   return (
-    <PageContent>
+    <Page>
       <h1>Landing Page</h1>
-    </PageContent>
+    </Page>
   );
 }
 
