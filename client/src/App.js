@@ -1,8 +1,7 @@
 import React, { useEffect, useContext, useRef } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
-import UserBar from './components/UserBar';
-import NavBar from './components/NavBar';
+import Header from './components/Header';
 import Footer from './components/Footer';
 import Landing from './containers/Landing';
 import Register from './containers/Register';
@@ -20,8 +19,7 @@ function App() {
 
   return (
     <>
-      <UserBar isLoggedIn={auth.isLoggedIn} logout={auth.logout} />
-      <NavBar />
+      <Header isLoggedIn={auth.isLoggedIn} logout={auth.logout} />
       <Switch>
         <Route exact path="/register" component={Register} />
         <Route exact path="/login" component={Login} />
