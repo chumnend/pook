@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   StyledNav,
   StyledWrapper,
@@ -6,6 +7,7 @@ import {
   StyledLi,
   StyledLink,
   StyledLogo,
+  StyledMenu,
   StyledBookNow,
 } from './styles';
 
@@ -14,6 +16,11 @@ function Navigation(props) {
     <StyledNav>
       <StyledWrapper>
         <StyledLogo to="/">Hotelio</StyledLogo>
+        <StyledMenu onClick={props.openDrawer}>
+          <div />
+          <div />
+          <div />
+        </StyledMenu>
         <StyledUl>
           <StyledLi>
             <StyledLink to="/">Home</StyledLink>
@@ -32,5 +39,9 @@ function Navigation(props) {
     </StyledNav>
   );
 }
+
+Navigation.propTypes = {
+  openDrawer: PropTypes.func.isRequired,
+};
 
 export default Navigation;

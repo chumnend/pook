@@ -1,12 +1,17 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { color } from '../../../theme';
+import { device, color } from '../../../theme';
 
 export const StyledNav = styled.nav`
+  display: none;
   width: 100%;
   height: 100%;
   background: ${color.white};
   color: ${color.black};
+
+  @media all and (min-width: ${device.lg}) {
+    display: block;
+  }
 `;
 
 export const StyledWrapper = styled.div`

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { color } from '../../../theme';
+import { device, color } from '../../../theme';
 
 export const StyledNav = styled.nav`
   width: 100%;
@@ -20,21 +20,16 @@ export const StyledWrapper = styled.div`
 
 export const StyledUl = styled.ul`
   list-style: none;
-  display: flex;
+  display: none;
+
+  @media all and (min-width: ${device.lg}) {
+    display: flex;
+  }
 `;
 
 export const StyledLi = styled.li`
   display: inline-block;
   padding: 1rem;
-`;
-
-export const StyledLink = styled(Link)`
-  text-decoration: none;
-  background: inherit;
-  color: inherit;
-  &:hover {
-    color: #ff8000;
-  }
 `;
 
 export const StyledLogo = styled(Link)`
@@ -44,6 +39,33 @@ export const StyledLogo = styled(Link)`
   text-decoration: none;
   display: inline-block;
   padding: 1rem;
+`;
+
+export const StyledMenu = styled.div`
+  width: 40px;
+  height: 100%;
+  background: ${color.black};
+  cursor: pointer;
+
+  & div {
+    width: 90%;
+    height: 3px;
+    margin: 6px 0;
+    background: ${color.white};
+  }
+
+  @media all and (min-width: ${device.lg}) {
+    display: none;
+  }
+`;
+
+export const StyledLink = styled(Link)`
+  text-decoration: none;
+  background: inherit;
+  color: inherit;
+  &:hover {
+    color: #ff8000;
+  }
 `;
 
 export const StyledBookNow = styled(Link)`

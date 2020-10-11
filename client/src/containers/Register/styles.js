@@ -8,8 +8,8 @@ export const Page = styled.div`
 `;
 
 export const StyledForm = styled.form`
-  width: 50%;
-  max-width: 600px;
+  width: 90%;
+  max-width: 520px;
   margin: 0 auto;
   padding: 2rem;
   border: 1px solid #000;

@@ -5,4 +5,6 @@ export const StyledHeader = styled.header`
   height: 100%;
   display: flex;
   flex-flow: column;
+  position: relative;
+  z-index: 1;
 `;

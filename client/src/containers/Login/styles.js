@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { color } from '../../theme';
 
 export const Page = styled.div`
   width: 100%;
@@ -8,11 +9,11 @@ export const Page = styled.div`
 `;
 
 export const StyledForm = styled.form`
-  width: 50%;
-  max-width: 600px;
+  width: 90%;
+  max-width: 520px;
   margin: 0 auto;
   padding: 2rem;
-  border: 1px solid #000;
+  border: 1px solid ${color.black};
   & p {
     text-align: center;
   }
@@ -27,7 +28,7 @@ export const StyledFormHeader = styled.div`
   & p {
     margin: 1rem 0;
     background: red;
-    color: #000;
+    color: ${color.black};
   }
 `;
 
