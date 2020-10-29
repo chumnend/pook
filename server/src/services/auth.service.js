@@ -10,7 +10,9 @@ module.exports = {
     // check if email was already taken
     const user = await User.findOne({ email });
     if (user) {
-      throw new HttpException(400, 'Email already taken');
+      throw new HttpException(400, 'Missing or invalid fields', {
+        email: 'Email already taken',
+      });
     }
 
     // create new user
@@ -38,7 +40,7 @@ module.exports = {
     // find the user by email
     const user = await User.findOne({ email });
     if (!user) {
-      throw new HttpException(404, 'User does not exist');
+      throw new HttpException(404, 'Invalid email and/or password');
     }
 
     // validate the password
