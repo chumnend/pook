@@ -3,14 +3,14 @@
 const jwt = require('jsonwebtoken');
 const config = require('../config');
 const { User } = require('../models');
-const { HttpException } = require('../utils/exceptions');
+const { HttpError } = require('../utils');
 
 module.exports = {
   async register(name, email, password) {
     // check if email was already taken
     const user = await User.findOne({ email });
     if (user) {
-      throw new HttpException(400, 'Missing or invalid fields', {
+      throw new HttpError(400, 'Missing or invalid fields', {
         email: 'Email already taken',
       });
     }
@@ -40,7 +40,7 @@ module.exports = {
     // find the user by email
     const user = await User.findOne({ email });
     if (!user) {
-      throw new HttpException(404, 'Invalid email and/or password');
+      throw new HttpError(404, 'Invalid email and/or password');
     }
 
     // validate the password
@@ -59,7 +59,7 @@ module.exports = {
 
       return token;
     } else {
-      throw new HttpException(400, 'Invalid email and/or password');
+      throw new HttpError(400, 'Invalid email and/or password');
     }
   },
 
