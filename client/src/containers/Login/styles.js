@@ -1,21 +1,30 @@
 import styled from 'styled-components';
-import { color } from '../../theme';
+import { device, color } from '../../theme';
 
 export const Page = styled.div`
   width: 100%;
   height: 100%;
   min-height: 768px;
-  padding: 2rem;
+  padding-top: 2rem;
+
+  @media all and (min-width: ${device.lg}) {
+    padding: 2rem;
+  }
 `;
 
 export const StyledForm = styled.form`
-  width: 90%;
+  width: 100%;
   max-width: 520px;
   margin: 0 auto;
   padding: 2rem;
-  border: 1px solid ${color.black};
+  border: none;
   & p {
     text-align: center;
+  }
+
+  @media all and (min-width: ${device.lg}) {
+    width: 90%;
+    border: 1px solid ${color.black};
   }
 `;
 
@@ -27,7 +36,8 @@ export const StyledFormHeader = styled.div`
   }
   & p {
     margin: 1rem 0;
-    background: red;
+    padding: 0.8rem 0;
+    background: ${color.red};
     color: ${color.black};
   }
 `;
@@ -46,7 +56,7 @@ export const StyledFormGroup = styled.div`
   }
   & small {
     font-size: 0.8rem;
-    color: red;
+    color: ${color.red};
   }
 `;
 

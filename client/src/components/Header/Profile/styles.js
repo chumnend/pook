@@ -38,6 +38,6 @@ export const StyledLink = styled(Link)`
   background: inherit;
   color: inherit;
   &:hover {
-    color: #ff8000;
+    color: ${color.blue};
   }
 `;

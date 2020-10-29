@@ -48,6 +48,6 @@ export const StyledLink = styled(Link)`
   color: inherit;
   font-size: 1.2rem;
   &:hover {
-    color: #ff8000;
+    color: ${color.blue};
   }
 `;

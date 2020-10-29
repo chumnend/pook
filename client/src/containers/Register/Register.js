@@ -34,10 +34,7 @@ function Register(props) {
     } catch (error) {
       if (error.response !== undefined) {
         const errorObj = error.response.data.error;
-        setErrors({
-          message: errorObj.message,
-          ...errorObj.errors,
-        });
+        setErrors(errorObj);
       } else {
         setErrors({
           message: 'Server Error. Try again later.',
@@ -66,7 +63,7 @@ function Register(props) {
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-          {errors.name && <small>{errors.name}</small>}
+          {errors.extra && <small>{errors.extra.name}</small>}
         </StyledFormGroup>
         <StyledFormGroup>
           <label htmlFor="email">Email</label>
@@ -79,7 +76,7 @@ function Register(props) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          {errors.email && <small>{errors.email}</small>}
+          {errors.extra && <small>{errors.extra.email}</small>}
         </StyledFormGroup>
         <StyledFormGroup>
           <label htmlFor="password">Password</label>
@@ -92,7 +89,7 @@ function Register(props) {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          {errors.password && <small>{errors.password}</small>}
+          {errors.extra && <small>{errors.extra.password}</small>}
         </StyledFormGroup>
         <StyledFormGroup>
           <label htmlFor="password2">Confirm password</label>
@@ -105,7 +102,7 @@ function Register(props) {
             value={password2}
             onChange={(e) => setPassword2(e.target.value)}
           />
-          {errors.password2 && <small>{errors.password2}</small>}
+          {errors.extra && <small>{errors.extra.password2}</small>}
         </StyledFormGroup>
 
         <StyledButton type="submit" disabled={isLoading}>

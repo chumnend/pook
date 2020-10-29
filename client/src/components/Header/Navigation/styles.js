@@ -33,7 +33,7 @@ export const StyledLi = styled.li`
 `;
 
 export const StyledLogo = styled(Link)`
-  color: inherit;
+  color: ${color.blue};
   font-size: 2rem;
   font-weight: bold;
   text-decoration: none;
@@ -64,7 +64,7 @@ export const StyledLink = styled(Link)`
   background: inherit;
   color: inherit;
   &:hover {
-    color: #ff8000;
+    color: ${color.blue};
   }
 `;
 
@@ -74,6 +74,6 @@ export const StyledBookNow = styled(Link)`
   color: ${color.black};
   padding: 0.5rem 1rem;
   &:hover {
-    color: #ff8000;
+    color: ${color.blue};
   }
 `;

@@ -30,10 +30,7 @@ function Login(props) {
     } catch (error) {
       if (error.response !== undefined) {
         const errorObj = error.response.data.error;
-        setErrors({
-          message: errorObj.message,
-          ...errorObj.errors,
-        });
+        setErrors(errorObj);
       } else {
         setErrors({
           message: 'Server Error. Try again later.',
@@ -62,7 +59,7 @@ function Login(props) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          {errors.email && <small>{errors.email}</small>}
+          {errors.extra && <small>{errors.extra.email}</small>}
         </StyledFormGroup>
         <StyledFormGroup>
           <label htmlFor="password">Password</label>
@@ -75,7 +72,7 @@ function Login(props) {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          {errors.password && <small>{errors.password}</small>}
+          {errors.extra && <small>{errors.extra.password}</small>}
         </StyledFormGroup>
 
         <StyledButton type="submit" disabled={isLoading}>
