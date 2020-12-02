@@ -89,11 +89,11 @@ func handleRequests() {
 	router.HandleFunc("/", home)
 
 	// booking routes
-	router.HandleFunc("/v1/bookings", getAllBookings).Methods("GET")
-	router.HandleFunc("/v1/bookings", createBooking).Methods("POST")
-	router.HandleFunc("/v1/bookings/{id}", getBooking).Methods("GET")
-	router.HandleFunc("/v1/bookings/{id}", updateBooking).Methods("PUT")
-	router.HandleFunc("/v1/bookings/{id}", deleteBooking).Methods("DELETE")
+	router.HandleFunc("/api/v1/bookings", getAllBookings).Methods("GET")
+	router.HandleFunc("/api/v1/bookings", createBooking).Methods("POST")
+	router.HandleFunc("/api/v1/bookings/{id}", getBooking).Methods("GET")
+	router.HandleFunc("/api/v1/bookings/{id}", updateBooking).Methods("PUT")
+	router.HandleFunc("/api/v1/bookings/{id}", deleteBooking).Methods("DELETE")
 
 	// listen
 	log.Print("listening on port 8000")
