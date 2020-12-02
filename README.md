@@ -1,4 +1,2 @@
-# Hotelio
-By Nicholas Chumney
-
+# Bookings
 TBD
