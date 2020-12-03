@@ -8,7 +8,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// HandleRequests definition
+// HandleRequests - handle requests
 func HandleRequests() {
 	router := mux.NewRouter().StrictSlash(true)
 
