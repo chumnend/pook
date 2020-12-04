@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -23,7 +22,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 
 	// validate request body
 	if r.Body == nil {
-		http.Error(w, "Invalid: Empty request body", 400)
+		http.Error(w, "Empty request body", 400)
 		return
 	}
 
@@ -31,7 +30,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	user := models.User{}
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
-		http.Error(w, "Invalid: Request must be JSON object", 400)
+		http.Error(w, "Request must be JSON object", 400)
 		return
 	}
 
@@ -82,9 +81,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	// check if password is valid
 	errPW := bcrypt.CompareHashAndPassword([]byte(foundUser.Password), []byte(credentials.Password))
-	if errPW == nil && errPW == bcrypt.ErrMismatchedHashAndPassword {
+	if errPW != nil && errPW == bcrypt.ErrMismatchedHashAndPassword {
 		http.Error(w, "Invalid email and/or password", 400)
-		fmt.Println("There")
 		return
 	}
 
