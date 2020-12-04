@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/chumnend/bookings-server/models"
 	"github.com/jinzhu/gorm"
 	"github.com/joho/godotenv"
 )
@@ -25,6 +26,9 @@ func ConnectDB() *gorm.DB {
 		fmt.Println("Error", err)
 		panic(err)
 	}
+
+	// migrate the schema
+	db.AutoMigrate(&models.User{})
 
 	fmt.Println("Successfully connected to db", db)
 
