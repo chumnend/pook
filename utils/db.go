@@ -7,6 +7,7 @@ import (
 
 	"github.com/chumnend/bookings-server/models"
 	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres" // Gorm postgres interface
 	"github.com/joho/godotenv"
 )
 
@@ -30,7 +31,7 @@ func ConnectDB() *gorm.DB {
 	// migrate the schema
 	db.AutoMigrate(&models.User{})
 
-	fmt.Println("Successfully connected to db", db)
+	fmt.Println("Successfully connected to db")
 
 	return db
 }

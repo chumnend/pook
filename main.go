@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -11,8 +10,6 @@ import (
 )
 
 func main() {
-	fmt.Println("Preparing server...")
-
 	// load environment variables
 	err := godotenv.Load()
 	if err != nil {
