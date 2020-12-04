@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -23,7 +22,12 @@ func Register(w http.ResponseWriter, r *http.Request) {
 
 	// validate request body
 	if r.Body == nil {
-		http.Error(w, "Invalid: Empty request body", 400)
+		resp := utils.JSONResponse{
+			Success: false,
+			Message: "Empty request body",
+		}
+
+		utils.SendJSONResponse(w, resp, 400)
 		return
 	}
 
@@ -31,26 +35,50 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	user := models.User{}
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
-		http.Error(w, "Invalid: Request must be JSON object", 400)
+		resp := utils.JSONResponse{
+			Success: false,
+			Message: "Request must be JSON object",
+		}
+
+		utils.SendJSONResponse(w, resp, 400)
 		return
 	}
 
 	// generate password
 	password, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
-		http.Error(w, "Something went wrong. Please try again later", 400)
+		resp := utils.JSONResponse{
+			Success: false,
+			Message: "Something went wrong. Please try again later",
+		}
+
+		utils.SendJSONResponse(w, resp, 400)
 		return
 	}
 
 	// save user information to db
 	user.Password = string(password)
-	createdUser := db.Create(&user)
-	if createdUser.Error != nil {
-		http.Error(w, "Something went wrong. Please try again later", 400)
+	result := db.Create(&user)
+	if result.Error != nil {
+		resp := utils.JSONResponse{
+			Success: false,
+			Message: "Email already exists",
+		}
+
+		utils.SendJSONResponse(w, resp, 400)
 		return
 	}
 
-	json.NewEncoder(w).Encode(createdUser)
+	resp := utils.JSONResponse{
+		Success: true,
+		Message: "New user created",
+		Payload: map[string]interface{}{
+			"id":    user.ID,
+			"email": user.Email,
+		},
+	}
+
+	utils.SendJSONResponse(w, resp, 200)
 }
 
 // Login - returns token if valid user
@@ -59,7 +87,12 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	// validate request body
 	if r.Body == nil {
-		http.Error(w, "Empty request body", 400)
+		resp := utils.JSONResponse{
+			Success: false,
+			Message: "Empty request body",
+		}
+
+		utils.SendJSONResponse(w, resp, 400)
 		return
 	}
 
@@ -68,7 +101,12 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	errJSON := json.NewDecoder(r.Body).Decode(&credentials)
 	if errJSON != nil {
-		http.Error(w, "Request must be JSON object", 400)
+		resp := utils.JSONResponse{
+			Success: false,
+			Message: "Request must be JSON object",
+		}
+
+		utils.SendJSONResponse(w, resp, 400)
 		return
 	}
 
@@ -76,15 +114,24 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	foundUser := models.User{}
 	errDB := db.Where("email = ?", credentials.Email).First(&foundUser).Error
 	if errDB != nil {
-		http.Error(w, "Invalid email and/or password", 400)
+		resp := utils.JSONResponse{
+			Success: false,
+			Message: "Invalid email and/or password",
+		}
+
+		utils.SendJSONResponse(w, resp, 400)
 		return
 	}
 
 	// check if password is valid
 	errPW := bcrypt.CompareHashAndPassword([]byte(foundUser.Password), []byte(credentials.Password))
-	if errPW == nil && errPW == bcrypt.ErrMismatchedHashAndPassword {
-		http.Error(w, "Invalid email and/or password", 400)
-		fmt.Println("There")
+	if errPW != nil && errPW == bcrypt.ErrMismatchedHashAndPassword {
+		resp := utils.JSONResponse{
+			Success: false,
+			Message: "Invalid email and/or password",
+		}
+
+		utils.SendJSONResponse(w, resp, 400)
 		return
 	}
 
@@ -100,9 +147,20 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
 	tokenString, errJWT := token.SignedString([]byte(secret))
 	if errJWT != nil {
-		http.Error(w, "Something went wrong. Please try again later", 400)
+		resp := utils.JSONResponse{
+			Success: false,
+			Message: "Something went wrong. Please try again later",
+		}
+
+		utils.SendJSONResponse(w, resp, 400)
 		return
 	}
 
-	json.NewEncoder(w).Encode(tokenString)
+	resp := utils.JSONResponse{
+		Success: true,
+		Message: "New user created",
+		Payload: tokenString,
+	}
+
+	utils.SendJSONResponse(w, resp, 200)
 }
