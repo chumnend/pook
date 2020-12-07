@@ -10,7 +10,7 @@ import (
 // HandleRequests - handle requests
 func HandleRequests() *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
-	router.Use(middleware.SimpleMiddleware)
+	router.Use(middleware.Cors)
 
 	// index routes
 	router.HandleFunc("/", controllers.Ready).Methods("GET")

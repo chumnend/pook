@@ -180,7 +180,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	resp := utils.JSONResponse{
 		Success: true,
-		Message: "New user created",
+		Message: "Successful login",
 		Payload: map[string]interface{}{
 			"id":    foundUser.ID,
 			"email": foundUser.Email,
