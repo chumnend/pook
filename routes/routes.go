@@ -1,16 +1,16 @@
 package routes
 
 import (
-	"log"
-	"net/http"
+	"github.com/gorilla/mux"
 
 	"github.com/chumnend/bookings-server/controllers"
-	"github.com/gorilla/mux"
+	"github.com/chumnend/bookings-server/middleware"
 )
 
 // HandleRequests - handle requests
-func HandleRequests() {
+func HandleRequests() *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
+	router.Use(middleware.SimpleMiddleware) - demo middleware
 
 	// index routes
 	router.HandleFunc("/", controllers.Ready).Methods("GET")
@@ -19,7 +19,5 @@ func HandleRequests() {
 	router.HandleFunc("/api/v1/register", controllers.Register).Methods("POST")
 	router.HandleFunc("/api/v1/login", controllers.Login).Methods("POST")
 
-	// listen
-	log.Print("listening on port 8000")
-	log.Fatal(http.ListenAndServe(":8000", router))
+	return router
 }

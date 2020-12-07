@@ -5,8 +5,9 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/chumnend/bookings-server/routes"
 	"github.com/joho/godotenv"
+
+	"github.com/chumnend/bookings-server/routes"
 )
 
 func main() {
@@ -17,7 +18,7 @@ func main() {
 	}
 
 	// setup routes
-	routes.HandleRequests()
+	http.Handle("/", routes.HandleRequests())
 
 	// listen
 	port := os.Getenv("PORT")
