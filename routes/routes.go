@@ -4,11 +4,13 @@ import (
 	"github.com/gorilla/mux"
 
 	"github.com/chumnend/bookings-server/controllers"
+	"github.com/chumnend/bookings-server/middleware"
 )
 
 // HandleRequests - handle requests
 func HandleRequests() *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
+	router.Use(middleware.SimpleMiddleware) - demo middleware
 
 	// index routes
 	router.HandleFunc("/", controllers.Ready).Methods("GET")
