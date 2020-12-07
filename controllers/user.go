@@ -69,12 +69,34 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// create token
+	tk := &models.Token{
+		ID:             user.ID,
+		Email:          user.Email,
+		StandardClaims: &jwt.StandardClaims{},
+	}
+
+	secret := os.Getenv("SECRET_KEY")
+
+	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
+	tokenString, errJWT := token.SignedString([]byte(secret))
+	if errJWT != nil {
+		resp := utils.JSONResponse{
+			Success: false,
+			Message: "Something went wrong. Please try again later",
+		}
+
+		utils.SendJSONResponse(w, resp, 400)
+		return
+	}
+
 	resp := utils.JSONResponse{
 		Success: true,
 		Message: "New user created",
 		Payload: map[string]interface{}{
 			"id":    user.ID,
 			"email": user.Email,
+			"token": tokenString,
 		},
 	}
 
@@ -159,7 +181,11 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	resp := utils.JSONResponse{
 		Success: true,
 		Message: "New user created",
-		Payload: tokenString,
+		Payload: map[string]interface{}{
+			"id":    foundUser.ID,
+			"email": foundUser.Email,
+			"token": tokenString,
+		},
 	}
 
 	utils.SendJSONResponse(w, resp, 200)
