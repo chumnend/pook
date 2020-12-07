@@ -1,9 +1,14 @@
-function App() {
+import { Switch, Route } from 'react-router-dom';
+import Landing from './containers/Landing';
+import NotFound from './containers/NotFound';
+
+const App = () => {
   return (
-    <div>
-      <h1>Bookings</h1>
-    </div>
+    <Switch>
+      <Route exact path="/" component={Landing} />
+      <Route component={NotFound} />
+    </Switch>
   );
-}
+};
 
 export default App;
