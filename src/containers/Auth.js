@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
+import config from '../config';
 
 const Auth = (props) => {
   const [email, setEmail] = useState('');
@@ -17,7 +18,23 @@ const Auth = (props) => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    alert('authenticating...');
+    const payload = {
+      email,
+      password,
+      password2,
+    };
+
+    const url = props.login
+      ? config.prefix + '/api/v1/login'
+      : config.prefix + '/api/v1/register';
+
+    fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    })
+      .then((resp) => resp.json())
+      .then((data) => console.log(data))
+      .catch((err) => console.log(err));
   };
 
   return (
@@ -48,7 +65,7 @@ const Auth = (props) => {
             <input
               type="password"
               id="password2"
-              value={password}
+              value={password2}
               onChange={(e) => setPassword2(e.target.value)}
             />
           </div>
