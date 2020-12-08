@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-import config from '../config';
+import { useAuthContext } from '../context/auth.context';
 
 const Auth = (props) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
+
+  const authContext = useAuthContext();
 
   const validateForm = () => {
     if (props.login) {
@@ -18,23 +20,17 @@ const Auth = (props) => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const payload = {
-      email,
-      password,
-      password2,
-    };
-
-    const url = props.login
-      ? config.prefix + '/api/v1/login'
-      : config.prefix + '/api/v1/register';
-
-    fetch(url, {
-      method: 'POST',
-      body: JSON.stringify(payload),
-    })
-      .then((resp) => resp.json())
-      .then((data) => console.log(data))
-      .catch((err) => console.log(err));
+    if (props.login) {
+      authContext
+        .login(email, password)
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err));
+    } else {
+      authContext
+        .register(email, password)
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err));
+    }
   };
 
   return (
