@@ -23,13 +23,13 @@ const Auth = (props) => {
     if (props.login) {
       authContext
         .login(email, password)
-        .then(() => console.log('auth success'))
-        .catch(() => console.log('auth fail'));
+        .then((success) => console.log(success))
+        .catch(() => console.log('internal error'));
     } else {
       authContext
         .register(email, password)
-        .then(() => console.log('auth success'))
-        .catch(() => console.log('auth fail'));
+        .then((success) => console.log(success))
+        .catch(() => console.log('internal error'));
     }
   };
 

@@ -35,12 +35,16 @@ export const AuthProvider = (props) => {
             });
           }
 
-          return resolve();
+          return resolve(data.success);
         })
-        .catch((err) => {
-          dispatch({ type: actionTypes.AUTH_FAIL, error: err.message });
+        .catch(() => {
+          // should only reach here if there is a network or browser related error
+          dispatch({
+            type: actionTypes.AUTH_FAIL,
+            error: 'Something went wrong. Pleade try again later.',
+          });
 
-          return reject();
+          return reject(false);
         });
     });
   };
@@ -70,12 +74,16 @@ export const AuthProvider = (props) => {
             });
           }
 
-          return resolve();
+          return resolve(data.success);
         })
-        .catch((err) => {
-          dispatch({ type: actionTypes.AUTH_FAIL, error: err.message });
+        .catch(() => {
+          // should only reach here if there is a network or browser related error
+          dispatch({
+            type: actionTypes.AUTH_FAIL,
+            error: 'Something went wrong. Pleade try again later.',
+          });
 
-          return reject();
+          return reject(false);
         });
     });
   };
