@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-import { useAuthContext } from '../context/auth.context';
+import { useAuthContext } from '../context/auth';
 
 const Auth = (props) => {
   const [email, setEmail] = useState('');
@@ -23,13 +23,13 @@ const Auth = (props) => {
     if (props.login) {
       authContext
         .login(email, password)
-        .then((res) => console.log(res))
-        .catch((err) => console.log(err));
+        .then(() => console.log('auth success'))
+        .catch(() => console.log('auth fail'));
     } else {
       authContext
         .register(email, password)
-        .then((res) => console.log(res))
-        .catch((err) => console.log(err));
+        .then(() => console.log('auth success'))
+        .catch(() => console.log('auth fail'));
     }
   };
 
