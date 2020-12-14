@@ -1,7 +1,19 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { useAuthContext } from '../context/auth';
+
+const Logout = (props) => {
+  useEffect(() => {
+    props.logout();
+  }, [props]);
+
+  return <Redirect to="/" />;
+};
+
+Logout.propTypes = {
+  logout: PropTypes.func,
+};
 
 const Auth = (props) => {
   const [email, setEmail] = useState('');
@@ -24,15 +36,23 @@ const Auth = (props) => {
     if (props.login) {
       authContext
         .login(email, password)
-        .then((success) => console.log(success))
+        .then((success) => {
+          if (success) props.history('/');
+        })
         .catch(() => console.log('internal error'));
     } else {
       authContext
         .register(email, password)
-        .then((success) => console.log(success))
+        .then((success) => {
+          if (success) props.history('/');
+        })
         .catch(() => console.log('internal error'));
     }
   };
+
+  if (props.logout) {
+    return <Logout logout={authContext.logout} />;
+  }
 
   return (
     <div>
@@ -77,6 +97,8 @@ const Auth = (props) => {
 
 Auth.propTypes = {
   login: PropTypes.bool,
+  logout: PropTypes.bool,
+  history: PropTypes.object,
 };
 
 export default Auth;
