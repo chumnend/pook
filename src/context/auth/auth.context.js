@@ -1,13 +1,14 @@
-import { createContext, useContext, useReducer } from 'react';
+import React, { createContext, useContext, useReducer } from 'react';
+import PropTypes from 'prop-types';
 import config from '../../config';
 import { initialState, reducer } from './auth.reducer';
 import * as actionTypes from './auth.types';
 
 const AuthContext = createContext();
 
-export const useAuthContext = () => useContext(AuthContext);
+const useAuthContext = () => useContext(AuthContext);
 
-export const AuthProvider = (props) => {
+const AuthProvider = (props) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const register = (email, password) => {
@@ -107,3 +108,9 @@ export const AuthProvider = (props) => {
     <AuthContext.Provider value={auth}>{props.children}</AuthContext.Provider>
   );
 };
+
+AuthProvider.propTypes = {
+  children: PropTypes.node,
+};
+
+export { useAuthContext, AuthProvider };
