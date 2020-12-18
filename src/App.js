@@ -31,16 +31,20 @@ const App = () => {
     <>
       <Header links={headerLinks} isLoggedIn={authContext.isLoggedIn} />
       <Switch>
-        <Route exact path="/register" render={(props) => <Auth {...props} />} />
+        <Route
+          exact
+          path="/register"
+          render={(props) => <Auth {...props} type="register" />}
+        />
         <Route
           exact
           path="/login"
-          component={(props) => <Auth {...props} login />}
+          component={(props) => <Auth {...props} type="login" />}
         />
         <Route
           exact
           path="/logout"
-          render={(props) => <Auth {...props} logout />}
+          render={(props) => <Auth {...props} type="logout" />}
         />
         <Route exact path="/" component={Landing} />
         <Route component={NotFound} />
