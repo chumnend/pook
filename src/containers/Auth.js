@@ -30,13 +30,17 @@ const Auth = (props) => {
       });
   };
 
+  const logout = () => {
+    authContext.logout();
+  };
+
   switch (props.type) {
     case 'login':
       return <SignInForm login={login} />;
     case 'register':
       return <SignUpForm register={register} />;
     case 'logout':
-      return <Logout logout={authContext.logout} />;
+      return <Logout logout={logout} />;
     default:
       return null;
   }
