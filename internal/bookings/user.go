@@ -1,4 +1,4 @@
-package app
+package bookings
 
 import (
 	"github.com/jinzhu/gorm"

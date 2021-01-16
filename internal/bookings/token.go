@@ -1,4 +1,4 @@
-package app
+package bookings
 
 import jwt "github.com/dgrijalva/jwt-go"
 
