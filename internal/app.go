@@ -7,6 +7,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres" // Gorm Postgres Driver
 )
 
 // App struct declaration
@@ -17,6 +18,17 @@ type App struct {
 
 // Init setups up the application
 func (app *App) Init(connectionString string) {
+	// connect database
+	var err error
+	app.DB, err = gorm.Open("postgres", connectionString)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// migrate the schema
+	app.DB.AutoMigrate(User{})
+
+	// setup routes
 	app.Router = mux.NewRouter().StrictSlash(true)
 	app.Router.HandleFunc("/", pingServer).Methods("GET")
 }
