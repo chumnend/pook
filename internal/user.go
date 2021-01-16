@@ -1,6 +1,8 @@
 package app
 
 import (
+	"errors"
+
 	"github.com/jinzhu/gorm"
 )
 
@@ -12,4 +14,12 @@ type User struct {
 	Password  string `gorm:"type:varchar(100);not null" json:"-"`
 	FirstName string `gorm:"type:varchar(100)" json:"firstName"`
 	LastName  string `gorm:"type:varchar(100)" json:"lastName"`
+}
+
+func (u *User) createUser(db *gorm.DB) error {
+	return errors.New("Not implemented")
+}
+
+func (u *User) findUser(db *gorm.DB) error {
+	return errors.New("Not implemented")
 }

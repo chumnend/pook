@@ -32,6 +32,8 @@ func (app *App) Init(connectionString string) {
 	app.Router = mux.NewRouter().StrictSlash(true)
 	app.Router.Use(cors)
 	app.Router.HandleFunc("/", pingServer).Methods("GET")
+	app.Router.HandleFunc("/api/v1/register", registerUser).Methods("POST")
+	app.Router.HandleFunc("/api/v1/login", loginUser).Methods("POST")
 }
 
 // Run starts tthe web server
@@ -54,4 +56,12 @@ func cors(next http.Handler) http.Handler {
 // Handlers =====================================
 func pingServer(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Ready to serve requests")
+}
+
+func registerUser(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Not yet implemented")
+}
+
+func loginUser(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Not yet implemented")
 }
