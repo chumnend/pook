@@ -17,9 +17,10 @@ func main() {
 	}
 
 	connectionString := os.Getenv("DATABASE_URL")
+	secret := os.Getenv("SECRET_KEY")
 	port := os.Getenv("PORT")
 
 	app := bookings.App{}
-	app.Init(connectionString)
+	app.Init(connectionString, secret)
 	app.Run(":" + port)
 }
