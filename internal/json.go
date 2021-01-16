@@ -1,4 +1,4 @@
-package utils
+package app
 
 import (
 	"encoding/json"
@@ -12,8 +12,8 @@ type JSONResponse struct {
 	Payload interface{} `json:"payload"`
 }
 
-// SendJSONResponse - sends json response
-func SendJSONResponse(w http.ResponseWriter, response JSONResponse, code int) {
+// Send the JSON response
+func (response *JSONResponse) Send(w http.ResponseWriter, code int) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.Header().Set("X-Content-Type-Options", "nosniff")
 	w.WriteHeader(code)

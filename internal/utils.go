@@ -1,4 +1,4 @@
-package utils
+package app
 
 import (
 	"fmt"
@@ -6,8 +6,7 @@ import (
 	"net/http/httputil"
 )
 
-// PrintRequest - prints request info to console
-func PrintRequest(r *http.Request) {
+func dumpRequest(r *http.Request) {
 	dump, err := httputil.DumpRequest(r, true)
 	if err != nil {
 		fmt.Println(err)

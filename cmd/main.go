@@ -2,12 +2,11 @@ package main
 
 import (
 	"log"
-	"net/http"
 	"os"
 
 	"github.com/joho/godotenv"
 
-	"github.com/chumnend/bookings-server/routes"
+	bookings "github.com/chumnend/bookings-server/internal"
 )
 
 func main() {
@@ -17,11 +16,11 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-	// setup routes
-	http.Handle("/", routes.HandleRequests())
-
-	// listen
+	connectionString := os.Getenv("DATABASE_URL")
+	secret := os.Getenv("SECRET_KEY")
 	port := os.Getenv("PORT")
-	log.Printf("listening on port %s\n", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+
+	app := bookings.App{}
+	app.Init(connectionString, secret)
+	app.Run(":" + port)
 }
