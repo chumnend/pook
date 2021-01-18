@@ -1,8 +1,8 @@
 .PHONY: build
 build:
 	@echo "Building..."
-	@mkdir -p bin
-	@cd ./bin && go build ../cmd/bookings/main.go
+	@mkdir -p bin/bookings
+	@cd ./bin/bookings && go build ../../cmd/bookings/main.go
 	@echo "Build complete."
 
 .PHONY: start
