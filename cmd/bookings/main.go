@@ -20,7 +20,7 @@ func main() {
 	secret := os.Getenv("SECRET_KEY")
 	port := os.Getenv("PORT")
 
-	app := bookings.App{}
+	app := bookings.NewApp()
 	app.Init(connectionString, secret)
 	app.Run(":" + port)
 }

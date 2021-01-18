@@ -20,6 +20,11 @@ type App struct {
 	Secret string
 }
 
+// NewApp returns a new App instance
+func NewApp() *App {
+	return &App{}
+}
+
 // Init setups up the application
 func (app *App) Init(connectionString string, secret string) {
 	// connect database
@@ -33,6 +38,9 @@ func (app *App) Init(connectionString string, secret string) {
 	app.DB.AutoMigrate(User{})
 
 	// set secret
+	if len(secret) < 0 {
+		log.Fatal("Missing secret string")
+	}
 	app.Secret = secret
 
 	// setup routes
