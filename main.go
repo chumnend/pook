@@ -6,7 +6,7 @@ import (
 
 	"github.com/joho/godotenv"
 
-	"github.com/chumnend/bookings-server/internal/bookings"
+	"github.com/chumnend/bookings-server/bookings"
 )
 
 func main() {
