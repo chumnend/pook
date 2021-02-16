@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"os"
+	"regexp"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
@@ -51,7 +52,7 @@ type User struct {
 	gorm.Model
 
 	Email     string `gorm:"type:varchar(100);unique;not null" json:"email"`
-	Password  string `gorm:"type:varchar(100);not null" json:"-"`
+	Password  string `gorm:"type:varchar(100);not null" json:"password"`
 	FirstName string `gorm:"type:varchar(100)" json:"firstName"`
 	LastName  string `gorm:"type:varchar(100)" json:"lastName"`
 }
@@ -76,12 +77,12 @@ func dumpRequest(r *http.Request) {
 }
 
 func ping(w http.ResponseWriter, r *http.Request) {
-	log.Println("Ping route hit")
+	log.Println("GET - ping")
 	fmt.Fprintf(w, "Ready to serve requests")
 }
 
 func registerUser(w http.ResponseWriter, r *http.Request) {
-	log.Println("Register route hit")
+	log.Println("POST - register")
 
 	// validate request body
 	if r.Body == nil {
@@ -107,7 +108,39 @@ func registerUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// generate password
+	// validate the request body
+	if len(User.FirstName) == 0 || len(User.LastName) == 0 {
+		response := JSONResponse{
+			Success: false,
+			Message: "First name and/or last name not valid",
+		}
+
+		response.Send(w, 400)
+		return
+	}
+
+	emailRegex := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
+	if !emailRegex.MatchString(User.Email) {
+		response := JSONResponse{
+			Success: false,
+			Message: "Email not valid",
+		}
+
+		response.Send(w, 400)
+		return
+	}
+
+	if len(User.Password) < 6 {
+		response := JSONResponse{
+			Success: false,
+			Message: "Password must contain at least 6 characters",
+		}
+
+		response.Send(w, 400)
+		return
+	}
+
+	// encrypt the password
 	password, err := bcrypt.GenerateFromPassword([]byte(User.Password), bcrypt.DefaultCost)
 	if err != nil {
 		response := JSONResponse{
@@ -165,7 +198,7 @@ func registerUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func loginUser(w http.ResponseWriter, r *http.Request) {
-	log.Println("Login route hit")
+	log.Println("POST - login")
 
 	// validate request body
 	if r.Body == nil {
@@ -258,6 +291,7 @@ func main() {
 
 	connectionString := os.Getenv("DATABASE_URL")
 	secret := os.Getenv("SECRET_KEY")
+	host := os.Getenv("HOST")
 	port := os.Getenv("PORT")
 
 	// configure database
@@ -283,7 +317,7 @@ func main() {
 	app.router.HandleFunc("/api/v1/login", loginUser).Methods("POST")
 
 	// start the server
-	addr := ":" + port
+	addr := host + ":" + port
 	log.Printf("listening on %s\n", addr)
 	log.Fatal(http.ListenAndServe(addr, app.router))
 }
