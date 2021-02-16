@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import Alert from '@material-ui/lab/Alert';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -38,6 +39,7 @@ const SignUpForm = (props) => {
           Sign up
         </Typography>
         <form className={classes.form} noValidate onSubmit={handleSubmit}>
+          {props.error && <Alert severity="error">{props.error}</Alert>}
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -133,6 +135,7 @@ const SignUpForm = (props) => {
 
 SignUpForm.propTypes = {
   register: PropTypes.func,
+  error: PropTypes.string,
 };
 
 export default SignUpForm;
