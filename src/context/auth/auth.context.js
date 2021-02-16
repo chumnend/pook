@@ -42,7 +42,7 @@ const AuthProvider = (props) => {
           // should only reach here if there is a network or browser related error
           dispatch({
             type: actionTypes.AUTH_FAIL,
-            error: 'Something went wrong. Pleade try again later.',
+            error: 'Something went wrong. Please try again later.',
           });
 
           return reject(false);
@@ -81,7 +81,7 @@ const AuthProvider = (props) => {
           // should only reach here if there is a network or browser related error
           dispatch({
             type: actionTypes.AUTH_FAIL,
-            error: 'Something went wrong. Pleade try again later.',
+            error: 'Something went wrong. Please try again later.',
           });
 
           return reject(false);

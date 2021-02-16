@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import Alert from '@material-ui/lab/Alert';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -37,6 +38,7 @@ const SignInForm = (props) => {
           Sign in
         </Typography>
         <form className={classes.form} noValidate onSubmit={handleSubmit}>
+          {props.error && <Alert severity="error">{props.error}</Alert>}
           <TextField
             variant="outlined"
             margin="normal"
@@ -97,6 +99,7 @@ const SignInForm = (props) => {
 
 SignInForm.propTypes = {
   login: PropTypes.func,
+  error: PropTypes.string,
 };
 
 export default SignInForm;

@@ -16,6 +16,7 @@ const Auth = (props) => {
       })
       .catch((err) => {
         console.error(err);
+        return err.message;
       });
   };
 
@@ -36,9 +37,9 @@ const Auth = (props) => {
 
   switch (props.type) {
     case 'login':
-      return <SignInForm login={login} />;
+      return <SignInForm login={login} error={authContext.error} />;
     case 'register':
-      return <SignUpForm register={register} />;
+      return <SignUpForm register={register} error={authContext.error} />;
     case 'logout':
       return <Logout logout={logout} />;
     default:
