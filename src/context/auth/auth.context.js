@@ -11,7 +11,7 @@ const useAuthContext = () => useContext(AuthContext);
 const AuthProvider = (props) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const register = (email, password) => {
+  const register = (firstName, lastName, email, password) => {
     dispatch({ type: actionTypes.AUTHENTICATING });
 
     const url = config.prefix + '/api/v1/register';
@@ -19,7 +19,7 @@ const AuthProvider = (props) => {
     return new Promise((resolve, reject) => {
       fetch(url, {
         method: 'POST',
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ firstName, lastName, email, password }),
       })
         .then((resp) => resp.json())
         .then((data) => {

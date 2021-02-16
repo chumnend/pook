@@ -26,7 +26,7 @@ const SignUpForm = (props) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    props.register(email, password);
+    props.register(firstName, lastName, email, password);
   };
 
   return (
@@ -40,6 +40,7 @@ const SignUpForm = (props) => {
         </Typography>
         <form className={classes.form} noValidate onSubmit={handleSubmit}>
           {props.error && <Alert severity="error">{props.error}</Alert>}
+          <br />
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
