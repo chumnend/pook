@@ -16,13 +16,12 @@ const Auth = (props) => {
       })
       .catch((err) => {
         console.error(err);
-        return err.message;
       });
   };
 
-  const register = (email, password) => {
+  const register = (firstName, lastName, email, password) => {
     authContext
-      .register(email, password)
+      .register(firstName, lastName, email, password)
       .then((success) => {
         if (success) props.history.push('/');
       })
