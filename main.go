@@ -289,11 +289,6 @@ func main() {
 		log.Println("No .env file was found")
 	}
 
-	host := os.Getenv("HOST")
-	if host == "" {
-		log.Fatal("Missing env:  HOST")
-	}
-
 	port := os.Getenv("PORT")
 	if port == "" {
 		log.Fatal("Missing env:  PORT")
@@ -332,7 +327,6 @@ func main() {
 	app.router.HandleFunc("/api/v1/login", loginUser).Methods("POST")
 
 	// start the server
-	addr := host + ":" + port
-	log.Printf("listening on %s\n", addr)
-	log.Fatal(http.ListenAndServe(addr, app.router))
+	log.Printf("listening on port %s\n", port)
+	log.Fatal(http.ListenAndServe(":"+port, app.router))
 }
