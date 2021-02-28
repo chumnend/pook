@@ -3,12 +3,15 @@ package main
 import (
 	"log"
 	"os"
+	"testing"
 
 	bookings "github.com/chumnend/bookings-server/server"
 	"github.com/joho/godotenv"
 )
 
-func main() {
+var s *bookings.Server
+
+func TestMain(m *testing.M) {
 	// load environment variables
 	err := godotenv.Load()
 	if err != nil {
@@ -30,7 +33,13 @@ func main() {
 		log.Fatal("Missing env:  PORT")
 	}
 
-	// run the server
-	server := bookings.NewServer(connectionString, secret, port)
-	server.Run()
+	s = bookings.NewServer(connectionString, secret, port)
+	code := m.Run()
+	clearTable()
+	os.Exit(code)
+}
+
+func clearTable() {
+	s.DB.Exec("DELETE FROM users")
+	s.DB.Exec("ALTER SEQUENCE users_id_seq RESTART WITH 1")
 }
