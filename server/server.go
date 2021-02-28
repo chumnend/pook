@@ -31,9 +31,9 @@ func NewServer(connectionString string, secret string, port string) *Server {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	// migrate the schema
 	server.DB.AutoMigrate(User{})
+	server.DB.AutoMigrate(Booking{})
+	server.DB.AutoMigrate(Location{})
 
 	// set secret
 	if len(secret) < 0 {
@@ -41,8 +41,11 @@ func NewServer(connectionString string, secret string, port string) *Server {
 	}
 	server.Secret = secret
 
-	// set the running address
+	// assign runtime address
 	server.Addr = ":" + port
+
+	// setup router
+	server.Router = mux.NewRouter().StrictSlash(true)
 
 	return server
 }
