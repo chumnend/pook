@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"sync"
@@ -46,6 +47,8 @@ func NewServer(connectionString string, secret string, port string) *Server {
 
 	// setup router
 	server.Router = mux.NewRouter().StrictSlash(true)
+	server.Router.Use(cors)
+	server.Router.HandleFunc("/ping", server.pingHandler).Methods("GET")
 
 	return server
 }
@@ -53,5 +56,18 @@ func NewServer(connectionString string, secret string, port string) *Server {
 // Run starts the server
 func (s *Server) Run() {
 	log.Println("Listening on address " + s.Addr)
-	log.Fatal(http.ListenAndServe(s.Addr, nil))
+	log.Fatal(http.ListenAndServe(s.Addr, s.Router))
 }
+
+func (s *Server) pingHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("GET - ping")
+	fmt.Fprintf(w, "Ready to serve requests")
+}
+
+func (s *Server) createUserHandler(w http.ResponseWriter, r *http.Request) {}
+func (s *Server) getUserHandler(w http.ResponseWriter, r *http.Request)    {}
+func (s *Server) updateUserHandler(w http.ResponseWriter, r *http.Request) {}
+func (s *Server) deleteUserHandler(w http.ResponseWriter, r *http.Request) {}
+
+func (s *Server) registerUserHandler(w http.ResponseWriter, r *http.Request) {}
+func (s *Server) loginUserHandler(w http.ResponseWriter, r *http.Request)    {}
