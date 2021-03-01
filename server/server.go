@@ -4,15 +4,11 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"sync"
 
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres" // Gorm Postgres Driver
 )
-
-var mutex = &sync.Mutex{}
-var count = 0
 
 // Server struct
 type Server struct {
@@ -32,6 +28,8 @@ func NewServer(connectionString string, secret string, port string) *Server {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	// migrate the schema
 	server.DB.AutoMigrate(User{})
 	server.DB.AutoMigrate(Booking{})
 	server.DB.AutoMigrate(Location{})
@@ -63,11 +61,3 @@ func (s *Server) pingHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("GET - ping")
 	fmt.Fprintf(w, "Ready to serve requests")
 }
-
-func (s *Server) createUserHandler(w http.ResponseWriter, r *http.Request) {}
-func (s *Server) getUserHandler(w http.ResponseWriter, r *http.Request)    {}
-func (s *Server) updateUserHandler(w http.ResponseWriter, r *http.Request) {}
-func (s *Server) deleteUserHandler(w http.ResponseWriter, r *http.Request) {}
-
-func (s *Server) registerUserHandler(w http.ResponseWriter, r *http.Request) {}
-func (s *Server) loginUserHandler(w http.ResponseWriter, r *http.Request)    {}
