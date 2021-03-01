@@ -9,5 +9,6 @@ type Location struct {
 	Address    string  `json:"address"`
 	CostPerDay float64 `json:"costPerDay"`
 
-	UserID uint `gorm:"foreignKey:Owner"`
+	UserID   uint
+	Bookings []Booking
 }

@@ -20,9 +20,9 @@ func TestMain(m *testing.M) {
 		log.Println("No .env file was found")
 	}
 
-	connectionString := os.Getenv("DATABASE_URL")
+	connectionString := os.Getenv("DATABASE_TEST_URL")
 	if connectionString == "" {
-		log.Fatal("Missing env:  DATABASE_URL")
+		log.Fatal("Missing env:  DATABASE_TEST_URL")
 	}
 
 	secret := os.Getenv("SECRET_KEY")
