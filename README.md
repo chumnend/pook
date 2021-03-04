@@ -1,2 +1,0 @@
-# bookings-server
-TBD
