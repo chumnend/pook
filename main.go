@@ -50,7 +50,7 @@ func main() {
 	a.router.HandleFunc("/status", statusHandler).Methods("GET")
 
 	// serve react ui
-	fs := http.FileServer(http.Dir("./ui/build"))
+	fs := http.FileServer(http.Dir("./build"))
 	a.router.PathPrefix("/").Handler(fs)
 
 	log.Println("Listening on port " + port)
