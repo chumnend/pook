@@ -20,6 +20,7 @@ type app struct {
 func main() {
 	var err error
 
+	// load environment variables
 	err = godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
@@ -35,18 +36,27 @@ func main() {
 		log.Fatal("missing env: DATABASE_URL")
 	}
 
+	// create app instance
 	a := new(app)
 
+	// connect database
 	a.db, err = gorm.Open("postgres", dbURL)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	a.router = mux.NewRouter()
-	a.router.HandleFunc("/status", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Ready to serve requests")
-	})
+	// setup routes
+	a.router = mux.NewRouter().StrictSlash(true)
+	a.router.HandleFunc("/status", statusHandler).Methods("GET")
+
+	// serve react ui
+	fs := http.FileServer(http.Dir("./ui/build"))
+	a.router.PathPrefix("/").Handler(fs)
 
 	log.Println("Listening on port " + port)
 	log.Fatal(http.ListenAndServe(":"+port, a.router))
+}
+
+func statusHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Ready to serve requests")
 }
