@@ -1,8 +1,2 @@
-# Bookings
-TBD
-
-## Demo
-TBD
-
-## Development Setup
+# Pook 
 TBD
