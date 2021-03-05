@@ -15,5 +15,5 @@ serve:
 .PHONY: clean
 clean:
 	@echo "Cleaning..."
-	@rm -rf bin build ui/node_modules
+	@rm -rf bin
 	@echo "Clean complete."

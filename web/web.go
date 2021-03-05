@@ -12,9 +12,10 @@ import (
 
 // App struct declaration
 type App struct {
-	Addr   string
-	Router *mux.Router
-	DB     *gorm.DB
+	Addr       string
+	Router     *mux.Router
+	DB         *gorm.DB
+	FileServer *http.Handler
 }
 
 // NewApp creates and setups up App instance
@@ -29,9 +30,12 @@ func NewApp(dbURL string, port string) *App {
 		log.Fatal(err)
 	}
 
-	// setup api routes
+	// setup router
 	app.Router = mux.NewRouter().StrictSlash(true)
-	app.Router.HandleFunc("/status", statusHandler)
+
+	// api routes
+	api := app.Router.PathPrefix("/api/v1").Subrouter()
+	api.HandleFunc("/status", statusHandler)
 
 	app.Addr = ":" + port
 
