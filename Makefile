@@ -2,11 +2,7 @@ all: build serve
 
 .PHONY: build
 build:
-	@if [ ! -d ui/node_modules ]; then\
-		echo "Installing npm_modules" && cd ui/ && npm install;\
-	fi
 	@echo "Building..."
-	@cd ui/ && npm run build
 	@mkdir -p bin/
 	@cd bin/ && go build ../main.go
 	@echo "Build complete."
@@ -19,5 +15,5 @@ serve:
 .PHONY: clean
 clean:
 	@echo "Cleaning..."
-	@rm -rf bin build ui/node_modules
+	@rm -rf bin
 	@echo "Clean complete."

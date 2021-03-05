@@ -7,10 +7,11 @@ import (
 	"os"
 	"testing"
 
+	"github.com/chumnend/pook/web"
 	"github.com/joho/godotenv"
 )
 
-var a app
+var app *web.App
 
 func TestMain(m *testing.M) {
 	// initialize app
@@ -31,7 +32,7 @@ func TestMain(m *testing.M) {
 		log.Fatal("missing env: DATABASE_URL")
 	}
 
-	a.setup(dbURL, port)
+	app = web.NewApp(dbURL, port)
 
 	// start test runner
 	code := m.Run()
@@ -40,7 +41,7 @@ func TestMain(m *testing.M) {
 
 func executeRequest(req *http.Request) *httptest.ResponseRecorder {
 	rr := httptest.NewRecorder()
-	a.router.ServeHTTP(rr, req)
+	app.Router.ServeHTTP(rr, req)
 
 	return rr
 }
@@ -51,9 +52,13 @@ func checkResponseCode(t *testing.T, expected, actual int) {
 	}
 }
 
-func TestServe(t *testing.T) {
-	req, _ := http.NewRequest("GET", "/", nil)
+func TestStatusHandler(t *testing.T) {
+	req, _ := http.NewRequest("GET", "/api/v1/status", nil)
 	res := executeRequest(req)
 
 	checkResponseCode(t, http.StatusOK, res.Code)
+
+	if body := res.Body.String(); body != "Ready to serve requests" {
+		t.Errorf("Expected an empty array. Got %s", body)
+	}
 }
