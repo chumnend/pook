@@ -1,15 +1,12 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"testing"
 
-	"github.com/gorilla/mux"
-	"github.com/jinzhu/gorm"
 	"github.com/joho/godotenv"
 )
 
@@ -34,15 +31,7 @@ func TestMain(m *testing.M) {
 		log.Fatal("missing env: DATABASE_URL")
 	}
 
-	a.db, err = gorm.Open("postgres", dbURL)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	a.router = mux.NewRouter()
-	a.router.HandleFunc("/status", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Ready to serve requests")
-	})
+	a.setup(dbURL, port)
 
 	// start test runner
 	code := m.Run()
@@ -62,8 +51,8 @@ func checkResponseCode(t *testing.T, expected, actual int) {
 	}
 }
 
-func TestGETStatus(t *testing.T) {
-	req, _ := http.NewRequest("GET", "/status", nil)
+func TestServe(t *testing.T) {
+	req, _ := http.NewRequest("GET", "/", nil)
 	res := executeRequest(req)
 
 	checkResponseCode(t, http.StatusOK, res.Code)

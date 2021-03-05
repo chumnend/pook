@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -13,8 +12,34 @@ import (
 )
 
 type app struct {
+	addr   string
 	router *mux.Router
 	db     *gorm.DB
+}
+
+func (a *app) setup(dbURL string, port string) {
+	var err error
+
+	// connect database
+	a.db, err = gorm.Open("postgres", dbURL)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// setup api routes
+	a.router = mux.NewRouter().StrictSlash(true)
+
+	// serve react ui on catchall route
+	a.router.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "./build/index.html")
+	})
+
+	a.addr = ":" + port
+}
+
+func (a *app) start() {
+	log.Println("Listening on " + a.addr)
+	log.Fatal(http.ListenAndServe(a.addr, a.router))
 }
 
 func main() {
@@ -38,26 +63,6 @@ func main() {
 
 	// create app instance
 	a := new(app)
-
-	// connect database
-	a.db, err = gorm.Open("postgres", dbURL)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// setup api routes
-	a.router = mux.NewRouter().StrictSlash(true)
-	a.router.HandleFunc("/api/status", statusHandler).Methods("GET")
-
-	// serve react ui
-	a.router.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "./build/index.html")
-	})
-
-	log.Println("Listening on port " + port)
-	log.Fatal(http.ListenAndServe(":"+port, a.router))
-}
-
-func statusHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Ready to serve requests")
+	a.setup(dbURL, port)
+	a.start()
 }
