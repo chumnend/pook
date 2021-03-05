@@ -16,11 +16,6 @@ serve:
 	@echo "Starting server..."
 	@./bin/main
 
-.PHONY: test
-test:
-	@echo "Running tests..."
-	@go test
-
 .PHONY: clean
 clean:
 	@echo "Cleaning..."

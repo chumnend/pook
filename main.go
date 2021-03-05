@@ -45,13 +45,14 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// setup routes
+	// setup api routes
 	a.router = mux.NewRouter().StrictSlash(true)
-	a.router.HandleFunc("/status", statusHandler).Methods("GET")
+	a.router.HandleFunc("/api/status", statusHandler).Methods("GET")
 
 	// serve react ui
-	fs := http.FileServer(http.Dir("./build"))
-	a.router.PathPrefix("/").Handler(fs)
+	a.router.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "./build/index.html")
+	})
 
 	log.Println("Listening on port " + port)
 	log.Fatal(http.ListenAndServe(":"+port, a.router))
