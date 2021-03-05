@@ -1,43 +1,12 @@
 package main
 
 import (
-	"fmt"
 	"log"
-	"net/http"
 	"os"
 
-	"github.com/gorilla/mux"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"github.com/chumnend/pook/web"
 	"github.com/joho/godotenv"
 )
-
-type app struct {
-	addr   string
-	router *mux.Router
-	db     *gorm.DB
-}
-
-func (a *app) setup(dbURL string, port string) {
-	var err error
-
-	// connect database
-	a.db, err = gorm.Open("postgres", dbURL)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// setup api routes
-	a.router = mux.NewRouter().StrictSlash(true)
-	a.router.HandleFunc("/status", statusHandler)
-
-	a.addr = ":" + port
-}
-
-func (a *app) start() {
-	log.Println("Listening on " + a.addr)
-	log.Fatal(http.ListenAndServe(a.addr, a.router))
-}
 
 func main() {
 	var err error
@@ -59,11 +28,6 @@ func main() {
 	}
 
 	// create app instance
-	a := new(app)
-	a.setup(dbURL, port)
-	a.start()
-}
-
-func statusHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Ready to serve requests")
+	app := web.NewApp(dbURL, port)
+	app.Start()
 }
