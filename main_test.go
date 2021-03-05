@@ -52,7 +52,7 @@ func checkResponseCode(t *testing.T, expected, actual int) {
 }
 
 func TestServe(t *testing.T) {
-	req, _ := http.NewRequest("GET", "/", nil)
+	req, _ := http.NewRequest("GET", "/status", nil)
 	res := executeRequest(req)
 
 	checkResponseCode(t, http.StatusOK, res.Code)

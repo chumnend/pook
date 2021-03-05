@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -28,11 +29,7 @@ func (a *app) setup(dbURL string, port string) {
 
 	// setup api routes
 	a.router = mux.NewRouter().StrictSlash(true)
-
-	// serve react ui on catchall route
-	a.router.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "./build/index.html")
-	})
+	a.router.HandleFunc("/status", statusHandler)
 
 	a.addr = ":" + port
 }
@@ -65,4 +62,8 @@ func main() {
 	a := new(app)
 	a.setup(dbURL, port)
 	a.start()
+}
+
+func statusHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Ready to serve requests")
 }
