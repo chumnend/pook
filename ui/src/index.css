@@ -1,0 +1,10 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100vw;
+  height: auto;
+  font-size: 100%;
+}
