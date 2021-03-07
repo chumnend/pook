@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/chumnend/pook/web"
+	"github.com/chumnend/pook/server"
 	"github.com/joho/godotenv"
 )
 
@@ -28,6 +28,6 @@ func main() {
 	}
 
 	// create app instance
-	app := web.NewApp(dbURL, port)
-	app.Start()
+	s := server.New(dbURL, port)
+	s.Start()
 }

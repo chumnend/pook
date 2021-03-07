@@ -7,11 +7,11 @@ import (
 	"os"
 	"testing"
 
-	"github.com/chumnend/pook/web"
+	"github.com/chumnend/pook/server"
 	"github.com/joho/godotenv"
 )
 
-var app *web.App
+var s *server.Server
 
 func TestMain(m *testing.M) {
 	// initialize app
@@ -32,7 +32,7 @@ func TestMain(m *testing.M) {
 		log.Fatal("missing env: DATABASE_URL")
 	}
 
-	app = web.NewApp(dbURL, port)
+	s = server.New(dbURL, port)
 
 	// start test runner
 	code := m.Run()
@@ -41,7 +41,7 @@ func TestMain(m *testing.M) {
 
 func executeRequest(req *http.Request) *httptest.ResponseRecorder {
 	rr := httptest.NewRecorder()
-	app.Router.ServeHTTP(rr, req)
+	s.Router.ServeHTTP(rr, req)
 
 	return rr
 }
