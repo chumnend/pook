@@ -21,5 +21,5 @@ start:
 .PHONY: clean
 clean:
 	@echo "Cleaning..."
-	@rm -rf bin
+	@rm -rf bin ui/build
 	@echo "Clean complete."
