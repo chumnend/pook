@@ -41,7 +41,7 @@ func New(dbURL string, port string) *Server {
 
 	// ui routes
 	spa := spaHandler{staticPath: "ui/build", indexPath: "index.html"}
-	server.Router.PathPrefix("/").Handler(spa)
+	server.Router.NotFoundHandler = spa
 
 	// define running address of server
 	server.Addr = ":" + port
