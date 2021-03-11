@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/chumnend/pook/server"
@@ -49,6 +50,17 @@ func executeRequest(req *http.Request) *httptest.ResponseRecorder {
 func checkResponseCode(t *testing.T, expected, actual int) {
 	if expected != actual {
 		t.Errorf("Expected response code %d. Got %d\n.", expected, actual)
+	}
+}
+
+func TestSpaHandler(t *testing.T) {
+	req, _ := http.NewRequest("GET", "/", nil)
+	res := executeRequest(req)
+
+	checkResponseCode(t, http.StatusOK, res.Code)
+
+	if body := res.Body.String(); !strings.Contains(body, "doctype html") {
+		t.Errorf("Expected string to contain html. Got %s", body)
 	}
 }
 
