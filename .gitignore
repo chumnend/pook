@@ -4,6 +4,3 @@
 # binaries
 *.exe
 /bin
-
-# production
-/build
