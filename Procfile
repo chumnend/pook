@@ -1,1 +1,1 @@
-web: bin/pook
+web: ./run.sh
