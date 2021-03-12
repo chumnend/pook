@@ -14,39 +14,35 @@ import (
 
 // Server struct declaration
 type Server struct {
-	Addr       string
-	Router     *mux.Router
-	DB         *gorm.DB
-	FileServer *http.Handler
+	Addr   string
+	Router *mux.Router
+	DB     *gorm.DB
 }
 
 // New creates and setups up a Server struct
 func New(dbURL string, port string) *Server {
-	var err error
-
-	server := new(Server)
-
 	// connect database
-	server.DB, err = gorm.Open("postgres", dbURL)
+	db, err := gorm.Open("postgres", dbURL)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// setup router
-	server.Router = mux.NewRouter().StrictSlash(true)
+	router := mux.NewRouter().StrictSlash(true)
 
 	// api routes
-	api := server.Router.PathPrefix("/api/v1").Subrouter()
+	api := router.PathPrefix("/api/v1").Subrouter()
 	api.HandleFunc("/status", statusHandler)
 
 	// ui routes
 	spa := spaHandler{staticPath: "ui/build", indexPath: "index.html"}
-	server.Router.NotFoundHandler = spa
+	router.NotFoundHandler = spa
 
-	// define running address of server
-	server.Addr = ":" + port
-
-	return server
+	return &Server{
+		Addr:   ":" + port,
+		Router: router,
+		DB:     db,
+	}
 }
 
 // Start makes the server listen on given port
