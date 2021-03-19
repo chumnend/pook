@@ -26,15 +26,16 @@ func New(dbURL string, port string) *Server {
 	if err != nil {
 		log.Fatal(err)
 	}
+	db.AutoMigrate(&User{})
 
 	// setup router
 	router := mux.NewRouter().StrictSlash(true)
 
 	// api routes
-	api := router.PathPrefix("/api/v1").Subrouter()
+	api := router.PathPrefix("/api").Subrouter()
 	api.HandleFunc("/status", statusHandler)
 
-	// ui routes
+	// serve react files
 	spa := spaHandler{staticPath: "react/build", indexPath: "index.html"}
 	router.NotFoundHandler = spa
 

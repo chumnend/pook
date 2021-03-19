@@ -65,7 +65,7 @@ func TestSpaHandler(t *testing.T) {
 }
 
 func TestStatusHandler(t *testing.T) {
-	req, _ := http.NewRequest("GET", "/api/v1/status", nil)
+	req, _ := http.NewRequest("GET", "/api/status", nil)
 	res := executeRequest(req)
 
 	checkResponseCode(t, http.StatusOK, res.Code)
