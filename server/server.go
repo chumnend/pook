@@ -35,7 +35,7 @@ func New(dbURL string, port string) *Server {
 	api.HandleFunc("/status", statusHandler)
 
 	// ui routes
-	spa := spaHandler{staticPath: "ui/build", indexPath: "index.html"}
+	spa := spaHandler{staticPath: "react/build", indexPath: "index.html"}
 	router.NotFoundHandler = spa
 
 	return &Server{
