@@ -2,28 +2,23 @@ package server
 
 import (
 	"errors"
+	"time"
 
 	"github.com/jinzhu/gorm"
 )
 
 // User DB Model
 type User struct {
-	gorm.Model
-
-	Username string `gorm:"unique,not null" json:"username"`
-	Email    string `gorm:"unique,not null" json:"email"`
-	Password string `gorm:"not null" json:"password"`
+	ID        uint `gorm:"primaryKey"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt *time.Time `gorm:"index"`
+	Username  string     `gorm:"unique,not null" json:"username"`
+	Email     string     `gorm:"unique,not null" json:"email"`
+	Password  string     `gorm:"not null" json:"password"`
 }
 
 func listUsers(db *gorm.DB) error {
-	return errors.New("Not Implemented")
-}
-
-func hashPassword(password string) error {
-	return errors.New("Not Implemented")
-}
-
-func checkPassword(password string) error {
 	return errors.New("Not Implemented")
 }
 

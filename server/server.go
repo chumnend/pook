@@ -21,29 +21,34 @@ type Server struct {
 
 // New creates and setups up a Server struct
 func New(dbURL string, port string) *Server {
+	server := new(Server)
+	var err error
+
 	// connect database
-	db, err := gorm.Open("postgres", dbURL)
+	server.DB, err = gorm.Open("postgres", dbURL)
 	if err != nil {
 		log.Fatal(err)
 	}
-	db.AutoMigrate(&User{})
+
+	// migrate schema
+	server.DB.AutoMigrate(&User{})
 
 	// setup router
-	router := mux.NewRouter().StrictSlash(true)
+	server.Router = mux.NewRouter().StrictSlash(true)
 
 	// api routes
-	api := router.PathPrefix("/api").Subrouter()
+	api := server.Router.PathPrefix("/api").Subrouter()
 	api.HandleFunc("/status", statusHandler)
 
-	// serve react files
-	spa := spaHandler{staticPath: "react/build", indexPath: "index.html"}
-	router.NotFoundHandler = spa
-
-	return &Server{
-		Addr:   ":" + port,
-		Router: router,
-		DB:     db,
+	// serve react files on catchall handler
+	server.Router.NotFoundHandler = spaHandler{
+		staticPath: "react/build",
+		indexPath:  "index.html",
 	}
+
+	server.Addr = ":" + port
+
+	return server
 }
 
 // Start makes the server listen on given port

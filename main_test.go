@@ -53,6 +53,10 @@ func checkResponseCode(t *testing.T, expected, actual int) {
 	}
 }
 
+func addTestUser() {
+	s.DB.Exec("INSERT INTO users(username, email, password) VALUES($1, $2, $3)", "tester", "tester@example.com", "tester")
+}
+
 func TestSpaHandler(t *testing.T) {
 	req, _ := http.NewRequest("GET", "/", nil)
 	res := executeRequest(req)
