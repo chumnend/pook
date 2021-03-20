@@ -18,8 +18,8 @@ type User struct {
 	Password  string     `gorm:"not null" json:"password"`
 }
 
-func listUsers(db *gorm.DB) error {
-	return errors.New("Not Implemented")
+func listUsers(db *gorm.DB) ([]User, error) {
+	return nil, errors.New("Not Implemented")
 }
 
 func (user *User) createUser(db *gorm.DB) error {
