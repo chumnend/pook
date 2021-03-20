@@ -181,6 +181,10 @@ func TestUpdateUserHandler(t *testing.T) {
 	if m["email"] == original["email"] {
 		t.Errorf("Expected the email to change from '%v' to '%v'. Got '%v'", original["email"], m["email"], m["email"])
 	}
+
+	if m["password"] != original["password"] {
+		t.Errorf("Expected the password to remain the same (%v). Got %v", original["password"], m["password"])
+	}
 }
 
 func TestDeleteUserHandler(t *testing.T) {
