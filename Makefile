@@ -3,7 +3,7 @@ all: build serve
 .PHONY: build
 build:
 	@echo "Building..."
-	@cd ui && npm run build
+	@cd react && npm run build
 	@mkdir -p bin/
 	@cd bin/ && go build ../main.go
 	@echo "Build complete."
