@@ -23,12 +23,9 @@ type Server struct {
 }
 
 // New creates and setups up a Server struct
-func New() *Server {
-	return &Server{}
-}
+func New(dbURL string, port string, secret string) *Server {
+	s := &Server{}
 
-// Initialize the server
-func (s *Server) Initialize(dbURL string, port string, secret string) {
 	var err error
 
 	// setup address
@@ -65,10 +62,12 @@ func (s *Server) Initialize(dbURL string, port string, secret string) {
 		indexPath:  "index.html",
 	}
 	s.Router.NotFoundHandler = spa
+
+	return s
 }
 
 // Run makes the server listen on given port
-func (s *Server) Run() {
+func (s *Server) Serve() {
 	log.Println("Listening on " + s.Addr)
 	log.Fatal(http.ListenAndServe(s.Addr, s.Router))
 }

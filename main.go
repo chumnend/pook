@@ -33,7 +33,6 @@ func main() {
 	}
 
 	// create app instance
-	s := server.New()
-	s.Initialize(dbURL, port, secret)
-	s.Run()
+	s := server.New(dbURL, port, secret)
+	s.Serve()
 }
