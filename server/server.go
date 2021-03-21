@@ -19,6 +19,7 @@ type Server struct {
 	Addr   string
 	Router *mux.Router
 	DB     *gorm.DB
+	Secret string
 }
 
 // New creates and setups up a Server struct
@@ -27,11 +28,14 @@ func New() *Server {
 }
 
 // Initialize the server
-func (s *Server) Initialize(dbURL string, port string) {
+func (s *Server) Initialize(dbURL string, port string, secret string) {
 	var err error
 
 	// setup address
 	s.Addr = ":" + port
+
+	// setup secret key
+	s.Secret = secret
 
 	// connect database
 	s.DB, err = gorm.Open("postgres", dbURL)
@@ -48,6 +52,7 @@ func (s *Server) Initialize(dbURL string, port string) {
 	// api routes
 	api := s.Router.PathPrefix("/api").Subrouter()
 	api.HandleFunc("/status", s.statusHandler)
+
 	api.HandleFunc("/v1/users", s.listUsersHandler).Methods("GET")
 	api.HandleFunc("/v1/user", s.createUserHandler).Methods("POST")
 	api.HandleFunc("/v1/user/{id:[0-9]+}", s.getUserHandler).Methods("GET")

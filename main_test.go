@@ -35,8 +35,13 @@ func TestMain(m *testing.M) {
 		log.Fatal("missing env: DATABASE_URL")
 	}
 
+	secret := os.Getenv("SECRET_KEY")
+	if secret == "" {
+		log.Fatal("missing env: SECRET_KEY")
+	}
+
 	s = server.New()
-	s.Initialize(dbURL, port)
+	s.Initialize(dbURL, port, secret)
 
 	// start test runner
 	code := m.Run()

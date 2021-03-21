@@ -27,8 +27,13 @@ func main() {
 		log.Fatal("missing env: DATABASE_URL")
 	}
 
+	secret := os.Getenv("SECRET_KEY")
+	if secret == "" {
+		log.Fatal("missing env: SECRET_KEY")
+	}
+
 	// create app instance
 	s := server.New()
-	s.Initialize(dbURL, port)
+	s.Initialize(dbURL, port, secret)
 	s.Run()
 }
