@@ -61,7 +61,7 @@ func (s *Server) Initialize(dbURL string, port string, secret string) {
 
 	// serve react files on catchall handler
 	spa := spaHandler{
-		staticPath: "react/build",
+		staticPath: "client/build",
 		indexPath:  "index.html",
 	}
 	s.Router.NotFoundHandler = spa
