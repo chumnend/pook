@@ -1,25 +1,26 @@
 all: build serve
 
 .PHONY: build
-build:
+build: build-react build-go
+
+.PHONY: build-react
+build-react:
 	@echo "Building..."
-	@cd client && npm run build
+	@cd web && npm run build
+	@mv web/build .
+
+.PHONY: build-go
+build-go:
 	@mkdir -p bin/
-	@cd bin/ && go build ../main.go
-	@echo "Build complete."
+	@cd bin/ && go build ../cmd/pook/main.go
 
 .PHONY: serve
 serve:
 	@echo "Starting server..."
 	@./bin/main
 
-.PHONY: start
-start:
-	@echo "Starting server..."
-	@go run main.go
-
 .PHONY: clean
 clean:
 	@echo "Cleaning..."
-	@rm -rf bin client/build
+	@rm -rf bin build
 	@echo "Clean complete."
