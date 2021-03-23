@@ -6,13 +6,15 @@ build: build-react build-go
 .PHONY: build-react
 build-react:
 	@echo "Building..."
+	@if [ ! -d "web/node_modules" ]; then \
+  	cd web && npm install; \
+	fi
 	@cd web && npm run build
-	@mv web/build .
 
 .PHONY: build-go
 build-go:
 	@mkdir -p bin/
-	@cd bin/ && go build ../cmd/pook/main.go
+	@cd bin/ && go build ../main.go
 
 .PHONY: serve
 serve:
@@ -22,5 +24,5 @@ serve:
 .PHONY: clean
 clean:
 	@echo "Cleaning..."
-	@rm -rf bin build
+	@rm -rf bin web/build
 	@echo "Clean complete."
