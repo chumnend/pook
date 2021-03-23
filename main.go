@@ -4,26 +4,19 @@ import (
 	"log"
 	"os"
 
-	"github.com/chumnend/pook/server"
+	"github.com/chumnend/pook/internal/pook"
 	"github.com/joho/godotenv"
 )
 
 func main() {
-	var err error
-
 	// load environment variables
-	err = godotenv.Load()
+	err := godotenv.Load()
 	if err != nil {
-		log.Println("Error loading .env file")
+		log.Println(".env file not found")
 	}
 
 	dbURL := os.Getenv("DATABASE_URL")
 	if dbURL == "" {
-		log.Fatal("missing env: DATABASE_URL")
-	}
-
-	port := os.Getenv("PORT")
-	if port == "" {
 		log.Fatal("missing env: DATABASE_URL")
 	}
 
@@ -32,7 +25,11 @@ func main() {
 		log.Fatal("missing env: SECRET_KEY")
 	}
 
-	// create app instance
-	s := server.New(dbURL, port, secret)
-	s.Serve()
+	port := os.Getenv("PORT")
+	if port == "" {
+		log.Fatal("missing env: DATABASE_URL")
+	}
+
+	s := pook.NewServer()
+	s.Serve(":" + port)
 }
