@@ -6,7 +6,13 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/chumnend/pook/internal/user/domain"
+	"github.com/chumnend/pook/internal/user/entity"
+	"github.com/chumnend/pook/internal/user/handler"
+	"github.com/chumnend/pook/internal/user/repository"
 	"github.com/gorilla/mux"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres" // Gorm Postgres Driver
 )
 
 // Server struct declaration
@@ -15,8 +21,19 @@ type Server struct {
 }
 
 // NewServer returns an initialize Server struct
-func NewServer() *Server {
+func NewServer(connectionURL string) *Server {
+	db, err := gorm.Open("postgres", connectionURL)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	db.AutoMigrate(&domain.User{})
+
+	userRepo := repository.NewUserRepository(db)
+	userEntity := entity.NewUserEntity(userRepo)
+
 	router := mux.NewRouter().StrictSlash(true)
+	handler.NewUserHandler(router, userEntity)
 
 	// serve react files on catchall handler
 	spa := spaHandler{
