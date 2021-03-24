@@ -36,7 +36,7 @@ func TestMain(m *testing.M) {
 		log.Fatal("missing env: DATABASE_URL")
 	}
 
-	s = pook.NewServer()
+	s = pook.NewServer(dbURL)
 
 	// start test runner
 	code := m.Run()
@@ -56,13 +56,33 @@ func checkResponseCode(t *testing.T, expected, actual int) {
 	}
 }
 
+func addTestUser() {
+	s.DB.Exec("INSERT INTO users(email, password) VALUES($1, $2, $3)", "tester@example.com", "tester")
+}
+
+func clearTable() {
+	s.DB.Exec("DELETE FROM users")
+	s.DB.Exec("ALTER SEQUENCE users_id_seq RESTART WITH 1")
+}
+
 func TestSpaHandler(t *testing.T) {
 	request, _ := http.NewRequest("GET", "/", nil)
-	res := executeRequest(request)
+	response := executeRequest(request)
 
-	checkResponseCode(t, http.StatusOK, res.Code)
+	checkResponseCode(t, http.StatusOK, response.Code)
 
-	if body := res.Body.String(); !strings.Contains(body, "doctype html") {
+	if body := response.Body.String(); !strings.Contains(body, "doctype html") {
 		t.Errorf("Expected string to contain html. Got %s", body)
+	}
+}
+
+func TestUserPingHandler(t *testing.T) {
+	request, _ := http.NewRequest("GET", "/api/v1/users/ping", nil)
+	response := executeRequest(request)
+
+	checkResponseCode(t, http.StatusOK, response.Code)
+
+	if body := response.Body.String(); !strings.Contains(body, "User API ready to serve requests") {
+		t.Errorf("Expected string `User API ready to serve requests`. Got %s", body)
 	}
 }

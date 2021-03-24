@@ -6,10 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/chumnend/pook/internal/user/domain"
-	"github.com/chumnend/pook/internal/user/entity"
-	"github.com/chumnend/pook/internal/user/handler"
-	"github.com/chumnend/pook/internal/user/repository"
+	"github.com/chumnend/pook/internal/user"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres" // Gorm Postgres Driver
@@ -18,22 +15,22 @@ import (
 // Server struct declaration
 type Server struct {
 	Router *mux.Router
+	DB     *gorm.DB
 }
 
 // NewServer returns an initialize Server struct
 func NewServer(connectionURL string) *Server {
+	// setup database connection
 	db, err := gorm.Open("postgres", connectionURL)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	db.AutoMigrate(&domain.User{})
-
-	userRepo := repository.NewUserRepository(db)
-	userEntity := entity.NewUserEntity(userRepo)
-
+	// create router
 	router := mux.NewRouter().StrictSlash(true)
-	handler.NewUserHandler(router, userEntity)
+
+	// attach api
+	user.Attach(router, db)
 
 	// serve react files on catchall handler
 	spa := spaHandler{
@@ -44,6 +41,7 @@ func NewServer(connectionURL string) *Server {
 
 	return &Server{
 		Router: router,
+		DB:     db,
 	}
 }
 
