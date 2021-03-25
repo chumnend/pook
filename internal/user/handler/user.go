@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -35,10 +36,26 @@ func (u *UserHandler) Ping(w http.ResponseWriter, r *http.Request) {
 
 // FetchUsers returns all users in db
 func (u *UserHandler) FetchUsers(w http.ResponseWriter, r *http.Request) {
-	utils.ResponseError(w, http.StatusNotImplemented, "Not yet implemented")
+	users, err := u.User.Fetch(context.TODO())
+	if err != nil {
+		utils.ResponseError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	utils.ResponseSuccess(w, http.StatusOK, users)
 }
 
 // GetUserByID returns a user by id passed in request
 func (u *UserHandler) GetUserByID(w http.ResponseWriter, r *http.Request) {
-	utils.ResponseError(w, http.StatusNotImplemented, "Not yet implemented")
+	vars := mux.Vars(r)
+
+	id := vars["id"]
+
+	user, err := u.User.GetByID(context.TODO(), id)
+	if err != nil {
+		utils.ResponseError(w, http.StatusNotFound, "User not found")
+		return
+	}
+
+	utils.ResponseSuccess(w, http.StatusOK, user)
 }

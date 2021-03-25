@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -102,6 +103,17 @@ func TestGetEmptyUsers(t *testing.T) {
 
 	checkResponseCode(t, http.StatusOK, response.Code)
 	checkIfSpa(t, response)
+
+	var m map[string]interface{}
+	json.Unmarshal(response.Body.Bytes(), &m)
+
+	if !m["success"].(bool) {
+		t.Errorf("Expected success to be true. Got %v.", m["success"])
+	}
+
+	if len(m["payload"].([]interface{})) != 0 {
+		t.Errorf("Expected empty array. Got %v.", m["payload"])
+	}
 }
 
 func TestGetAllUsers(t *testing.T) {
@@ -113,6 +125,17 @@ func TestGetAllUsers(t *testing.T) {
 
 	checkResponseCode(t, http.StatusOK, response.Code)
 	checkIfSpa(t, response)
+
+	var m map[string]interface{}
+	json.Unmarshal(response.Body.Bytes(), &m)
+
+	if !m["success"].(bool) {
+		t.Errorf("Expected success to be true. Got %v.", m["success"])
+	}
+
+	if len(m["payload"].([]interface{})) != 1 {
+		t.Errorf("Expected 1 user in array. Got %v.", m["payload"])
+	}
 }
 
 func TestGetNonExistentUser(t *testing.T) {
@@ -123,6 +146,17 @@ func TestGetNonExistentUser(t *testing.T) {
 
 	checkResponseCode(t, http.StatusNotFound, response.Code)
 	checkIfSpa(t, response)
+
+	var m map[string]interface{}
+	json.Unmarshal(response.Body.Bytes(), &m)
+
+	if m["success"].(bool) {
+		t.Errorf("Expected success to be false. Got %v.", m["success"])
+	}
+
+	if m["message"] != "User not found" {
+		t.Errorf("Expected 'message' to be set to 'User not found'. Got '%v'.", m["message"])
+	}
 }
 
 func TestGetUser(t *testing.T) {
@@ -134,4 +168,15 @@ func TestGetUser(t *testing.T) {
 
 	checkResponseCode(t, http.StatusOK, response.Code)
 	checkIfSpa(t, response)
+
+	var m map[string]interface{}
+	json.Unmarshal(response.Body.Bytes(), &m)
+
+	if !m["success"].(bool) {
+		t.Errorf("Expected success to be true. Got %v.", m["success"])
+	}
+
+	if m["payload"] == "" {
+		t.Errorf("Expected 'payload' to be contain user. Got %v.", m["payload"])
+	}
 }

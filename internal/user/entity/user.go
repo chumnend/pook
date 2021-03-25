@@ -20,7 +20,7 @@ func NewUserEntity(repo domain.UserRepository) *UserEntity {
 
 // Fetch returns a list of Users
 func (u *UserEntity) Fetch(ctx context.Context) ([]domain.User, error) {
-	users, err := u.Fetch(ctx)
+	users, err := u.Repo.Fetch(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -30,7 +30,7 @@ func (u *UserEntity) Fetch(ctx context.Context) ([]domain.User, error) {
 
 // GetByID returns a User
 func (u *UserEntity) GetByID(ctx context.Context, id string) (domain.User, error) {
-	user, err := u.GetByID(ctx, id)
+	user, err := u.Repo.GetByID(ctx, id)
 	if err != nil {
 		return user, err
 	}

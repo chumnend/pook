@@ -7,7 +7,12 @@ import (
 
 // ResponseSuccess returns passed payload in JSON format
 func ResponseSuccess(w http.ResponseWriter, code int, payload interface{}) {
-	response, _ := json.Marshal(payload)
+	jsonObj := map[string]interface{}{
+		"success": true,
+		"payload": payload,
+	}
+
+	response, _ := json.Marshal(jsonObj)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("X-Content-Type-Options", "nosniff")
@@ -17,5 +22,15 @@ func ResponseSuccess(w http.ResponseWriter, code int, payload interface{}) {
 
 // ResponseError returns passed error message in JSON format
 func ResponseError(w http.ResponseWriter, code int, message string) {
-	ResponseSuccess(w, code, map[string]string{"error": message})
+	jsonObj := map[string]interface{}{
+		"success": false,
+		"message": message,
+	}
+
+	response, _ := json.Marshal(jsonObj)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("X-Content-Type-Options", "nosniff")
+	w.WriteHeader(code)
+	w.Write(response)
 }
