@@ -22,7 +22,10 @@ func NewUserRepository(conn *gorm.DB) *UserRepository {
 // Fetch returns list of Users
 func (u *UserRepository) Fetch(ctx context.Context) ([]domain.User, error) {
 	var users []domain.User
-	u.Conn.Find(&users)
+	err := u.Conn.Find(&users).Error
+	if err != nil {
+		return users, err
+	}
 
 	return users, nil
 }
@@ -30,7 +33,10 @@ func (u *UserRepository) Fetch(ctx context.Context) ([]domain.User, error) {
 // GetByID returns a User
 func (u *UserRepository) GetByID(ctx context.Context, id string) (domain.User, error) {
 	var user domain.User
-	u.Conn.Where("id = ?", id).First(&user)
+	err := u.Conn.Where("id = ?", id).First(&user).Error
+	if err != nil {
+		return user, err
+	}
 
 	return user, nil
 }
