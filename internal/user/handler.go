@@ -1,37 +1,28 @@
-package handler
+package user
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/chumnend/pook/internal/utils"
-
-	"github.com/chumnend/pook/internal/user/domain"
 	"github.com/gorilla/mux"
 )
 
 // UserHandler struct declaration
 type UserHandler struct {
-	User domain.UserEntity
+	User UserUsecase
 }
 
-// NewUserHandler creates new UserHandler
-func NewUserHandler(r *mux.Router, user domain.UserEntity) *UserHandler {
+// AddUserHandler creates new UserHandler
+func AddUserHandler(r *mux.Router, user UserUsecase) *UserHandler {
 	handler := &UserHandler{
 		User: user,
 	}
 
-	r.HandleFunc("/api/v1/users/ping", handler.Ping).Methods("GET")
 	r.HandleFunc("/api/v1/users", handler.FetchUsers).Methods("GET")
 	r.HandleFunc("/api/v1/user/{id:[0-9]+}", handler.GetUserByID).Methods("GET")
 
 	return handler
-}
-
-// Ping is a health check for the user routes
-func (u *UserHandler) Ping(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "User API ready to serve requests")
 }
 
 // FetchUsers returns all users in db

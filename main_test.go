@@ -83,18 +83,6 @@ func TestSpaHandler(t *testing.T) {
 	}
 }
 
-func TestPingUser(t *testing.T) {
-	request, _ := http.NewRequest("GET", "/api/v1/users/ping", nil)
-	response := executeRequest(request)
-
-	checkResponseCode(t, http.StatusOK, response.Code)
-	checkIfSpa(t, response)
-
-	if body := response.Body.String(); !strings.Contains(body, "User API ready to serve requests") {
-		t.Errorf("Expected string `User API ready to serve requests`. Got %s", body)
-	}
-}
-
 func TestGetEmptyUsers(t *testing.T) {
 	clearTable()
 
