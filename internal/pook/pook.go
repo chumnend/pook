@@ -6,6 +6,9 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/chumnend/pook/internal/book"
+	"github.com/chumnend/pook/internal/task"
+	"github.com/chumnend/pook/internal/user"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres" // Gorm Postgres Driver
@@ -25,8 +28,17 @@ func NewApp(connectionURL string) *App {
 		log.Fatal(err)
 	}
 
+	// migrate models to db
+	db.AutoMigrate(user.User{})
+	db.AutoMigrate(book.Book{})
+	db.AutoMigrate(task.Task{})
+
 	// create router
 	router := mux.NewRouter().StrictSlash(true)
+
+	// attach api routes
+	user.AttachHandler(router, db)
+	task.AttachHandler(router, db)
 
 	// serve react files on catchall handler
 	spa := spaHandler{
