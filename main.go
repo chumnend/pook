@@ -30,6 +30,6 @@ func main() {
 		log.Fatal("missing env: DATABASE_URL")
 	}
 
-	s := pook.NewServer(dbURL)
-	s.Serve(":" + port)
+	a := pook.NewApp(dbURL)
+	a.Serve(":" + port)
 }

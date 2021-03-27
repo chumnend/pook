@@ -6,20 +6,19 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/chumnend/pook/internal/user"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres" // Gorm Postgres Driver
 )
 
-// Server struct declaration
-type Server struct {
-	Router *mux.Router
+// App struct declaration
+type App struct {
 	DB     *gorm.DB
+	Router *mux.Router
 }
 
-// NewServer returns an initialize Server struct
-func NewServer(connectionURL string) *Server {
+// NewApp returns an initialize App struct
+func NewApp(connectionURL string) *App {
 	// setup database connection
 	db, err := gorm.Open("postgres", connectionURL)
 	if err != nil {
@@ -29,9 +28,6 @@ func NewServer(connectionURL string) *Server {
 	// create router
 	router := mux.NewRouter().StrictSlash(true)
 
-	// attach api
-	user.Attach(router, db)
-
 	// serve react files on catchall handler
 	spa := spaHandler{
 		staticPath: "web/build",
@@ -39,14 +35,14 @@ func NewServer(connectionURL string) *Server {
 	}
 	router.NotFoundHandler = spa
 
-	return &Server{
+	return &App{
 		Router: router,
 		DB:     db,
 	}
 }
 
-// Serve sets the Server to listen on given address
-func (s *Server) Serve(addr string) {
+// Serve sets the App to listen on given address
+func (s *App) Serve(addr string) {
 	log.Println("Listening on " + addr)
 	log.Fatal(http.ListenAndServe(addr, s.Router))
 }
