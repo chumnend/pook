@@ -18,11 +18,11 @@ type Handler struct {
 func AttachHandler(r *mux.Router, db *gorm.DB) {
 	h := &Handler{DB: db}
 
-	r.HandleFunc("/api/v1/tasks", h.ListTasks).Methods("GET")
-	r.HandleFunc("/api/v1/tasks/{id:[0-9]+}", h.CreateTask).Methods("POST")
-	r.HandleFunc("/api/v1/tasks/{id:[0-9]+}", h.GetTask).Methods("GET")
-	r.HandleFunc("/api/v1/tasks/{id:[0-9]+}", h.UpdateTask).Methods("PUT")
-	r.HandleFunc("/api/v1/tasks/{id:[0-9]+}", h.DeleteTask).Methods("DELETE")
+	r.HandleFunc("/tasks", h.ListTasks).Methods("GET")
+	r.HandleFunc("/task/{id:[0-9]+}", h.CreateTask).Methods("POST")
+	r.HandleFunc("/task/{id:[0-9]+}", h.GetTask).Methods("GET")
+	r.HandleFunc("/task/{id:[0-9]+}", h.UpdateTask).Methods("PUT")
+	r.HandleFunc("/task/{id:[0-9]+}", h.DeleteTask).Methods("DELETE")
 }
 
 // ListTasks returns a list of tasks

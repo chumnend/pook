@@ -18,11 +18,11 @@ type Handler struct {
 func AttachHandler(r *mux.Router, db *gorm.DB) {
 	h := &Handler{DB: db}
 
-	r.HandleFunc("/api/v1/Books", h.ListBooks).Methods("GET")
-	r.HandleFunc("/api/v1/Books/{id:[0-9]+}", h.CreateBook).Methods("POST")
-	r.HandleFunc("/api/v1/Books/{id:[0-9]+}", h.GetBook).Methods("GET")
-	r.HandleFunc("/api/v1/Books/{id:[0-9]+}", h.UpdateBook).Methods("PUT")
-	r.HandleFunc("/api/v1/Books/{id:[0-9]+}", h.DeleteBook).Methods("DELETE")
+	r.HandleFunc("/books", h.ListBooks).Methods("GET")
+	r.HandleFunc("/book/{id:[0-9]+}", h.CreateBook).Methods("POST")
+	r.HandleFunc("/book/{id:[0-9]+}", h.GetBook).Methods("GET")
+	r.HandleFunc("/book/{id:[0-9]+}", h.UpdateBook).Methods("PUT")
+	r.HandleFunc("/book/{id:[0-9]+}", h.DeleteBook).Methods("DELETE")
 }
 
 // ListBooks returns a list of Books

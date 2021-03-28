@@ -9,6 +9,7 @@ import (
 	"github.com/chumnend/pook/internal/book"
 	"github.com/chumnend/pook/internal/task"
 	"github.com/chumnend/pook/internal/user"
+	"github.com/chumnend/pook/internal/utils"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres" // Gorm Postgres Driver
@@ -36,9 +37,16 @@ func NewApp(connectionURL string) *App {
 	// create router
 	router := mux.NewRouter().StrictSlash(true)
 
+	// setup api subrouter
+	api := router.PathPrefix("/api/v1").Subrouter()
+	api.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		utils.RespondWithJSON(w, http.StatusOK, map[string]string{"message": "Ready to serve requests"})
+	})
+
 	// attach api routes
-	user.AttachHandler(router, db)
-	task.AttachHandler(router, db)
+	user.AttachHandler(api, db)
+	book.AttachHandler(api, db)
+	task.AttachHandler(api, db)
 
 	// serve react files on catchall handler
 	spa := spaHandler{

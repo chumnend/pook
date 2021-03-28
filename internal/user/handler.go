@@ -18,13 +18,13 @@ type Handler struct {
 func AttachHandler(r *mux.Router, db *gorm.DB) {
 	h := &Handler{DB: db}
 
-	r.HandleFunc("/api/v1/register", h.Register).Methods("POST")
-	r.HandleFunc("/api/v1/login", h.Login).Methods("POST")
+	r.HandleFunc("/register", h.Register).Methods("POST")
+	r.HandleFunc("/login", h.Login).Methods("POST")
 
-	r.HandleFunc("/api/v1/users", h.ListUsers).Methods("GET")
-	r.HandleFunc("/api/v1/user/{id:[0-9]+}", h.GetUser).Methods("GET")
-	r.HandleFunc("/api/v1/user/{id:[0-9]+}", h.UpdateUser).Methods("PUT")
-	r.HandleFunc("/api/v1/user/{id:[0-9]+}", h.DeleteUser).Methods("DELETE")
+	r.HandleFunc("/users", h.ListUsers).Methods("GET")
+	r.HandleFunc("/user/{id:[0-9]+}", h.GetUser).Methods("GET")
+	r.HandleFunc("/user/{id:[0-9]+}", h.UpdateUser).Methods("PUT")
+	r.HandleFunc("/user/{id:[0-9]+}", h.DeleteUser).Methods("DELETE")
 }
 
 // Register creates a new user and returns jwt token

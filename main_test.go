@@ -1,0 +1,79 @@
+package main
+
+import (
+	"encoding/json"
+	"log"
+	"net/http"
+	"net/http/httptest"
+	"os"
+	"strings"
+	"testing"
+
+	"github.com/chumnend/pook/internal/pook"
+	"github.com/joho/godotenv"
+)
+
+var a *pook.App
+
+func TestMain(m *testing.M) {
+	// initialize app
+	var err error
+	err = godotenv.Load()
+
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	dbURL := os.Getenv("DATABASE_TEST_URL")
+	if dbURL == "" {
+		log.Fatal("missing env: DATABASE_TEST_URL")
+	}
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		log.Fatal("missing env: DATABASE_URL")
+	}
+
+	a = pook.NewApp(dbURL)
+
+	// start test runner
+	code := m.Run()
+	os.Exit(code)
+}
+
+func executeRequest(req *http.Request) *httptest.ResponseRecorder {
+	rr := httptest.NewRecorder()
+	a.Router.ServeHTTP(rr, req)
+	return rr
+}
+
+func checkResponseCode(t *testing.T, expected, actual int) {
+	if expected != actual {
+		t.Errorf("Expected response code %d. Got %d\n.", expected, actual)
+	}
+}
+
+func TestApiHealthHandler(t *testing.T) {
+	req, _ := http.NewRequest("GET", "/api/v1/health", nil)
+	res := executeRequest(req)
+
+	checkResponseCode(t, http.StatusOK, res.Code)
+
+	var m map[string]interface{}
+	json.Unmarshal(res.Body.Bytes(), &m)
+
+	if m["message"] != "Ready to serve requests" {
+		t.Errorf("Expected 'message' to be 'Ready to serve requests'. Got '%v'.", m["message"])
+	}
+}
+
+func TestSpaHandler(t *testing.T) {
+	req, _ := http.NewRequest("GET", "/", nil)
+	res := executeRequest(req)
+
+	checkResponseCode(t, http.StatusOK, res.Code)
+
+	if body := res.Body.String(); !strings.Contains(body, "doctype html") {
+		t.Errorf("Expected string to contain html. Got %s", body)
+	}
+}
