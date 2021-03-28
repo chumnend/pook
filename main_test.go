@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -34,6 +35,11 @@ func TestMain(m *testing.M) {
 		log.Fatal("missing env: DATABASE_URL")
 	}
 
+	secret := os.Getenv("SECRET_KEY")
+	if secret == "" {
+		log.Fatal("missing env: SECRET_KEY")
+	}
+
 	a = pook.NewApp(dbURL)
 
 	// start test runner
@@ -51,6 +57,11 @@ func checkResponseCode(t *testing.T, expected, actual int) {
 	if expected != actual {
 		t.Errorf("Expected response code %d. Got %d\n.", expected, actual)
 	}
+}
+
+func clearTables() {
+	a.DB.Exec("DELETE FROM users")
+	a.DB.Exec("ALTER SEQUENCE users_id_seq RESTART WITH 1")
 }
 
 func TestApiHealthHandler(t *testing.T) {
@@ -75,5 +86,48 @@ func TestSpaHandler(t *testing.T) {
 
 	if body := res.Body.String(); !strings.Contains(body, "doctype html") {
 		t.Errorf("Expected string to contain html. Got %s", body)
+	}
+}
+
+func TestRegisterHandler(t *testing.T) {
+	clearTables()
+
+	var jsonStr = []byte(`{"email":"test@example.com", "password": "test123"}`)
+	req, _ := http.NewRequest("POST", "/api/v1/register", bytes.NewBuffer(jsonStr))
+	req.Header.Set("Content-Type", "application/json")
+	res := executeRequest(req)
+
+	checkResponseCode(t, http.StatusOK, res.Code)
+
+	var m map[string]interface{}
+	json.Unmarshal(res.Body.Bytes(), &m)
+
+	if m["token"] == "" {
+		t.Errorf("Expected 'token' to be non empty. Got %v.", m["token"])
+	}
+}
+
+func TestLoginHandler(t *testing.T) {
+	clearTables()
+
+	var jsonStr = []byte(`{"email":"test@example.com", "password": "test123"}`)
+	req, _ := http.NewRequest("POST", "/api/v1/register", bytes.NewBuffer(jsonStr))
+	req.Header.Set("Content-Type", "application/json")
+	res := executeRequest(req)
+
+	checkResponseCode(t, http.StatusOK, res.Code)
+
+	jsonStr = []byte(`{"email":"test@example.com", "password": "test123"}`)
+	req, _ = http.NewRequest("POST", "/api/v1/login", bytes.NewBuffer(jsonStr))
+	req.Header.Set("Content-Type", "application/json")
+	res = executeRequest(req)
+
+	checkResponseCode(t, http.StatusOK, res.Code)
+
+	var m map[string]interface{}
+	json.Unmarshal(res.Body.Bytes(), &m)
+
+	if m["token"] == "" {
+		t.Errorf("Expected 'token' to be non empty. Got %v.", m["token"])
 	}
 }
