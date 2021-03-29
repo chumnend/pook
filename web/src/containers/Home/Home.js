@@ -1,7 +1,7 @@
 const Home = () => {
   return (
     <div>
-      <h1>Pook: Your Personal Planning Book</h1>
+      <h2>Home</h2>
     </div>
   );
 };

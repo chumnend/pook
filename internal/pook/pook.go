@@ -37,6 +37,9 @@ func NewApp(connectionURL string) *App {
 	// create router
 	router := mux.NewRouter().StrictSlash(true)
 
+	// cors middleware
+	router.Use(cors)
+
 	// setup api subrouter
 	api := router.PathPrefix("/api/v1").Subrouter()
 	api.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
@@ -65,6 +68,16 @@ func NewApp(connectionURL string) *App {
 func (s *App) Serve(addr string) {
 	log.Println("Listening on " + addr)
 	log.Fatal(http.ListenAndServe(addr, s.Router))
+}
+
+func cors(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+		w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+
+		next.ServeHTTP(w, r)
+	})
 }
 
 type spaHandler struct {
