@@ -1,24 +1,23 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Switch, Route, Link } from 'react-router-dom';
 
-import Home from './containers/Home';
-import Landing from './containers/Landing';
-import NotFound from './containers/NotFound';
-import Register from './containers/Register';
-import Login from './containers/Login';
-import Logout from './containers/Logout';
+import { useAuth } from './context/auth';
+
+import Home from './pages/Home';
+import Landing from './pages/Landing';
+import NotFound from './pages/NotFound';
+import Register from './pages/Register';
+import Login from './pages/Login';
+import Logout from './pages/Logout';
 
 import styles from './App.module.css';
 
 const App = () => {
-  useEffect(() => {
-    const prefix = process.env.REACT_APP_API_PREFIX;
-    const url = prefix + '/health';
+  const auth = useAuth();
+  const authRef = useRef(auth);
 
-    fetch(url)
-      .then((res) => res.json())
-      .then((data) => console.log(data))
-      .catch((err) => console.error(err));
+  useEffect(() => {
+    authRef.current.getToken();
   }, []);
 
   return (
