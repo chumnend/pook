@@ -13,6 +13,7 @@ const useAuth = () => {
 
 const AuthProvider = (props) => {
   const [user, setUser] = useState(null);
+  // TODO: handle errors from auth fail
 
   const decodeToken = (token) => {
     const decoded = jwt_decode(token);
@@ -20,8 +21,6 @@ const AuthProvider = (props) => {
       id: decoded.ID,
       email: decoded.Email,
     };
-
-    console.log(decoded);
 
     setUser(user);
   };
