@@ -1,6 +1,7 @@
 import { useState, createContext, useContext } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
+import jwt_decode from 'jwt-decode';
 
 const apiPrefix = process.env.REACT_APP_API_PREFIX;
 
@@ -11,11 +12,23 @@ const useAuth = () => {
 };
 
 const AuthProvider = (props) => {
-  const [token, setToken] = useState(null);
+  const [user, setUser] = useState(null);
+
+  const parseUserFromToken = (token) => {
+    const decoded = jwt_decode(token);
+    const user = {
+      id: decoded.ID,
+      email: decoded.Email,
+    };
+
+    setUser(user);
+  };
 
   const getToken = () => {
     const token = localStorage.getItem('token');
-    setToken(token);
+    if (token != null) {
+      parseUserFromToken(token);
+    }
   };
 
   const register = async (email, password) => {
@@ -29,14 +42,15 @@ const AuthProvider = (props) => {
       const res = await axios.post(url, payload);
       const { token } = res.data;
 
+      parseUserFromToken(token);
       localStorage.setItem('token', token);
-      setToken(token);
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
       return true;
     } catch (err) {
+      setUser(null);
       localStorage.removeItem('token');
-      setToken(null);
+      delete axios.defaults.headers.common['Authorization'];
 
       return false;
     }
@@ -53,14 +67,14 @@ const AuthProvider = (props) => {
       const res = await axios.post(url, payload);
       const { token } = res.data;
 
-      setToken(token);
+      parseUserFromToken(token);
       localStorage.setItem('token', token);
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
       return true;
     } catch (err) {
+      setUser(null);
       localStorage.removeItem('token');
-      setToken(null);
       delete axios.defaults.headers.common['Authorization'];
 
       return false;
@@ -69,11 +83,11 @@ const AuthProvider = (props) => {
 
   const logout = () => {
     localStorage.removeItem('token');
-    setToken(null);
+    setUser(null);
   };
 
   const auth = {
-    token,
+    user,
     getToken,
     register,
     login,

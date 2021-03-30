@@ -56,9 +56,10 @@ func (u *User) Delete(db *gorm.DB) error {
 
 // Token struct declaration
 type Token struct {
+	*jwt.StandardClaims
+
 	ID    uint
 	Email string
-	*jwt.StandardClaims
 }
 
 // GenerateToken creates jwt token using User internal data

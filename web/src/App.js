@@ -23,10 +23,10 @@ const App = () => {
       <h1>Pook</h1>
 
       <ul>
-        {auth.token && <Link to="/logout">Logout</Link>}
+        {auth.user && <Link to="/logout">Logout</Link>}
 
-        {auth.token == null && <Link to="/register">Register</Link>}
-        {auth.token == null && <Link to="/login">Login</Link>}
+        {auth.user == null && <Link to="/register">Register</Link>}
+        {auth.user == null && <Link to="/login">Login</Link>}
       </ul>
 
       <Switch>
@@ -34,35 +34,35 @@ const App = () => {
           exact
           path="/home"
           component={Home}
-          condition={auth.token != null}
+          condition={auth.user != null}
           redirect="/login"
         />
         <ProtectedRoute
           exact
           path="/logout"
           component={Logout}
-          condition={auth.token != null}
+          condition={auth.user != null}
           redirect="/login"
         />
         <ProtectedRoute
           exact
           path="/register"
           component={Register}
-          condition={auth.token == null}
+          condition={auth.user == null}
           redirect="/home"
         />
         <ProtectedRoute
           exact
           path="/login"
           component={Login}
-          condition={auth.token == null}
+          condition={auth.user == null}
           redirect="/home"
         />
         <ProtectedRoute
           exact
           path="/"
           component={Landing}
-          condition={auth.token == null}
+          condition={auth.user == null}
           redirect="/home"
         />
         <Route component={NotFound} />
