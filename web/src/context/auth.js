@@ -14,12 +14,14 @@ const useAuth = () => {
 const AuthProvider = (props) => {
   const [user, setUser] = useState(null);
 
-  const parseUserFromToken = (token) => {
+  const decodeToken = (token) => {
     const decoded = jwt_decode(token);
     const user = {
       id: decoded.ID,
       email: decoded.Email,
     };
+
+    console.log(decoded);
 
     setUser(user);
   };
@@ -27,7 +29,7 @@ const AuthProvider = (props) => {
   const getToken = () => {
     const token = localStorage.getItem('token');
     if (token != null) {
-      parseUserFromToken(token);
+      decodeToken(token);
     }
   };
 
@@ -42,7 +44,7 @@ const AuthProvider = (props) => {
       const res = await axios.post(url, payload);
       const { token } = res.data;
 
-      parseUserFromToken(token);
+      decodeToken(token);
       localStorage.setItem('token', token);
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
@@ -67,7 +69,7 @@ const AuthProvider = (props) => {
       const res = await axios.post(url, payload);
       const { token } = res.data;
 
-      parseUserFromToken(token);
+      decodeToken(token);
       localStorage.setItem('token', token);
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
