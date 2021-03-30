@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Switch, Route, Link } from 'react-router-dom';
 import { useAuth } from './context/auth';
+import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
 import Landing from './pages/Landing';
 import NotFound from './pages/NotFound';
@@ -22,19 +23,48 @@ const App = () => {
       <h1>Pook</h1>
 
       <ul>
-        <Link to="/home">Home</Link>
-        <Link to="/register">Register</Link>
-        <Link to="/login">Login</Link>
-        <Link to="/logout">Logout</Link>
-        <Link to="/">Landing</Link>
+        {auth.token && <Link to="/logout">Logout</Link>}
+
+        {auth.token == null && <Link to="/register">Register</Link>}
+        {auth.token == null && <Link to="/login">Login</Link>}
       </ul>
 
       <Switch>
-        <Route exact path="/home" component={Home} />
-        <Route exact path="/register" component={Register} />
-        <Route exact path="/login" component={Login} />
-        <Route exact path="/logout" component={Logout} />
-        <Route exact path="/" component={Landing} />
+        <ProtectedRoute
+          exact
+          path="/home"
+          component={Home}
+          condition={auth.token != null}
+          redirect="/login"
+        />
+        <ProtectedRoute
+          exact
+          path="/logout"
+          component={Logout}
+          condition={auth.token != null}
+          redirect="/login"
+        />
+        <ProtectedRoute
+          exact
+          path="/register"
+          component={Register}
+          condition={auth.token == null}
+          redirect="/home"
+        />
+        <ProtectedRoute
+          exact
+          path="/login"
+          component={Login}
+          condition={auth.token == null}
+          redirect="/home"
+        />
+        <ProtectedRoute
+          exact
+          path="/"
+          component={Landing}
+          condition={auth.token == null}
+          redirect="/home"
+        />
         <Route component={NotFound} />
       </Switch>
     </div>
