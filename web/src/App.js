@@ -1,15 +1,12 @@
 import { useEffect, useRef } from 'react';
 import { Switch, Route, Link } from 'react-router-dom';
-
 import { useAuth } from './context/auth';
-
 import Home from './pages/Home';
 import Landing from './pages/Landing';
 import NotFound from './pages/NotFound';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import Logout from './pages/Logout';
-
 import styles from './App.module.css';
 
 const App = () => {

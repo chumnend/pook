@@ -1,9 +1,16 @@
+import { useEffect, useRef } from 'react';
+import { Redirect } from 'react-router-dom';
+import { useAuth } from '../context/auth';
+
 const Logout = () => {
-  return (
-    <div>
-      <h2>Logout</h2>
-    </div>
-  );
+  const auth = useAuth();
+  const authRef = useRef(auth);
+
+  useEffect(() => {
+    authRef.current.logout();
+  }, []);
+
+  return <Redirect to={'/'} />;
 };
 
 export default Logout;

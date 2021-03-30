@@ -19,8 +19,8 @@ type Handler struct {
 func AttachHandler(r *mux.Router, db *gorm.DB) {
 	h := &Handler{DB: db}
 
-	r.HandleFunc("/register", h.Register).Methods("POST")
-	r.HandleFunc("/login", h.Login).Methods("POST")
+	r.HandleFunc("/register", h.Register).Methods("POST", "OPTIONS")
+	r.HandleFunc("/login", h.Login).Methods("POST", "OPTIONS")
 
 	r.HandleFunc("/users", h.ListUsers).Methods("GET")
 	r.HandleFunc("/user/{id:[0-9]+}", h.GetUser).Methods("GET")
@@ -30,6 +30,8 @@ func AttachHandler(r *mux.Router, db *gorm.DB) {
 
 // Register creates a new user and returns jwt token
 func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
+	log.Println("POST - register")
+
 	// create new user struct
 	var u User
 	if err := json.NewDecoder(r.Body).Decode(&u); err != nil {
@@ -54,6 +56,8 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 
 // Login validates credentials and returns jwt token if valid
 func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
+	log.Println("POST - login")
+
 	// get credentials from request
 	var creds User
 	if err := json.NewDecoder(r.Body).Decode(&creds); err != nil {
@@ -73,6 +77,7 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	isValid := u.comparePassword(creds.Password)
 	if !isValid {
 		utils.RespondWithError(w, http.StatusBadRequest, "Invalid Email and/or Password")
+		return
 	}
 
 	// generate jwt token
