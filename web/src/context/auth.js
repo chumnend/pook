@@ -13,7 +13,7 @@ const useAuth = () => {
 
 const AuthProvider = (props) => {
   const [user, setUser] = useState(null);
-  // TODO: handle errors from auth fail
+  const [error, setError] = useState(null);
 
   const decodeToken = (token) => {
     const decoded = jwt_decode(token);
@@ -23,6 +23,14 @@ const AuthProvider = (props) => {
     };
 
     setUser(user);
+  };
+
+  const parseError = (error) => {
+    if (error.response !== undefined) {
+      return error.response.data.error;
+    } else {
+      return error.message;
+    }
   };
 
   const getToken = () => {
@@ -39,6 +47,8 @@ const AuthProvider = (props) => {
       password,
     };
 
+    setError(null);
+
     try {
       const res = await axios.post(url, payload);
       const { token } = res.data;
@@ -50,6 +60,7 @@ const AuthProvider = (props) => {
       return true;
     } catch (err) {
       setUser(null);
+      setError(parseError(err));
       localStorage.removeItem('token');
       delete axios.defaults.headers.common['Authorization'];
 
@@ -64,6 +75,8 @@ const AuthProvider = (props) => {
       password,
     };
 
+    setError(null);
+
     try {
       const res = await axios.post(url, payload);
       const { token } = res.data;
@@ -75,6 +88,7 @@ const AuthProvider = (props) => {
       return true;
     } catch (err) {
       setUser(null);
+      setError(parseError(err));
       localStorage.removeItem('token');
       delete axios.defaults.headers.common['Authorization'];
 
@@ -84,12 +98,14 @@ const AuthProvider = (props) => {
 
   const logout = () => {
     setUser(null);
+    setError(null);
     localStorage.removeItem('token');
     delete axios.defaults.headers.common['Authorization'];
   };
 
   const auth = {
     user,
+    error,
     getToken,
     register,
     login,

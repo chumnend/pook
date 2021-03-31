@@ -3,7 +3,7 @@ import { useAuth } from '../context/auth';
 import {
   AuthButton,
   AuthCard,
-  // AuthError,
+  AuthError,
   AuthForm,
   AuthInput,
 } from '../components/Auth';
@@ -33,7 +33,7 @@ const Register = () => {
   return (
     <AuthCard>
       <h2>Register</h2>
-      {/* <AuthError></AuthError> */}
+      {auth.error && <AuthError>{auth.error}</AuthError>}
       <AuthForm>
         <AuthInput
           type="email"

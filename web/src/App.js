@@ -8,7 +8,6 @@ import NotFound from './pages/NotFound';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import Logout from './pages/Logout';
-import styles from './App.module.css';
 
 const App = () => {
   const auth = useAuth();
@@ -19,7 +18,7 @@ const App = () => {
   }, []);
 
   return (
-    <div className={styles.wrapper}>
+    <div>
       <h1>Pook</h1>
 
       <ul>

@@ -4,7 +4,7 @@ import { useAuth } from '../context/auth';
 import {
   AuthButton,
   AuthCard,
-  // AuthError,
+  AuthError,
   AuthForm,
   AuthInput,
 } from '../components/Auth';
@@ -32,7 +32,7 @@ const Login = () => {
   return (
     <AuthCard>
       <h2>Login</h2>
-      {/* <AuthError></AuthError> */}
+      {auth.error && <AuthError>{auth.error}</AuthError>}
       <AuthForm>
         <AuthInput
           type="email"
