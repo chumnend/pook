@@ -54,22 +54,12 @@ func (u *User) Delete(db *gorm.DB) error {
 	return errors.New("Not implemented")
 }
 
-// Token struct declaration
-type Token struct {
-	ID    uint
-	Email string
-	*jwt.StandardClaims
-}
-
 // GenerateToken creates jwt token using User internal data
 func (u *User) GenerateToken() (string, error) {
-	tk := Token{
-		ID:             u.ID,
-		Email:          u.Email,
-		StandardClaims: &jwt.StandardClaims{},
-	}
-
-	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
+	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), jwt.MapClaims{
+		"id":    u.ID,
+		"email": u.Email,
+	})
 	tokenStr, err := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
 	if err != nil {
 		return "", err

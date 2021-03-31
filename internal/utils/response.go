@@ -7,8 +7,7 @@ import (
 
 // RespondWithJSON passes a JSON message to ResponseWriter struct
 func RespondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.Header().Set("X-Content-Type-Options", "nosniff")
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
 
 	json.NewEncoder(w).Encode(payload)
