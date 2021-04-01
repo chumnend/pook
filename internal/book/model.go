@@ -1,7 +1,6 @@
 package book
 
 import (
-	"errors"
 	"time"
 
 	"github.com/chumnend/pook/internal/task"
@@ -16,8 +15,8 @@ type Book struct {
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 
-	UserID uint
-	Tasks  []task.Task
+	UserID uint        `json:"user_id"`
+	Tasks  []task.Task `json:"tasks"`
 }
 
 // NewBook returns a new Book struct
@@ -26,21 +25,45 @@ func NewBook() *Book {
 }
 
 // Create adds a Book to the DB
-func (t *Book) Create(db *gorm.DB) error {
-	return errors.New("Not implemented")
+func (b *Book) Create(db *gorm.DB) error {
+	return db.Create(&b).Error
 }
 
 // Get adds a Book to the DB
-func (t *Book) Get(db *gorm.DB) error {
-	return errors.New("Not implemented")
+func (b *Book) Get(db *gorm.DB) error {
+	return db.First(&b).Error
 }
 
 // Update adds a Book to the DB
-func (t *Book) Update(db *gorm.DB) error {
-	return errors.New("Not implemented")
+func (b *Book) Update(db *gorm.DB) error {
+	return db.Model(&b).Update("title", "body").Error
 }
 
 // Delete adds a Book to the DB
-func (t *Book) Delete(db *gorm.DB) error {
-	return errors.New("Not implemented")
+func (b *Book) Delete(db *gorm.DB) error {
+	return db.Delete(&b).Error
+}
+
+// ListBooks returns a list of books
+func ListBooks(db *gorm.DB) ([]Book, error) {
+	var books []Book
+
+	err := db.Find(&books).Error
+	if err != nil {
+		return books, err
+	}
+
+	return books, nil
+}
+
+// ListBooksByUserID returns a list of books with given UserID
+func ListBooksByUserID(db *gorm.DB, id string) ([]Book, error) {
+	var books []Book
+
+	err := db.Where("user_id = ?", id).Find(&books).Error
+	if err != nil {
+		return books, err
+	}
+
+	return books, nil
 }

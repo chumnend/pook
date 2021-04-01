@@ -23,8 +23,8 @@ type User struct {
 	UpdatedAt time.Time `json:"updatedAt"`
 	Admin     bool      `gorm:"default:false" json:"admin"`
 
-	Books []book.Book
-	Tasks []task.Task
+	Books []book.Book `json:"books"`
+	Tasks []task.Task `json:"tasks"`
 }
 
 // NewUser returns a new User struct
@@ -68,7 +68,8 @@ func (u *User) GenerateToken() (string, error) {
 	return tokenStr, nil
 }
 
-func (u *User) comparePassword(password string) bool {
+// ComparePassword returns true if password matches password in the database
+func (u *User) ComparePassword(password string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
 	if err != nil {
 		return false
