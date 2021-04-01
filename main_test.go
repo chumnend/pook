@@ -64,7 +64,7 @@ func addUser(numBooks int) {
 	a.DB.Exec("INSERT INTO users(email, password) VALUES ($1, $2)", "tester", "test123")
 
 	for i := 0; i < numBooks; i++ {
-		a.DB.Exec("INSERT INTO books(title, user_id) VALUES ($1, $2)", "test"+strconv.Itoa(i), "1")
+		a.DB.Exec("INSERT INTO books(title, user_id) VALUES ($1, $2)", "test"+strconv.Itoa(i+1), "1")
 	}
 }
 
@@ -205,9 +205,43 @@ func TestCreateBook(t *testing.T) {
 	}
 }
 
+func TestNonExistentGetBook(t *testing.T) {
+	clearTables()
+
+	req, _ := http.NewRequest("GET", "/api/v1/book/1?uid=1", nil)
+	res := executeRequest(req)
+
+	checkResponseCode(t, http.StatusNotFound, res.Code)
+
+	var m map[string]interface{}
+	json.Unmarshal(res.Body.Bytes(), &m)
+
+	if m["error"] != "book not found" {
+		t.Errorf("Expected the 'error' to be 'book not found'. Got '%v'", m["error"])
+	}
+}
+
 func TestGetBook(t *testing.T) {
 	clearTables()
-	t.Errorf("Test not implemented")
+	addUser(1)
+
+	req, _ := http.NewRequest("GET", "/api/v1/book/1?uid=1", nil)
+	res := executeRequest(req)
+
+	checkResponseCode(t, http.StatusOK, res.Code)
+
+	var m map[string]interface{}
+	json.Unmarshal(res.Body.Bytes(), &m)
+
+	result := m["result"].(map[string]interface{})
+
+	if result["id"] != 1.0 {
+		t.Errorf("Expected `id` to be '1'. Got '%v'", m["id"])
+	}
+
+	if result["title"] != "test1" {
+		t.Errorf("Expected 'title' to be 'test1'. Got '%v'", m["title"])
+	}
 }
 
 func TestUpdateBook(t *testing.T) {

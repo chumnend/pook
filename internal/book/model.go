@@ -32,7 +32,7 @@ func (b *Book) Create(db *gorm.DB) error {
 
 // Get adds a Book to the DB
 func (b *Book) Get(db *gorm.DB) error {
-	return errors.New("Not implemented")
+	return db.First(&b).Error
 }
 
 // Update adds a Book to the DB

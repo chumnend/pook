@@ -33,6 +33,7 @@ func (h *Handler) ListBooksByUserID(w http.ResponseWriter, r *http.Request) {
 
 	query := r.URL.Query()
 
+	// check for uid in query
 	if uid := query.Get("uid"); uid != "" {
 		// get all books of a user
 		books, err := ListBooksByUserID(h.DB, uid)
@@ -53,6 +54,7 @@ func (h *Handler) CreateBook(w http.ResponseWriter, r *http.Request) {
 
 	query := r.URL.Query()
 
+	// check for uid in query
 	if uid := query.Get("uid"); uid != "" {
 		// create new user struct
 		var b Book
@@ -82,17 +84,59 @@ func (h *Handler) CreateBook(w http.ResponseWriter, r *http.Request) {
 // GetBook returns a Book
 func (h *Handler) GetBook(w http.ResponseWriter, r *http.Request) {
 	log.Println("GET - get book")
-	utils.RespondWithError(w, http.StatusNotImplemented, "not yet implemented")
+
+	query := r.URL.Query()
+
+	// check for uid in query
+	if uid := query.Get("uid"); uid != "" {
+		// get book id
+		vars := mux.Vars(r)
+		id, err := strconv.Atoi(vars["id"])
+		if err != nil {
+			utils.RespondWithError(w, http.StatusBadRequest, "invalid book ID")
+			return
+		}
+
+		// retrieve book
+		book := Book{ID: uint(id)}
+		if err := book.Get(h.DB); err != nil {
+			utils.RespondWithError(w, http.StatusNotFound, "book not found")
+			return
+		}
+
+		utils.RespondWithJSON(w, http.StatusOK, map[string]interface{}{"result": book})
+	} else {
+		utils.RespondWithError(w, http.StatusBadRequest, "query 'uid' not found")
+		return
+	}
 }
 
 // UpdateBook returns a Book
 func (h *Handler) UpdateBook(w http.ResponseWriter, r *http.Request) {
 	log.Println("PUT - update book")
-	utils.RespondWithError(w, http.StatusNotImplemented, "not yet implemented")
+
+	query := r.URL.Query()
+
+	// check for uid in query
+	if uid := query.Get("uid"); uid != "" {
+		utils.RespondWithError(w, http.StatusNotImplemented, "not yet implemented")
+	} else {
+		utils.RespondWithError(w, http.StatusBadRequest, "query 'uid' not found")
+		return
+	}
 }
 
 // DeleteBook returns a Book
 func (h *Handler) DeleteBook(w http.ResponseWriter, r *http.Request) {
 	log.Println("DELETE - delete book")
-	utils.RespondWithError(w, http.StatusNotImplemented, "not yet implemented")
+
+	query := r.URL.Query()
+
+	// check for uid in query
+	if uid := query.Get("uid"); uid != "" {
+		utils.RespondWithError(w, http.StatusNotImplemented, "not yet implemented")
+	} else {
+		utils.RespondWithError(w, http.StatusBadRequest, "query 'uid' not found")
+		return
+	}
 }
