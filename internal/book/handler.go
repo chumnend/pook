@@ -18,17 +18,32 @@ type Handler struct {
 func AttachHandler(r *mux.Router, db *gorm.DB) {
 	h := &Handler{DB: db}
 
-	r.HandleFunc("/books", h.ListBooks).Methods("GET")
+	r.HandleFunc("/books", h.ListBooksByUserID).Methods("GET")
 	r.HandleFunc("/book/{id:[0-9]+}", h.CreateBook).Methods("POST")
 	r.HandleFunc("/book/{id:[0-9]+}", h.GetBook).Methods("GET")
 	r.HandleFunc("/book/{id:[0-9]+}", h.UpdateBook).Methods("PUT")
 	r.HandleFunc("/book/{id:[0-9]+}", h.DeleteBook).Methods("DELETE")
 }
 
-// ListBooks returns a list of Books
-func (h *Handler) ListBooks(w http.ResponseWriter, r *http.Request) {
+// ListBooksByUserID returns a list of Books
+func (h *Handler) ListBooksByUserID(w http.ResponseWriter, r *http.Request) {
 	log.Println("GET - list books")
-	utils.RespondWithError(w, http.StatusNotImplemented, "not yet implemented")
+
+	query := r.URL.Query()
+	uid := query.Get("uid")
+
+	if uid != "" {
+		// get all books of a user
+		books, err := ListBooksByUserID(h.DB, uid)
+		if err != nil {
+			utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		}
+
+		utils.RespondWithJSON(w, http.StatusOK, map[string]interface{}{"results": books})
+	} else {
+		utils.RespondWithError(w, http.StatusBadRequest, "query 'uid' not found")
+		return
+	}
 }
 
 // CreateBook returns a Book

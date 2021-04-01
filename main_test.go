@@ -59,6 +59,10 @@ func checkResponseCode(t *testing.T, expected, actual int) {
 	}
 }
 
+func addUser() {
+	a.DB.Exec("INSERT INTO users(email, password) VALUES ($1, $2)", "tester", "test123")
+}
+
 func clearTables() {
 	a.DB.Exec("DELETE FROM users")
 	a.DB.Exec("ALTER SEQUENCE users_id_seq RESTART WITH 1")
@@ -129,5 +133,24 @@ func TestLoginHandler(t *testing.T) {
 
 	if m["token"] == "" {
 		t.Errorf("Expected 'token' to be non empty. Got %v.", m["token"])
+	}
+}
+
+func TestEmptyListBooksHandler(t *testing.T) {
+	clearTables()
+	addUser()
+
+	req, _ := http.NewRequest("GET", "/api/v1/books?uid=1", nil)
+	res := executeRequest(req)
+
+	checkResponseCode(t, http.StatusOK, res.Code)
+
+	var m map[string]interface{}
+	json.Unmarshal(res.Body.Bytes(), &m)
+
+	results := m["results"].([]interface{})
+
+	if len(results) != 0 {
+		t.Errorf("Expected 'results' to be empty. Got %v.", m["results"])
 	}
 }

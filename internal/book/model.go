@@ -44,3 +44,27 @@ func (t *Book) Update(db *gorm.DB) error {
 func (t *Book) Delete(db *gorm.DB) error {
 	return errors.New("Not implemented")
 }
+
+// ListBooks returns a list of books
+func ListBooks(db *gorm.DB) ([]Book, error) {
+	var books []Book
+
+	err := db.Find(&books).Error
+	if err != nil {
+		return books, err
+	}
+
+	return books, nil
+}
+
+// ListBooksByUserID returns a list of books with given UserID
+func ListBooksByUserID(db *gorm.DB, id string) ([]Book, error) {
+	var books []Book
+
+	err := db.Where("user_id = ?", id).Find(&books).Error
+	if err != nil {
+		return books, err
+	}
+
+	return books, nil
+}
