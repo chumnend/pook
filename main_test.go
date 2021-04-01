@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -59,13 +60,19 @@ func checkResponseCode(t *testing.T, expected, actual int) {
 	}
 }
 
-func addUser() {
+func addUser(numBooks int) {
 	a.DB.Exec("INSERT INTO users(email, password) VALUES ($1, $2)", "tester", "test123")
+
+	for i := 0; i < numBooks; i++ {
+		a.DB.Exec("INSERT INTO books(title, user_id) VALUES ($1, $2)", "test"+strconv.Itoa(i), "1")
+	}
 }
 
 func clearTables() {
 	a.DB.Exec("DELETE FROM users")
 	a.DB.Exec("ALTER SEQUENCE users_id_seq RESTART WITH 1")
+	a.DB.Exec("DELETE FROM books")
+	a.DB.Exec("ALTER SEQUENCE books_id_seq RESTART WITH 1")
 }
 
 func TestApiHealthHandler(t *testing.T) {
@@ -138,7 +145,7 @@ func TestLoginHandler(t *testing.T) {
 
 func TestEmptyListBooksHandler(t *testing.T) {
 	clearTables()
-	addUser()
+	addUser(0)
 
 	req, _ := http.NewRequest("GET", "/api/v1/books?uid=1", nil)
 	res := executeRequest(req)
@@ -153,4 +160,62 @@ func TestEmptyListBooksHandler(t *testing.T) {
 	if len(results) != 0 {
 		t.Errorf("Expected 'results' to be empty. Got %v.", m["results"])
 	}
+}
+
+func TestListBooksHandler(t *testing.T) {
+	clearTables()
+	addUser(3)
+
+	req, _ := http.NewRequest("GET", "/api/v1/books?uid=1", nil)
+	res := executeRequest(req)
+
+	checkResponseCode(t, http.StatusOK, res.Code)
+
+	var m map[string]interface{}
+	json.Unmarshal(res.Body.Bytes(), &m)
+
+	results := m["results"].([]interface{})
+
+	if len(results) != 3 {
+		t.Errorf("Expected 'results' to have length of 3. Got %v.", m["results"])
+	}
+}
+
+func TestCreateBook(t *testing.T) {
+	clearTables()
+
+	var jsonStr = []byte(`{"title":"test"}`)
+	req, _ := http.NewRequest("POST", "/api/v1/books?uid=1", bytes.NewBuffer(jsonStr))
+	req.Header.Set("Content-Type", "application/json")
+	res := executeRequest(req)
+
+	checkResponseCode(t, http.StatusOK, res.Code)
+
+	var m map[string]interface{}
+	json.Unmarshal(res.Body.Bytes(), &m)
+
+	result := m["result"].(map[string]interface{})
+
+	if result["id"] != 1.0 {
+		t.Errorf("Expected `id` to be '1'. Got '%v'", m["id"])
+	}
+
+	if result["title"] != "test" {
+		t.Errorf("Expected 'title' to be 'test'. Got '%v'", m["title"])
+	}
+}
+
+func TestGetBook(t *testing.T) {
+	clearTables()
+	t.Errorf("Test not implemented")
+}
+
+func TestUpdateBook(t *testing.T) {
+	clearTables()
+	t.Errorf("Test not implemented")
+}
+
+func TestDeleteBook(t *testing.T) {
+	clearTables()
+	t.Errorf("Test not implemented")
 }

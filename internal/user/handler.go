@@ -74,7 +74,7 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// compare password with found users
-	isValid := u.comparePassword(creds.Password)
+	isValid := u.ComparePassword(creds.Password)
 	if !isValid {
 		utils.RespondWithError(w, http.StatusBadRequest, "Invalid Email and/or Password")
 		return

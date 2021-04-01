@@ -16,8 +16,8 @@ type Book struct {
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 
-	UserID uint
-	Tasks  []task.Task
+	UserID uint        `json:"user_id"`
+	Tasks  []task.Task `json:"tasks"`
 }
 
 // NewBook returns a new Book struct
@@ -26,22 +26,22 @@ func NewBook() *Book {
 }
 
 // Create adds a Book to the DB
-func (t *Book) Create(db *gorm.DB) error {
-	return errors.New("Not implemented")
+func (b *Book) Create(db *gorm.DB) error {
+	return db.Create(&b).Error
 }
 
 // Get adds a Book to the DB
-func (t *Book) Get(db *gorm.DB) error {
+func (b *Book) Get(db *gorm.DB) error {
 	return errors.New("Not implemented")
 }
 
 // Update adds a Book to the DB
-func (t *Book) Update(db *gorm.DB) error {
+func (b *Book) Update(db *gorm.DB) error {
 	return errors.New("Not implemented")
 }
 
 // Delete adds a Book to the DB
-func (t *Book) Delete(db *gorm.DB) error {
+func (b *Book) Delete(db *gorm.DB) error {
 	return errors.New("Not implemented")
 }
 
