@@ -155,6 +155,11 @@ func TestEmptyListBooksHandler(t *testing.T) {
 	var m map[string]interface{}
 	json.Unmarshal(res.Body.Bytes(), &m)
 
+	if _, ok := m["results"]; !ok {
+		t.Errorf("Expected `results` to exist. Got '%v'", m)
+		return
+	}
+
 	results := m["results"].([]interface{})
 
 	if len(results) != 0 {
@@ -173,6 +178,11 @@ func TestListBooksHandler(t *testing.T) {
 
 	var m map[string]interface{}
 	json.Unmarshal(res.Body.Bytes(), &m)
+
+	if _, ok := m["results"]; !ok {
+		t.Errorf("Expected `results` to exist. Got '%v'", m)
+		return
+	}
 
 	results := m["results"].([]interface{})
 
@@ -193,6 +203,11 @@ func TestCreateBook(t *testing.T) {
 
 	var m map[string]interface{}
 	json.Unmarshal(res.Body.Bytes(), &m)
+
+	if _, ok := m["result"]; !ok {
+		t.Errorf("Expected `result` to exist. Got '%v'", m)
+		return
+	}
 
 	result := m["result"].(map[string]interface{})
 
@@ -233,6 +248,11 @@ func TestGetBook(t *testing.T) {
 	var m map[string]interface{}
 	json.Unmarshal(res.Body.Bytes(), &m)
 
+	if _, ok := m["result"]; !ok {
+		t.Errorf("Expected `result` to exist. Got '%v'", m)
+		return
+	}
+
 	result := m["result"].(map[string]interface{})
 
 	if result["id"] != 1.0 {
@@ -246,10 +266,58 @@ func TestGetBook(t *testing.T) {
 
 func TestUpdateBook(t *testing.T) {
 	clearTables()
-	t.Errorf("Test not implemented")
+	addUser(1)
+
+	req, _ := http.NewRequest("GET", "/api/v1/book/1?uid=1", nil)
+	res := executeRequest(req)
+	var original map[string]interface{}
+	json.Unmarshal(res.Body.Bytes(), &original)
+
+	var jsonStr = []byte(`{"title": "new title", "body": "new body"}`)
+	req, _ = http.NewRequest("PUT", "/api/v1/book/1?uid=1", bytes.NewBuffer(jsonStr))
+	req.Header.Set("Content-Type", "application/json")
+	res = executeRequest(req)
+
+	checkResponseCode(t, http.StatusOK, res.Code)
+
+	var m map[string]interface{}
+	json.Unmarshal(res.Body.Bytes(), &m)
+
+	if _, ok := m["result"]; !ok {
+		t.Errorf("Expected `result` to exist. Got '%v'", m)
+		return
+	}
+
+	orig := original["result"].(map[string]interface{})
+	result := m["result"].(map[string]interface{})
+
+	if result["id"] != orig["id"] {
+		t.Errorf("Expected the id to remain the same (%v). Got %v", orig["id"], result["id"])
+	}
+
+	if result["title"] == orig["title"] {
+		t.Errorf("Expected the name to change from '%v' to '%v'. Got '%v'", orig["title"], result["title"], result["title"])
+	}
+
+	if result["body"] == orig["body"] {
+		t.Errorf("Expected the price to change from '%v' to '%v'. Got '%v'", orig["body"], result["body"], result["body"])
+	}
 }
 
 func TestDeleteBook(t *testing.T) {
 	clearTables()
-	t.Errorf("Test not implemented")
+	addUser(1)
+
+	req, _ := http.NewRequest("GET", "/api/v1/book/1?uid=1", nil)
+	res := executeRequest(req)
+	checkResponseCode(t, http.StatusOK, res.Code)
+
+	req, _ = http.NewRequest("DELETE", "/api/v1/book/1?uid=1", nil)
+	res = executeRequest(req)
+
+	checkResponseCode(t, http.StatusOK, res.Code)
+
+	req, _ = http.NewRequest("GET", "/api/v1/book/1?uid=1", nil)
+	res = executeRequest(req)
+	checkResponseCode(t, http.StatusNotFound, res.Code)
 }

@@ -119,7 +119,33 @@ func (h *Handler) UpdateBook(w http.ResponseWriter, r *http.Request) {
 
 	// check for uid in query
 	if uid := query.Get("uid"); uid != "" {
-		utils.RespondWithError(w, http.StatusNotImplemented, "not yet implemented")
+		// get book id
+		vars := mux.Vars(r)
+		id, err := strconv.Atoi(vars["id"])
+		if err != nil {
+			utils.RespondWithError(w, http.StatusBadRequest, "invalid book ID")
+			return
+		}
+
+		// create new book struct
+		var book Book
+		decoder := json.NewDecoder(r.Body)
+		if err := decoder.Decode(&book); err != nil {
+			utils.RespondWithError(w, http.StatusBadRequest, "invalid request payload")
+			return
+		}
+		defer r.Body.Close()
+
+		// modify fields
+		book.ID = uint(id)
+
+		// save the user
+		if err := book.Update(h.DB); err != nil {
+			utils.RespondWithError(w, http.StatusInternalServerError, "unable to update book")
+			return
+		}
+
+		utils.RespondWithJSON(w, http.StatusOK, map[string]interface{}{"result": book})
 	} else {
 		utils.RespondWithError(w, http.StatusBadRequest, "query 'uid' not found")
 		return
@@ -134,7 +160,22 @@ func (h *Handler) DeleteBook(w http.ResponseWriter, r *http.Request) {
 
 	// check for uid in query
 	if uid := query.Get("uid"); uid != "" {
-		utils.RespondWithError(w, http.StatusNotImplemented, "not yet implemented")
+		// get book id
+		vars := mux.Vars(r)
+		id, err := strconv.Atoi(vars["id"])
+		if err != nil {
+			utils.RespondWithError(w, http.StatusBadRequest, "invalid book ID")
+			return
+		}
+
+		// delete the book
+		book := Book{ID: uint(id)}
+		if err := book.Delete(h.DB); err != nil {
+			utils.RespondWithError(w, http.StatusInternalServerError, "unable to update book")
+			return
+		}
+
+		utils.RespondWithJSON(w, http.StatusOK, map[string]interface{}{"result": "book delete successfully"})
 	} else {
 		utils.RespondWithError(w, http.StatusBadRequest, "query 'uid' not found")
 		return

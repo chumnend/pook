@@ -1,7 +1,6 @@
 package book
 
 import (
-	"errors"
 	"time"
 
 	"github.com/chumnend/pook/internal/task"
@@ -37,12 +36,12 @@ func (b *Book) Get(db *gorm.DB) error {
 
 // Update adds a Book to the DB
 func (b *Book) Update(db *gorm.DB) error {
-	return errors.New("Not implemented")
+	return db.Model(&b).Update("title", "body").Error
 }
 
 // Delete adds a Book to the DB
 func (b *Book) Delete(db *gorm.DB) error {
-	return errors.New("Not implemented")
+	return db.Delete(&b).Error
 }
 
 // ListBooks returns a list of books
