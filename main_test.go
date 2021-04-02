@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -44,6 +45,7 @@ func TestMain(m *testing.M) {
 	a = pook.NewApp(dbURL)
 
 	// start test runner
+	log.SetOutput(ioutil.Discard)
 	code := m.Run()
 	os.Exit(code)
 }
@@ -320,4 +322,39 @@ func TestDeleteBook(t *testing.T) {
 	req, _ = http.NewRequest("GET", "/api/v1/book/1?uid=1", nil)
 	res = executeRequest(req)
 	checkResponseCode(t, http.StatusNotFound, res.Code)
+}
+
+func TestEmptyListTasksHandler(t *testing.T) {
+	clearTables()
+	t.Skip("Not yet implemented")
+}
+
+func TestListTasksHandler(t *testing.T) {
+	clearTables()
+	t.Skip("Not yet implemented")
+}
+
+func TestCreateTaskHandler(t *testing.T) {
+	clearTables()
+	t.Skip("Not yet implemented")
+}
+
+func TestNonExistentGetTaskHandler(t *testing.T) {
+	clearTables()
+	t.Skip("Not yet implemented")
+}
+
+func TestGetTaskHandler(t *testing.T) {
+	clearTables()
+	t.Skip("Not yet implemented")
+}
+
+func TestUpdateTaskHandler(t *testing.T) {
+	clearTables()
+	t.Skip("Not yet implemented")
+}
+
+func TestDeleteTaskHandler(t *testing.T) {
+	clearTables()
+	t.Skip("Not yet implemented")
 }

@@ -23,8 +23,8 @@ serve:
 
 .PHONY: test
 test:
-	@go test
-	@cd web && npm test
+	@go test -v
+	@cd web && npm test -- --watchAll=false
 
 .PHONY: clean
 clean:

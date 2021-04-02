@@ -15,13 +15,19 @@ type Task struct {
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 
-	UserID uint
-	BookID uint
+	UserID uint `json:"user_id"`
+	BookID uint `json:"book_id"`
 }
 
 // NewTask returns a new Task struct
 func NewTask() *Task {
 	return &Task{}
+}
+
+// ListTasksByBookID returns a list of tasks with given bookID
+func ListTasksByBookID(db *gorm.DB, id string) ([]Task, error) {
+	var tasks []Task
+	return tasks, errors.New("Not implemented")
 }
 
 // Create adds a task to the DB

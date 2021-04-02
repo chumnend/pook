@@ -32,6 +32,17 @@ func NewUser() *User {
 	return &User{}
 }
 
+// FindUserByEmail takes an ID and returns a user struct
+func FindUserByEmail(db *gorm.DB, email string) (User, error) {
+	var u User
+	err := db.Where("email = ?", email).First(&u).Error
+	if err != nil {
+		return u, err
+	}
+
+	return u, nil
+}
+
 // Create adds a User to the DB
 func (u *User) Create(db *gorm.DB) error {
 	// hash the password
@@ -76,26 +87,4 @@ func (u *User) ComparePassword(password string) bool {
 	}
 
 	return true
-}
-
-// ListUsers returns a list of users in the DB
-func ListUsers(db *gorm.DB) ([]User, error) {
-	return nil, errors.New("Not implemented")
-}
-
-// FindUserByID takes an ID and returns a user struct
-func FindUserByID(db *gorm.DB, id string) (User, error) {
-	u := User{}
-	return u, nil
-}
-
-// FindUserByEmail takes an ID and returns a user struct
-func FindUserByEmail(db *gorm.DB, email string) (User, error) {
-	var u User
-	err := db.Where("email = ?", email).First(&u).Error
-	if err != nil {
-		return u, err
-	}
-
-	return u, nil
 }
