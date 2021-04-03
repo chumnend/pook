@@ -21,7 +21,7 @@ func AttachHandler(r *mux.Router, db *gorm.DB) {
 	h := &Handler{DB: db}
 
 	r.HandleFunc("/books", h.ListBooksByUserID).Methods("GET")
-	r.HandleFunc("/books", h.CreateBook).Methods("POST")
+	r.HandleFunc("/books", h.CreateBook).Methods("POST", "OPTIONS")
 	r.HandleFunc("/book/{id:[0-9]+}", h.GetBook).Methods("GET")
 	r.HandleFunc("/book/{id:[0-9]+}", h.UpdateBook).Methods("PUT")
 	r.HandleFunc("/book/{id:[0-9]+}", h.DeleteBook).Methods("DELETE")
@@ -33,17 +33,18 @@ func (h *Handler) ListBooksByUserID(w http.ResponseWriter, r *http.Request) {
 
 	query := r.URL.Query()
 
-	// check for uid in query
-	uid := query.Get("uid")
-	if uid == "" {
-		utils.RespondWithError(w, http.StatusBadRequest, "query 'uid' not found")
+	// check for userid in query
+	userid := query.Get("userid")
+	if userid == "" {
+		utils.RespondWithError(w, http.StatusBadRequest, "query 'userid' not found")
 		return
 	}
 
 	// get all books of a user
-	books, err := ListBooksByUserID(h.DB, uid)
+	books, err := ListBooksByUserID(h.DB, userid)
 	if err != nil {
 		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		return
 	}
 
 	utils.RespondWithJSON(w, http.StatusOK, map[string]interface{}{"results": books})
@@ -55,14 +56,14 @@ func (h *Handler) CreateBook(w http.ResponseWriter, r *http.Request) {
 
 	query := r.URL.Query()
 
-	// check for uid in query
-	uid := query.Get("uid")
-	if uid == "" {
-		utils.RespondWithError(w, http.StatusBadRequest, "query 'uid' not found")
+	// check for userid in query
+	userid := query.Get("userid")
+	if userid == "" {
+		utils.RespondWithError(w, http.StatusBadRequest, "query 'userid' not found")
 		return
 	}
 
-	// create new user struct
+	// create new book struct
 	var b Book
 	if err := json.NewDecoder(r.Body).Decode(&b); err != nil {
 		utils.RespondWithError(w, http.StatusBadRequest, err.Error())
@@ -71,7 +72,7 @@ func (h *Handler) CreateBook(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	// parse UserID
-	parsedUserID, _ := strconv.ParseUint(uid, 10, 64)
+	parsedUserID, _ := strconv.ParseUint(userid, 10, 64)
 	b.UserID = uint(parsedUserID)
 
 	// call method to create user in DB
@@ -89,10 +90,10 @@ func (h *Handler) GetBook(w http.ResponseWriter, r *http.Request) {
 
 	query := r.URL.Query()
 
-	// check for uid in query
-	uid := query.Get("uid")
-	if uid == "" {
-		utils.RespondWithError(w, http.StatusBadRequest, "query 'uid' not found")
+	// check for userid in query
+	userid := query.Get("userid")
+	if userid == "" {
+		utils.RespondWithError(w, http.StatusBadRequest, "query 'userid' not found")
 		return
 	}
 
@@ -120,10 +121,10 @@ func (h *Handler) UpdateBook(w http.ResponseWriter, r *http.Request) {
 
 	query := r.URL.Query()
 
-	// check for uid in query
-	uid := query.Get("uid")
-	if uid == "" {
-		utils.RespondWithError(w, http.StatusBadRequest, "query 'uid' not found")
+	// check for userid in query
+	userid := query.Get("userid")
+	if userid == "" {
+		utils.RespondWithError(w, http.StatusBadRequest, "query 'userid' not found")
 		return
 	}
 
@@ -162,10 +163,10 @@ func (h *Handler) DeleteBook(w http.ResponseWriter, r *http.Request) {
 
 	query := r.URL.Query()
 
-	// check for uid in query
-	uid := query.Get("uid")
-	if uid == "" {
-		utils.RespondWithError(w, http.StatusBadRequest, "query 'uid' not found")
+	// check for userid in query
+	userid := query.Get("userid")
+	if userid == "" {
+		utils.RespondWithError(w, http.StatusBadRequest, "query 'userid' not found")
 		return
 	}
 
