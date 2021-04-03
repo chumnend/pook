@@ -3,7 +3,11 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
 
-const apiPrefix = process.env.REACT_APP_API_PREFIX;
+// by default the react app runs on the same server as the api. In development mode, a different server can be pointed to
+let apiPrefix = '';
+if (process.env.NODE_ENV === 'development') {
+  apiPrefix = process.env.REACT_APP_API_PREFIX;
+}
 
 const AuthContext = createContext();
 
@@ -41,7 +45,7 @@ const AuthProvider = (props) => {
   };
 
   const register = async (email, password) => {
-    const url = apiPrefix + '/v1/register';
+    const url = apiPrefix + '/api/v1/register';
     const payload = {
       email,
       password,
@@ -69,7 +73,7 @@ const AuthProvider = (props) => {
   };
 
   const login = async (email, password) => {
-    const url = apiPrefix + '/v1/login';
+    const url = apiPrefix + '/api/v1/login';
     const payload = {
       email,
       password,
