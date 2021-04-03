@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+
 import styles from './AuthText.module.css';
 
 const AuthText = (props) => {

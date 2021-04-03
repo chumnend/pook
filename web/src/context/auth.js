@@ -1,9 +1,10 @@
-import { useState, createContext, useContext } from 'react';
-import PropTypes from 'prop-types';
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
+import PropTypes from 'prop-types';
+import { createContext, useContext, useState } from 'react';
 
-// by default the react app runs on the same server as the api. In development mode, a different server can be pointed to
+// By default the react app runs on the same server as the api.
+// In development mode, a different server can be pointed to using REACT_APP_API_PREFIX
 let apiPrefix = '';
 if (process.env.NODE_ENV === 'development') {
   apiPrefix = process.env.REACT_APP_API_PREFIX;
@@ -16,8 +17,16 @@ const useAuth = () => {
 };
 
 const AuthProvider = (props) => {
+  const [isLoggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
+
+  const getToken = () => {
+    const token = localStorage.getItem('token');
+    if (token != null) {
+      decodeToken(token);
+    }
+  };
 
   const decodeToken = (token) => {
     const decoded = jwt_decode(token);
@@ -26,6 +35,7 @@ const AuthProvider = (props) => {
       email: decoded.Email,
     };
 
+    setLoggedIn(true);
     setUser(user);
   };
 
@@ -34,13 +44,6 @@ const AuthProvider = (props) => {
       return error.response.data.error;
     } else {
       return 'Something went wrong. Please try again later.';
-    }
-  };
-
-  const getToken = () => {
-    const token = localStorage.getItem('token');
-    if (token != null) {
-      decodeToken(token);
     }
   };
 
@@ -95,6 +98,7 @@ const AuthProvider = (props) => {
 
       return true;
     } catch (err) {
+      setLoggedIn(false);
       setUser(null);
       setError(parseError(err));
       localStorage.removeItem('token');
@@ -105,6 +109,7 @@ const AuthProvider = (props) => {
   };
 
   const logout = () => {
+    setLoggedIn(false);
     setUser(null);
     setError(null);
     localStorage.removeItem('token');
@@ -112,6 +117,7 @@ const AuthProvider = (props) => {
   };
 
   const auth = {
+    isLoggedIn,
     user,
     error,
     getToken,

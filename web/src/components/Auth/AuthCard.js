@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+
 import styles from './AuthCard.module.css';
 
 const AuthCard = (props) => {

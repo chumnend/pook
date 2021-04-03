@@ -10,8 +10,8 @@ test('render <App />', () => {
         <App />
       </MemoryRouter>
     </AuthProvider>,
-  )
+  );
 
   const el = screen.getByText(/Landing/i);
   expect(el).toBeInTheDocument();
-})
+});

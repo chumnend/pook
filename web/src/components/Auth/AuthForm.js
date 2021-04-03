@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+
 import styles from './AuthForm.module.css';
 
 const AuthForm = (props) => {

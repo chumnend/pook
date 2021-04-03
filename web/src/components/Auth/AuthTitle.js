@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+
 import styles from './AuthTitle.module.css';
 
 const AuthTitle = (props) => {

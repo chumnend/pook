@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+
 import styles from './AuthError.module.css';
 
 const AuthError = (props) => {

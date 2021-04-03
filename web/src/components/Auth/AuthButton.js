@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+
 import styles from './AuthButton.module.css';
 
 const AuthButton = (props) => {
