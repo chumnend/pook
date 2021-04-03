@@ -40,6 +40,13 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
+	// validate the user struct
+	isValid := u.Validate()
+	if !isValid {
+		utils.RespondWithError(w, http.StatusBadRequest, "missing and/or invalid information")
+		return
+	}
+
 	// call method to create user in DB
 	if err := u.Create(h.DB); err != nil {
 		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
@@ -69,14 +76,14 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	// check to see if user exists
 	u, err := FindUserByEmail(h.DB, creds.Email)
 	if err != nil {
-		utils.RespondWithError(w, http.StatusBadRequest, "Invalid Email and/or Password")
+		utils.RespondWithError(w, http.StatusBadRequest, "invalid email and/or password")
 		return
 	}
 
 	// compare password with found users
 	isValid := u.ComparePassword(creds.Password)
 	if !isValid {
-		utils.RespondWithError(w, http.StatusBadRequest, "Invalid Email and/or Password")
+		utils.RespondWithError(w, http.StatusBadRequest, "invalid email and/or password")
 		return
 	}
 
