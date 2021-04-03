@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { useAuth } from '../context/auth';
 import {
@@ -6,8 +7,9 @@ import {
   AuthError,
   AuthForm,
   AuthInput,
+  AuthText,
+  AuthTitle,
 } from '../components/Auth';
-import { useState } from 'react';
 
 const Register = () => {
   const [email, setEmail] = useState('');
@@ -16,6 +18,11 @@ const Register = () => {
 
   const history = useHistory();
   const auth = useAuth();
+  const authRef = useRef(auth);
+
+  useEffect(() => {
+    authRef.current.clearError();
+  }, []);
 
   const validateInput = () => {
     return email.length > 0 && password.length > 0 && password === password2;
@@ -32,7 +39,7 @@ const Register = () => {
 
   return (
     <AuthCard>
-      <h2>Register</h2>
+      <AuthTitle>Let&apos;s Get Started</AuthTitle>
       {auth.error && <AuthError>{auth.error}</AuthError>}
       <AuthForm>
         <AuthInput
@@ -57,9 +64,9 @@ const Register = () => {
           Register
         </AuthButton>
       </AuthForm>
-      <p>
+      <AuthText>
         Already have an account? <Link to="/login">Sign In</Link>
-      </p>
+      </AuthText>
     </AuthCard>
   );
 };

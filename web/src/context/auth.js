@@ -33,7 +33,7 @@ const AuthProvider = (props) => {
     if (error.response !== undefined) {
       return error.response.data.error;
     } else {
-      return error.message;
+      return 'Something went wrong. Please try again later.';
     }
   };
 
@@ -42,6 +42,10 @@ const AuthProvider = (props) => {
     if (token != null) {
       decodeToken(token);
     }
+  };
+
+  const clearError = () => {
+    setError(null);
   };
 
   const register = async (email, password) => {
@@ -111,6 +115,7 @@ const AuthProvider = (props) => {
     user,
     error,
     getToken,
+    clearError,
     register,
     login,
     logout,
