@@ -40,15 +40,15 @@ func (h *Handler) ListTasks(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// check for bookId in query
-	bookid := query.Get("bookid")
-	if bookid == "" {
-		utils.RespondWithError(w, http.StatusBadRequest, "query 'bookid' not found")
+	// check for boardId in query
+	boardid := query.Get("boardid")
+	if boardid == "" {
+		utils.RespondWithError(w, http.StatusBadRequest, "query 'boardid' not found")
 		return
 	}
 
 	// get all tasks
-	tasks, err := ListTasksByBookID(h.DB, bookid)
+	tasks, err := ListTasksByBoardID(h.DB, boardid)
 	if err != nil {
 		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
 		return
@@ -70,10 +70,10 @@ func (h *Handler) CreateTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// check for bookId in query
-	bookid := query.Get("bookid")
-	if bookid == "" {
-		utils.RespondWithError(w, http.StatusBadRequest, "query 'bookid' not found")
+	// check for boardId in query
+	boardid := query.Get("boardid")
+	if boardid == "" {
+		utils.RespondWithError(w, http.StatusBadRequest, "query 'boardid' not found")
 		return
 	}
 
@@ -89,9 +89,9 @@ func (h *Handler) CreateTask(w http.ResponseWriter, r *http.Request) {
 	parsedUserID, _ := strconv.ParseUint(userid, 10, 64)
 	t.UserID = uint(parsedUserID)
 
-	// pasr BookID
-	parsedBookID, _ := strconv.ParseUint(bookid, 10, 64)
-	t.BookID = uint(parsedBookID)
+	// pasr BoardID
+	parsedBoardID, _ := strconv.ParseUint(boardid, 10, 64)
+	t.BoardID = uint(parsedBoardID)
 
 	// call method to create user in DB
 	if err := t.Create(h.DB); err != nil {
@@ -115,10 +115,10 @@ func (h *Handler) GetTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// check for bookId in query
-	bookid := query.Get("bookid")
-	if bookid == "" {
-		utils.RespondWithError(w, http.StatusBadRequest, "query 'bookid' not found")
+	// check for boardId in query
+	boardid := query.Get("boardid")
+	if boardid == "" {
+		utils.RespondWithError(w, http.StatusBadRequest, "query 'boardid' not found")
 		return
 	}
 
@@ -130,7 +130,7 @@ func (h *Handler) GetTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// retrieve book
+	// retrieve board
 	task := Task{ID: uint(id)}
 	if err := task.Get(h.DB); err != nil {
 		utils.RespondWithError(w, http.StatusNotFound, "task not found")
@@ -153,10 +153,10 @@ func (h *Handler) UpdateTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// check for bookid in query
-	bookid := query.Get("bookid")
-	if bookid == "" {
-		utils.RespondWithError(w, http.StatusBadRequest, "query 'bookid' not found")
+	// check for boardid in query
+	boardid := query.Get("boardid")
+	if boardid == "" {
+		utils.RespondWithError(w, http.StatusBadRequest, "query 'boardid' not found")
 		return
 	}
 
@@ -202,10 +202,10 @@ func (h *Handler) DeleteTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// check for bookid in query
-	bookid := query.Get("bookid")
-	if bookid == "" {
-		utils.RespondWithError(w, http.StatusBadRequest, "query 'bookid' not found")
+	// check for boardid in query
+	boardid := query.Get("boardid")
+	if boardid == "" {
+		utils.RespondWithError(w, http.StatusBadRequest, "query 'boardid' not found")
 		return
 	}
 
@@ -217,7 +217,7 @@ func (h *Handler) DeleteTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// delete the book
+	// delete the board
 	task := Task{ID: uint(id)}
 	if err := task.Delete(h.DB); err != nil {
 		utils.RespondWithError(w, http.StatusInternalServerError, "unable to update task")

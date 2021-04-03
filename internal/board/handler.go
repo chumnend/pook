@@ -1,4 +1,4 @@
-package book
+package board
 
 import (
 	"encoding/json"
@@ -20,16 +20,16 @@ type Handler struct {
 func AttachHandler(r *mux.Router, db *gorm.DB) {
 	h := &Handler{DB: db}
 
-	r.HandleFunc("/books", h.ListBooksByUserID).Methods("GET")
-	r.HandleFunc("/books", h.CreateBook).Methods("POST", "OPTIONS")
-	r.HandleFunc("/book/{id:[0-9]+}", h.GetBook).Methods("GET")
-	r.HandleFunc("/book/{id:[0-9]+}", h.UpdateBook).Methods("PUT")
-	r.HandleFunc("/book/{id:[0-9]+}", h.DeleteBook).Methods("DELETE")
+	r.HandleFunc("/boards", h.ListBoardsByUserID).Methods("GET")
+	r.HandleFunc("/boards", h.CreateBoard).Methods("POST", "OPTIONS")
+	r.HandleFunc("/board/{id:[0-9]+}", h.GetBoard).Methods("GET")
+	r.HandleFunc("/board/{id:[0-9]+}", h.UpdateBoard).Methods("PUT")
+	r.HandleFunc("/board/{id:[0-9]+}", h.DeleteBoard).Methods("DELETE")
 }
 
-// ListBooksByUserID returns a list of Books
-func (h *Handler) ListBooksByUserID(w http.ResponseWriter, r *http.Request) {
-	log.Println("GET - list books")
+// ListBoardsByUserID returns a list of Boards
+func (h *Handler) ListBoardsByUserID(w http.ResponseWriter, r *http.Request) {
+	log.Println("GET - list boards")
 
 	query := r.URL.Query()
 
@@ -40,19 +40,19 @@ func (h *Handler) ListBooksByUserID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// get all books of a user
-	books, err := ListBooksByUserID(h.DB, userid)
+	// get all boards of a user
+	boards, err := ListBoardsByUserID(h.DB, userid)
 	if err != nil {
 		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	utils.RespondWithJSON(w, http.StatusOK, map[string]interface{}{"results": books})
+	utils.RespondWithJSON(w, http.StatusOK, map[string]interface{}{"results": boards})
 }
 
-// CreateBook returns a Book
-func (h *Handler) CreateBook(w http.ResponseWriter, r *http.Request) {
-	log.Println("POST - create book")
+// CreateBoard returns a Board
+func (h *Handler) CreateBoard(w http.ResponseWriter, r *http.Request) {
+	log.Println("POST - create board")
 
 	query := r.URL.Query()
 
@@ -63,8 +63,8 @@ func (h *Handler) CreateBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// create new book struct
-	var b Book
+	// create new board struct
+	var b Board
 	if err := json.NewDecoder(r.Body).Decode(&b); err != nil {
 		utils.RespondWithError(w, http.StatusBadRequest, err.Error())
 		return
@@ -84,9 +84,9 @@ func (h *Handler) CreateBook(w http.ResponseWriter, r *http.Request) {
 	utils.RespondWithJSON(w, http.StatusOK, map[string]interface{}{"result": b})
 }
 
-// GetBook returns a Book
-func (h *Handler) GetBook(w http.ResponseWriter, r *http.Request) {
-	log.Println("GET - get book")
+// GetBoard returns a Board
+func (h *Handler) GetBoard(w http.ResponseWriter, r *http.Request) {
+	log.Println("GET - get board")
 
 	query := r.URL.Query()
 
@@ -97,27 +97,27 @@ func (h *Handler) GetBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// get book id
+	// get board id
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		utils.RespondWithError(w, http.StatusBadRequest, "invalid book ID")
+		utils.RespondWithError(w, http.StatusBadRequest, "invalid board ID")
 		return
 	}
 
-	// retrieve book
-	book := Book{ID: uint(id)}
-	if err := book.Get(h.DB); err != nil {
-		utils.RespondWithError(w, http.StatusNotFound, "book not found")
+	// retrieve board
+	board := Board{ID: uint(id)}
+	if err := board.Get(h.DB); err != nil {
+		utils.RespondWithError(w, http.StatusNotFound, "board not found")
 		return
 	}
 
-	utils.RespondWithJSON(w, http.StatusOK, map[string]interface{}{"result": book})
+	utils.RespondWithJSON(w, http.StatusOK, map[string]interface{}{"result": board})
 }
 
-// UpdateBook returns a Book
-func (h *Handler) UpdateBook(w http.ResponseWriter, r *http.Request) {
-	log.Println("PUT - update book")
+// UpdateBoard returns a Board
+func (h *Handler) UpdateBoard(w http.ResponseWriter, r *http.Request) {
+	log.Println("PUT - update board")
 
 	query := r.URL.Query()
 
@@ -128,38 +128,38 @@ func (h *Handler) UpdateBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// get book id
+	// get board id
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		utils.RespondWithError(w, http.StatusBadRequest, "invalid book ID")
+		utils.RespondWithError(w, http.StatusBadRequest, "invalid board ID")
 		return
 	}
 
-	// create new book struct
-	var book Book
+	// create new board struct
+	var board Board
 	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&book); err != nil {
+	if err := decoder.Decode(&board); err != nil {
 		utils.RespondWithError(w, http.StatusBadRequest, "invalid request payload")
 		return
 	}
 	defer r.Body.Close()
 
 	// modify fields
-	book.ID = uint(id)
+	board.ID = uint(id)
 
 	// save the user
-	if err := book.Update(h.DB); err != nil {
-		utils.RespondWithError(w, http.StatusInternalServerError, "unable to update book")
+	if err := board.Update(h.DB); err != nil {
+		utils.RespondWithError(w, http.StatusInternalServerError, "unable to update board")
 		return
 	}
 
-	utils.RespondWithJSON(w, http.StatusOK, map[string]interface{}{"result": book})
+	utils.RespondWithJSON(w, http.StatusOK, map[string]interface{}{"result": board})
 }
 
-// DeleteBook returns a Book
-func (h *Handler) DeleteBook(w http.ResponseWriter, r *http.Request) {
-	log.Println("DELETE - delete book")
+// DeleteBoard returns a Board
+func (h *Handler) DeleteBoard(w http.ResponseWriter, r *http.Request) {
+	log.Println("DELETE - delete board")
 
 	query := r.URL.Query()
 
@@ -170,20 +170,20 @@ func (h *Handler) DeleteBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// get book id
+	// get board id
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		utils.RespondWithError(w, http.StatusBadRequest, "invalid book ID")
+		utils.RespondWithError(w, http.StatusBadRequest, "invalid board ID")
 		return
 	}
 
-	// delete the book
-	book := Book{ID: uint(id)}
-	if err := book.Delete(h.DB); err != nil {
-		utils.RespondWithError(w, http.StatusInternalServerError, "unable to update book")
+	// delete the board
+	board := Board{ID: uint(id)}
+	if err := board.Delete(h.DB); err != nil {
+		utils.RespondWithError(w, http.StatusInternalServerError, "unable to update board")
 		return
 	}
 
-	utils.RespondWithJSON(w, http.StatusOK, map[string]interface{}{"result": "book delete successfully"})
+	utils.RespondWithJSON(w, http.StatusOK, map[string]interface{}{"result": "board delete successfully"})
 }

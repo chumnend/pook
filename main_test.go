@@ -62,14 +62,14 @@ func checkResponseCode(t *testing.T, expected, actual int) {
 	}
 }
 
-func fillTables(numBooks int, numTasks int) {
+func fillTables(numBoards int, numTasks int) {
 	a.DB.Exec("INSERT INTO users(email, password) VALUES ($1, $2)", "tester", "test123")
 
-	for i := 0; i < numBooks; i++ {
-		a.DB.Exec("INSERT INTO books(title, user_id) VALUES ($1, $2)", "book"+strconv.Itoa(i+1), "1")
+	for i := 0; i < numBoards; i++ {
+		a.DB.Exec("INSERT INTO boards(title, user_id) VALUES ($1, $2)", "board"+strconv.Itoa(i+1), "1")
 
 		for j := 0; j < numTasks; j++ {
-			a.DB.Exec("INSERT INTO tasks(title, user_id, book_id) VALUES ($1, $2, $3)", "task"+strconv.Itoa(j+1), "1", strconv.Itoa(i+1))
+			a.DB.Exec("INSERT INTO tasks(title, user_id, board_id) VALUES ($1, $2, $3)", "task"+strconv.Itoa(j+1), "1", strconv.Itoa(i+1))
 		}
 	}
 }
@@ -77,8 +77,8 @@ func fillTables(numBooks int, numTasks int) {
 func clearTables() {
 	a.DB.Exec("DELETE FROM users")
 	a.DB.Exec("ALTER SEQUENCE users_id_seq RESTART WITH 1")
-	a.DB.Exec("DELETE FROM books")
-	a.DB.Exec("ALTER SEQUENCE books_id_seq RESTART WITH 1")
+	a.DB.Exec("DELETE FROM boards")
+	a.DB.Exec("ALTER SEQUENCE boards_id_seq RESTART WITH 1")
 	a.DB.Exec("DELETE FROM tasks")
 	a.DB.Exec("ALTER SEQUENCE tasks_id_seq RESTART WITH 1")
 }
@@ -151,11 +151,11 @@ func TestLoginHandler(t *testing.T) {
 	}
 }
 
-func TestEmptyListBooksHandler(t *testing.T) {
+func TestEmptyListBoardsHandler(t *testing.T) {
 	clearTables()
 	fillTables(0, 0)
 
-	req, _ := http.NewRequest("GET", "/api/v1/books?userid=1", nil)
+	req, _ := http.NewRequest("GET", "/api/v1/boards?userid=1", nil)
 	res := executeRequest(req)
 
 	checkResponseCode(t, http.StatusOK, res.Code)
@@ -175,11 +175,11 @@ func TestEmptyListBooksHandler(t *testing.T) {
 	}
 }
 
-func TestListBooksHandler(t *testing.T) {
+func TestListBoardsHandler(t *testing.T) {
 	clearTables()
 	fillTables(3, 0)
 
-	req, _ := http.NewRequest("GET", "/api/v1/books?userid=1", nil)
+	req, _ := http.NewRequest("GET", "/api/v1/boards?userid=1", nil)
 	res := executeRequest(req)
 
 	checkResponseCode(t, http.StatusOK, res.Code)
@@ -199,11 +199,11 @@ func TestListBooksHandler(t *testing.T) {
 	}
 }
 
-func TestCreateBook(t *testing.T) {
+func TestCreateBoard(t *testing.T) {
 	clearTables()
 
 	var jsonStr = []byte(`{"title":"test"}`)
-	req, _ := http.NewRequest("POST", "/api/v1/books?userid=1", bytes.NewBuffer(jsonStr))
+	req, _ := http.NewRequest("POST", "/api/v1/boards?userid=1", bytes.NewBuffer(jsonStr))
 	req.Header.Set("Content-Type", "application/json")
 	res := executeRequest(req)
 
@@ -228,10 +228,10 @@ func TestCreateBook(t *testing.T) {
 	}
 }
 
-func TestNonExistentGetBook(t *testing.T) {
+func TestNonExistentGetBoard(t *testing.T) {
 	clearTables()
 
-	req, _ := http.NewRequest("GET", "/api/v1/book/1?userid=1", nil)
+	req, _ := http.NewRequest("GET", "/api/v1/board/1?userid=1", nil)
 	res := executeRequest(req)
 
 	checkResponseCode(t, http.StatusNotFound, res.Code)
@@ -239,16 +239,16 @@ func TestNonExistentGetBook(t *testing.T) {
 	var m map[string]interface{}
 	json.Unmarshal(res.Body.Bytes(), &m)
 
-	if m["error"] != "book not found" {
-		t.Errorf("Expected the 'error' to be 'book not found'. Got '%v'", m["error"])
+	if m["error"] != "board not found" {
+		t.Errorf("Expected the 'error' to be 'board not found'. Got '%v'", m["error"])
 	}
 }
 
-func TestGetBook(t *testing.T) {
+func TestGetBoard(t *testing.T) {
 	clearTables()
 	fillTables(1, 0)
 
-	req, _ := http.NewRequest("GET", "/api/v1/book/1?userid=1", nil)
+	req, _ := http.NewRequest("GET", "/api/v1/board/1?userid=1", nil)
 	res := executeRequest(req)
 
 	checkResponseCode(t, http.StatusOK, res.Code)
@@ -267,22 +267,22 @@ func TestGetBook(t *testing.T) {
 		t.Errorf("Expected `id` to be '1'. Got '%v'", m["id"])
 	}
 
-	if result["title"] != "book1" {
-		t.Errorf("Expected 'title' to be 'book1'. Got '%v'", m["title"])
+	if result["title"] != "board1" {
+		t.Errorf("Expected 'title' to be 'board1'. Got '%v'", m["title"])
 	}
 }
 
-func TestUpdateBook(t *testing.T) {
+func TestUpdateBoard(t *testing.T) {
 	clearTables()
 	fillTables(1, 0)
 
-	req, _ := http.NewRequest("GET", "/api/v1/book/1?userid=1", nil)
+	req, _ := http.NewRequest("GET", "/api/v1/board/1?userid=1", nil)
 	res := executeRequest(req)
 	var original map[string]interface{}
 	json.Unmarshal(res.Body.Bytes(), &original)
 
 	var jsonStr = []byte(`{"title": "new title", "body": "new body"}`)
-	req, _ = http.NewRequest("PUT", "/api/v1/book/1?userid=1", bytes.NewBuffer(jsonStr))
+	req, _ = http.NewRequest("PUT", "/api/v1/board/1?userid=1", bytes.NewBuffer(jsonStr))
 	req.Header.Set("Content-Type", "application/json")
 	res = executeRequest(req)
 
@@ -312,20 +312,20 @@ func TestUpdateBook(t *testing.T) {
 	}
 }
 
-func TestDeleteBook(t *testing.T) {
+func TestDeleteBoard(t *testing.T) {
 	clearTables()
 	fillTables(1, 0)
 
-	req, _ := http.NewRequest("GET", "/api/v1/book/1?userid=1", nil)
+	req, _ := http.NewRequest("GET", "/api/v1/board/1?userid=1", nil)
 	res := executeRequest(req)
 	checkResponseCode(t, http.StatusOK, res.Code)
 
-	req, _ = http.NewRequest("DELETE", "/api/v1/book/1?userid=1", nil)
+	req, _ = http.NewRequest("DELETE", "/api/v1/board/1?userid=1", nil)
 	res = executeRequest(req)
 
 	checkResponseCode(t, http.StatusOK, res.Code)
 
-	req, _ = http.NewRequest("GET", "/api/v1/book/1?userid=1", nil)
+	req, _ = http.NewRequest("GET", "/api/v1/board/1?userid=1", nil)
 	res = executeRequest(req)
 	checkResponseCode(t, http.StatusNotFound, res.Code)
 }
@@ -334,7 +334,7 @@ func TestEmptyListTasksHandler(t *testing.T) {
 	clearTables()
 	fillTables(1, 0)
 
-	req, _ := http.NewRequest("GET", "/api/v1/tasks?userid=1&bookid=1", nil)
+	req, _ := http.NewRequest("GET", "/api/v1/tasks?userid=1&boardid=1", nil)
 	res := executeRequest(req)
 
 	checkResponseCode(t, http.StatusOK, res.Code)
@@ -358,7 +358,7 @@ func TestListTasksHandler(t *testing.T) {
 	clearTables()
 	fillTables(1, 3)
 
-	req, _ := http.NewRequest("GET", "/api/v1/tasks?userid=1&bookid=1", nil)
+	req, _ := http.NewRequest("GET", "/api/v1/tasks?userid=1&boardid=1", nil)
 	res := executeRequest(req)
 
 	checkResponseCode(t, http.StatusOK, res.Code)
@@ -383,7 +383,7 @@ func TestCreateTaskHandler(t *testing.T) {
 	fillTables(1, 0)
 
 	var jsonStr = []byte(`{"title":"test", "body":"test"}`)
-	req, _ := http.NewRequest("POST", "/api/v1/tasks?userid=1&bookid=1", bytes.NewBuffer(jsonStr))
+	req, _ := http.NewRequest("POST", "/api/v1/tasks?userid=1&boardid=1", bytes.NewBuffer(jsonStr))
 	req.Header.Set("Content-Type", "application/json")
 	res := executeRequest(req)
 
@@ -416,7 +416,7 @@ func TestNonExistentGetTaskHandler(t *testing.T) {
 	clearTables()
 	fillTables(1, 0)
 
-	req, _ := http.NewRequest("GET", "/api/v1/task/1?userid=1&bookid=1", nil)
+	req, _ := http.NewRequest("GET", "/api/v1/task/1?userid=1&boardid=1", nil)
 	res := executeRequest(req)
 
 	checkResponseCode(t, http.StatusNotFound, res.Code)
@@ -433,7 +433,7 @@ func TestGetTaskHandler(t *testing.T) {
 	clearTables()
 	fillTables(1, 1)
 
-	req, _ := http.NewRequest("GET", "/api/v1/task/1?userid=1&bookid=1", nil)
+	req, _ := http.NewRequest("GET", "/api/v1/task/1?userid=1&boardid=1", nil)
 	res := executeRequest(req)
 
 	checkResponseCode(t, http.StatusOK, res.Code)
@@ -461,13 +461,13 @@ func TestUpdateTaskHandler(t *testing.T) {
 	clearTables()
 	fillTables(1, 1)
 
-	req, _ := http.NewRequest("GET", "/api/v1/task/1?userid=1&bookid=1", nil)
+	req, _ := http.NewRequest("GET", "/api/v1/task/1?userid=1&boardid=1", nil)
 	res := executeRequest(req)
 	var original map[string]interface{}
 	json.Unmarshal(res.Body.Bytes(), &original)
 
 	var jsonStr = []byte(`{"title": "new title", "body": "new body"}`)
-	req, _ = http.NewRequest("PUT", "/api/v1/task/1?userid=1&bookid=1", bytes.NewBuffer(jsonStr))
+	req, _ = http.NewRequest("PUT", "/api/v1/task/1?userid=1&boardid=1", bytes.NewBuffer(jsonStr))
 	req.Header.Set("Content-Type", "application/json")
 	res = executeRequest(req)
 
@@ -501,16 +501,16 @@ func TestDeleteTaskHandler(t *testing.T) {
 	clearTables()
 	fillTables(1, 1)
 
-	req, _ := http.NewRequest("GET", "/api/v1/task/1?userid=1&bookid=1", nil)
+	req, _ := http.NewRequest("GET", "/api/v1/task/1?userid=1&boardid=1", nil)
 	res := executeRequest(req)
 	checkResponseCode(t, http.StatusOK, res.Code)
 
-	req, _ = http.NewRequest("DELETE", "/api/v1/task/1?userid=1&bookid=1", nil)
+	req, _ = http.NewRequest("DELETE", "/api/v1/task/1?userid=1&boardid=1", nil)
 	res = executeRequest(req)
 
 	checkResponseCode(t, http.StatusOK, res.Code)
 
-	req, _ = http.NewRequest("GET", "/api/v1/task/1?userid=1&bookid=1", nil)
+	req, _ = http.NewRequest("GET", "/api/v1/task/1?userid=1&boardid=1", nil)
 	res = executeRequest(req)
 	checkResponseCode(t, http.StatusNotFound, res.Code)
 }

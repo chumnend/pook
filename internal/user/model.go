@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/chumnend/pook/internal/book"
+	"github.com/chumnend/pook/internal/board"
 	"github.com/chumnend/pook/internal/task"
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/gorm"
@@ -23,8 +23,8 @@ type User struct {
 	UpdatedAt time.Time `json:"updatedAt"`
 	Admin     bool      `gorm:"default:false" json:"admin"`
 
-	Books []book.Book `json:"books"`
-	Tasks []task.Task `json:"tasks"`
+	Boards []board.Board `json:"boards"`
+	Tasks  []task.Task   `json:"tasks"`
 }
 
 // NewUser returns a new User struct

@@ -14,8 +14,8 @@ type Task struct {
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 
-	UserID uint `json:"user_id"`
-	BookID uint `json:"book_id"`
+	UserID  uint `json:"user_id"`
+	BoardID uint `json:"board_id"`
 }
 
 // NewTask returns a new Task struct
@@ -23,11 +23,11 @@ func NewTask() *Task {
 	return &Task{}
 }
 
-// ListTasksByBookID returns a list of tasks with given bookID
-func ListTasksByBookID(db *gorm.DB, id string) ([]Task, error) {
+// ListTasksByBoardID returns a list of tasks with given boardID
+func ListTasksByBoardID(db *gorm.DB, id string) ([]Task, error) {
 	var tasks []Task
 
-	err := db.Where("book_id = ?", id).Find(&tasks).Error
+	err := db.Where("board_id = ?", id).Find(&tasks).Error
 	if err != nil {
 		return tasks, err
 	}

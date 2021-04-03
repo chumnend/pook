@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/chumnend/pook/internal/book"
+	"github.com/chumnend/pook/internal/board"
 	"github.com/chumnend/pook/internal/task"
 	"github.com/chumnend/pook/internal/user"
 	"github.com/chumnend/pook/internal/utils"
@@ -31,7 +31,7 @@ func NewApp(connectionURL string) *App {
 
 	// migrate models to db
 	db.AutoMigrate(user.User{})
-	db.AutoMigrate(book.Book{})
+	db.AutoMigrate(board.Board{})
 	db.AutoMigrate(task.Task{})
 
 	// create router
@@ -46,7 +46,7 @@ func NewApp(connectionURL string) *App {
 
 	// attach api routes
 	user.AttachHandler(api, db)
-	book.AttachHandler(api, db)
+	board.AttachHandler(api, db)
 	task.AttachHandler(api, db)
 
 	// serve react files on catchall handler
