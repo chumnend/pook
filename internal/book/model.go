@@ -24,6 +24,18 @@ func NewBook() *Book {
 	return &Book{}
 }
 
+// ListBooksByUserID returns a list of books with given UserID
+func ListBooksByUserID(db *gorm.DB, id string) ([]Book, error) {
+	var books []Book
+
+	err := db.Where("user_id = ?", id).Find(&books).Error
+	if err != nil {
+		return books, err
+	}
+
+	return books, nil
+}
+
 // Create adds a Book to the DB
 func (b *Book) Create(db *gorm.DB) error {
 	return db.Create(&b).Error
@@ -42,28 +54,4 @@ func (b *Book) Update(db *gorm.DB) error {
 // Delete adds a Book to the DB
 func (b *Book) Delete(db *gorm.DB) error {
 	return db.Delete(&b).Error
-}
-
-// ListBooks returns a list of books
-func ListBooks(db *gorm.DB) ([]Book, error) {
-	var books []Book
-
-	err := db.Find(&books).Error
-	if err != nil {
-		return books, err
-	}
-
-	return books, nil
-}
-
-// ListBooksByUserID returns a list of books with given UserID
-func ListBooksByUserID(db *gorm.DB, id string) ([]Book, error) {
-	var books []Book
-
-	err := db.Where("user_id = ?", id).Find(&books).Error
-	if err != nil {
-		return books, err
-	}
-
-	return books, nil
 }

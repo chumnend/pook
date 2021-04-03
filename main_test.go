@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -44,6 +45,7 @@ func TestMain(m *testing.M) {
 	a = pook.NewApp(dbURL)
 
 	// start test runner
+	log.SetOutput(ioutil.Discard)
 	code := m.Run()
 	os.Exit(code)
 }
@@ -60,11 +62,15 @@ func checkResponseCode(t *testing.T, expected, actual int) {
 	}
 }
 
-func addUser(numBooks int) {
+func fillTables(numBooks int, numTasks int) {
 	a.DB.Exec("INSERT INTO users(email, password) VALUES ($1, $2)", "tester", "test123")
 
 	for i := 0; i < numBooks; i++ {
-		a.DB.Exec("INSERT INTO books(title, user_id) VALUES ($1, $2)", "test"+strconv.Itoa(i+1), "1")
+		a.DB.Exec("INSERT INTO books(title, user_id) VALUES ($1, $2)", "book"+strconv.Itoa(i+1), "1")
+
+		for j := 0; j < numTasks; j++ {
+			a.DB.Exec("INSERT INTO tasks(title, user_id, book_id) VALUES ($1, $2, $3)", "task"+strconv.Itoa(j+1), "1", strconv.Itoa(i+1))
+		}
 	}
 }
 
@@ -73,6 +79,8 @@ func clearTables() {
 	a.DB.Exec("ALTER SEQUENCE users_id_seq RESTART WITH 1")
 	a.DB.Exec("DELETE FROM books")
 	a.DB.Exec("ALTER SEQUENCE books_id_seq RESTART WITH 1")
+	a.DB.Exec("DELETE FROM tasks")
+	a.DB.Exec("ALTER SEQUENCE tasks_id_seq RESTART WITH 1")
 }
 
 func TestApiHealthHandler(t *testing.T) {
@@ -145,9 +153,9 @@ func TestLoginHandler(t *testing.T) {
 
 func TestEmptyListBooksHandler(t *testing.T) {
 	clearTables()
-	addUser(0)
+	fillTables(0, 0)
 
-	req, _ := http.NewRequest("GET", "/api/v1/books?uid=1", nil)
+	req, _ := http.NewRequest("GET", "/api/v1/books?userid=1", nil)
 	res := executeRequest(req)
 
 	checkResponseCode(t, http.StatusOK, res.Code)
@@ -169,9 +177,9 @@ func TestEmptyListBooksHandler(t *testing.T) {
 
 func TestListBooksHandler(t *testing.T) {
 	clearTables()
-	addUser(3)
+	fillTables(3, 0)
 
-	req, _ := http.NewRequest("GET", "/api/v1/books?uid=1", nil)
+	req, _ := http.NewRequest("GET", "/api/v1/books?userid=1", nil)
 	res := executeRequest(req)
 
 	checkResponseCode(t, http.StatusOK, res.Code)
@@ -195,7 +203,7 @@ func TestCreateBook(t *testing.T) {
 	clearTables()
 
 	var jsonStr = []byte(`{"title":"test"}`)
-	req, _ := http.NewRequest("POST", "/api/v1/books?uid=1", bytes.NewBuffer(jsonStr))
+	req, _ := http.NewRequest("POST", "/api/v1/books?userid=1", bytes.NewBuffer(jsonStr))
 	req.Header.Set("Content-Type", "application/json")
 	res := executeRequest(req)
 
@@ -223,7 +231,7 @@ func TestCreateBook(t *testing.T) {
 func TestNonExistentGetBook(t *testing.T) {
 	clearTables()
 
-	req, _ := http.NewRequest("GET", "/api/v1/book/1?uid=1", nil)
+	req, _ := http.NewRequest("GET", "/api/v1/book/1?userid=1", nil)
 	res := executeRequest(req)
 
 	checkResponseCode(t, http.StatusNotFound, res.Code)
@@ -238,9 +246,9 @@ func TestNonExistentGetBook(t *testing.T) {
 
 func TestGetBook(t *testing.T) {
 	clearTables()
-	addUser(1)
+	fillTables(1, 0)
 
-	req, _ := http.NewRequest("GET", "/api/v1/book/1?uid=1", nil)
+	req, _ := http.NewRequest("GET", "/api/v1/book/1?userid=1", nil)
 	res := executeRequest(req)
 
 	checkResponseCode(t, http.StatusOK, res.Code)
@@ -259,22 +267,22 @@ func TestGetBook(t *testing.T) {
 		t.Errorf("Expected `id` to be '1'. Got '%v'", m["id"])
 	}
 
-	if result["title"] != "test1" {
-		t.Errorf("Expected 'title' to be 'test1'. Got '%v'", m["title"])
+	if result["title"] != "book1" {
+		t.Errorf("Expected 'title' to be 'book1'. Got '%v'", m["title"])
 	}
 }
 
 func TestUpdateBook(t *testing.T) {
 	clearTables()
-	addUser(1)
+	fillTables(1, 0)
 
-	req, _ := http.NewRequest("GET", "/api/v1/book/1?uid=1", nil)
+	req, _ := http.NewRequest("GET", "/api/v1/book/1?userid=1", nil)
 	res := executeRequest(req)
 	var original map[string]interface{}
 	json.Unmarshal(res.Body.Bytes(), &original)
 
 	var jsonStr = []byte(`{"title": "new title", "body": "new body"}`)
-	req, _ = http.NewRequest("PUT", "/api/v1/book/1?uid=1", bytes.NewBuffer(jsonStr))
+	req, _ = http.NewRequest("PUT", "/api/v1/book/1?userid=1", bytes.NewBuffer(jsonStr))
 	req.Header.Set("Content-Type", "application/json")
 	res = executeRequest(req)
 
@@ -306,18 +314,203 @@ func TestUpdateBook(t *testing.T) {
 
 func TestDeleteBook(t *testing.T) {
 	clearTables()
-	addUser(1)
+	fillTables(1, 0)
 
-	req, _ := http.NewRequest("GET", "/api/v1/book/1?uid=1", nil)
+	req, _ := http.NewRequest("GET", "/api/v1/book/1?userid=1", nil)
 	res := executeRequest(req)
 	checkResponseCode(t, http.StatusOK, res.Code)
 
-	req, _ = http.NewRequest("DELETE", "/api/v1/book/1?uid=1", nil)
+	req, _ = http.NewRequest("DELETE", "/api/v1/book/1?userid=1", nil)
 	res = executeRequest(req)
 
 	checkResponseCode(t, http.StatusOK, res.Code)
 
-	req, _ = http.NewRequest("GET", "/api/v1/book/1?uid=1", nil)
+	req, _ = http.NewRequest("GET", "/api/v1/book/1?userid=1", nil)
+	res = executeRequest(req)
+	checkResponseCode(t, http.StatusNotFound, res.Code)
+}
+
+func TestEmptyListTasksHandler(t *testing.T) {
+	clearTables()
+	fillTables(1, 0)
+
+	req, _ := http.NewRequest("GET", "/api/v1/tasks?userid=1&bookid=1", nil)
+	res := executeRequest(req)
+
+	checkResponseCode(t, http.StatusOK, res.Code)
+
+	var m map[string]interface{}
+	json.Unmarshal(res.Body.Bytes(), &m)
+
+	if _, ok := m["results"]; !ok {
+		t.Errorf("Expected `results` to exist. Got '%v'", m)
+		return
+	}
+
+	results := m["results"].([]interface{})
+
+	if len(results) != 0 {
+		t.Errorf("Expected 'results' to be empty. Got %v.", m["results"])
+	}
+}
+
+func TestListTasksHandler(t *testing.T) {
+	clearTables()
+	fillTables(1, 3)
+
+	req, _ := http.NewRequest("GET", "/api/v1/tasks?userid=1&bookid=1", nil)
+	res := executeRequest(req)
+
+	checkResponseCode(t, http.StatusOK, res.Code)
+
+	var m map[string]interface{}
+	json.Unmarshal(res.Body.Bytes(), &m)
+
+	if _, ok := m["results"]; !ok {
+		t.Errorf("Expected `results` to exist. Got '%v'", m)
+		return
+	}
+
+	results := m["results"].([]interface{})
+
+	if len(results) != 3 {
+		t.Errorf("Expected 'results' to have length of 3. Got %v.", m["results"])
+	}
+}
+
+func TestCreateTaskHandler(t *testing.T) {
+	clearTables()
+	fillTables(1, 0)
+
+	var jsonStr = []byte(`{"title":"test", "body":"test"}`)
+	req, _ := http.NewRequest("POST", "/api/v1/tasks?userid=1&bookid=1", bytes.NewBuffer(jsonStr))
+	req.Header.Set("Content-Type", "application/json")
+	res := executeRequest(req)
+
+	checkResponseCode(t, http.StatusOK, res.Code)
+
+	var m map[string]interface{}
+	json.Unmarshal(res.Body.Bytes(), &m)
+
+	if _, ok := m["result"]; !ok {
+		t.Errorf("Expected `result` to exist. Got '%v'", m)
+		return
+	}
+
+	result := m["result"].(map[string]interface{})
+
+	if result["id"] != 1.0 {
+		t.Errorf("Expected `id` to be '1'. Got '%v'", m["id"])
+	}
+
+	if result["title"] != "test" {
+		t.Errorf("Expected 'title' to be 'test'. Got '%v'", m["title"])
+	}
+
+	if result["body"] != "test" {
+		t.Errorf("Expected 'body' to be 'test'. Got '%v'", m["body"])
+	}
+}
+
+func TestNonExistentGetTaskHandler(t *testing.T) {
+	clearTables()
+	fillTables(1, 0)
+
+	req, _ := http.NewRequest("GET", "/api/v1/task/1?userid=1&bookid=1", nil)
+	res := executeRequest(req)
+
+	checkResponseCode(t, http.StatusNotFound, res.Code)
+
+	var m map[string]interface{}
+	json.Unmarshal(res.Body.Bytes(), &m)
+
+	if m["error"] != "task not found" {
+		t.Errorf("Expected the 'error' to be 'task not found'. Got '%v'", m["error"])
+	}
+}
+
+func TestGetTaskHandler(t *testing.T) {
+	clearTables()
+	fillTables(1, 1)
+
+	req, _ := http.NewRequest("GET", "/api/v1/task/1?userid=1&bookid=1", nil)
+	res := executeRequest(req)
+
+	checkResponseCode(t, http.StatusOK, res.Code)
+
+	var m map[string]interface{}
+	json.Unmarshal(res.Body.Bytes(), &m)
+
+	if _, ok := m["result"]; !ok {
+		t.Errorf("Expected `result` to exist. Got '%v'", m)
+		return
+	}
+
+	result := m["result"].(map[string]interface{})
+
+	if result["id"] != 1.0 {
+		t.Errorf("Expected `id` to be '1'. Got '%v'", m["id"])
+	}
+
+	if result["title"] != "task1" {
+		t.Errorf("Expected 'title' to be 'task1'. Got '%v'", m["title"])
+	}
+}
+
+func TestUpdateTaskHandler(t *testing.T) {
+	clearTables()
+	fillTables(1, 1)
+
+	req, _ := http.NewRequest("GET", "/api/v1/task/1?userid=1&bookid=1", nil)
+	res := executeRequest(req)
+	var original map[string]interface{}
+	json.Unmarshal(res.Body.Bytes(), &original)
+
+	var jsonStr = []byte(`{"title": "new title", "body": "new body"}`)
+	req, _ = http.NewRequest("PUT", "/api/v1/task/1?userid=1&bookid=1", bytes.NewBuffer(jsonStr))
+	req.Header.Set("Content-Type", "application/json")
+	res = executeRequest(req)
+
+	checkResponseCode(t, http.StatusOK, res.Code)
+
+	var m map[string]interface{}
+	json.Unmarshal(res.Body.Bytes(), &m)
+
+	if _, ok := m["result"]; !ok {
+		t.Errorf("Expected `result` to exist. Got '%v'", m)
+		return
+	}
+
+	orig := original["result"].(map[string]interface{})
+	result := m["result"].(map[string]interface{})
+
+	if result["id"] != orig["id"] {
+		t.Errorf("Expected the id to remain the same (%v). Got %v", orig["id"], result["id"])
+	}
+
+	if result["title"] == orig["title"] {
+		t.Errorf("Expected the name to change from '%v' to '%v'. Got '%v'", orig["title"], result["title"], result["title"])
+	}
+
+	if result["body"] == orig["body"] {
+		t.Errorf("Expected the price to change from '%v' to '%v'. Got '%v'", orig["body"], result["body"], result["body"])
+	}
+}
+
+func TestDeleteTaskHandler(t *testing.T) {
+	clearTables()
+	fillTables(1, 1)
+
+	req, _ := http.NewRequest("GET", "/api/v1/task/1?userid=1&bookid=1", nil)
+	res := executeRequest(req)
+	checkResponseCode(t, http.StatusOK, res.Code)
+
+	req, _ = http.NewRequest("DELETE", "/api/v1/task/1?userid=1&bookid=1", nil)
+	res = executeRequest(req)
+
+	checkResponseCode(t, http.StatusOK, res.Code)
+
+	req, _ = http.NewRequest("GET", "/api/v1/task/1?userid=1&bookid=1", nil)
 	res = executeRequest(req)
 	checkResponseCode(t, http.StatusNotFound, res.Code)
 }

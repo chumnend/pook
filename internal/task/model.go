@@ -1,7 +1,6 @@
 package task
 
 import (
-	"errors"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -15,8 +14,8 @@ type Task struct {
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 
-	UserID uint
-	BookID uint
+	UserID uint `json:"user_id"`
+	BookID uint `json:"book_id"`
 }
 
 // NewTask returns a new Task struct
@@ -24,22 +23,34 @@ func NewTask() *Task {
 	return &Task{}
 }
 
+// ListTasksByBookID returns a list of tasks with given bookID
+func ListTasksByBookID(db *gorm.DB, id string) ([]Task, error) {
+	var tasks []Task
+
+	err := db.Where("book_id = ?", id).Find(&tasks).Error
+	if err != nil {
+		return tasks, err
+	}
+
+	return tasks, nil
+}
+
 // Create adds a task to the DB
 func (t *Task) Create(db *gorm.DB) error {
-	return errors.New("Not implemented")
+	return db.Create(&t).Error
 }
 
 // Get adds a task to the DB
 func (t *Task) Get(db *gorm.DB) error {
-	return errors.New("Not implemented")
+	return db.First(&t).Error
 }
 
 // Update adds a task to the DB
 func (t *Task) Update(db *gorm.DB) error {
-	return errors.New("Not implemented")
+	return db.Model(&t).Update("title", "body").Error
 }
 
 // Delete adds a task to the DB
 func (t *Task) Delete(db *gorm.DB) error {
-	return errors.New("Not implemented")
+	return db.Delete(&t).Error
 }
