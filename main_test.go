@@ -63,7 +63,7 @@ func checkResponseCode(t *testing.T, expected, actual int) {
 }
 
 func fillTables(numBoards int, numTasks int) {
-	a.DB.Exec("INSERT INTO users(email, password) VALUES ($1, $2)", "tester", "test123")
+	a.DB.Exec("INSERT INTO users(email, password) VALUES ($1, $2)", "tester", "123")
 
 	for i := 0; i < numBoards; i++ {
 		a.DB.Exec("INSERT INTO boards(title, user_id) VALUES ($1, $2)", "board"+strconv.Itoa(i+1), "1")
@@ -126,17 +126,53 @@ func TestRegisterHandler(t *testing.T) {
 	}
 }
 
+func TestMissingEmailRegisterHandler(t *testing.T) {
+	clearTables()
+
+	var jsonStr = []byte(`{"password": "test123"}`)
+	req, _ := http.NewRequest("POST", "/api/v1/register", bytes.NewBuffer(jsonStr))
+	req.Header.Set("Content-Type", "application/json")
+	res := executeRequest(req)
+
+	checkResponseCode(t, http.StatusBadRequest, res.Code)
+
+	var m map[string]interface{}
+	json.Unmarshal(res.Body.Bytes(), &m)
+
+	if m["error"] != "missing and/or invalid information" {
+		t.Errorf("Expected the 'error' to be 'missing and/or invalid information'. Got '%v'", m["error"])
+	}
+}
+
+func TestMissingPasswordRegisterHandler(t *testing.T) {
+	clearTables()
+
+	var jsonStr = []byte(`{"email":"test@example.com"}`)
+	req, _ := http.NewRequest("POST", "/api/v1/register", bytes.NewBuffer(jsonStr))
+	req.Header.Set("Content-Type", "application/json")
+	res := executeRequest(req)
+
+	checkResponseCode(t, http.StatusBadRequest, res.Code)
+
+	var m map[string]interface{}
+	json.Unmarshal(res.Body.Bytes(), &m)
+
+	if m["error"] != "missing and/or invalid information" {
+		t.Errorf("Expected the 'error' to be 'missing and/or invalid information'. Got '%v'", m["error"])
+	}
+}
+
 func TestLoginHandler(t *testing.T) {
 	clearTables()
 
-	var jsonStr = []byte(`{"email":"test@example.com", "password": "test123"}`)
+	var jsonStr = []byte(`{"email":"test@example.com", "password": "123"}`)
 	req, _ := http.NewRequest("POST", "/api/v1/register", bytes.NewBuffer(jsonStr))
 	req.Header.Set("Content-Type", "application/json")
 	res := executeRequest(req)
 
 	checkResponseCode(t, http.StatusOK, res.Code)
 
-	jsonStr = []byte(`{"email":"test@example.com", "password": "test123"}`)
+	jsonStr = []byte(`{"email":"test@example.com", "password": "123"}`)
 	req, _ = http.NewRequest("POST", "/api/v1/login", bytes.NewBuffer(jsonStr))
 	req.Header.Set("Content-Type", "application/json")
 	res = executeRequest(req)
@@ -148,6 +184,49 @@ func TestLoginHandler(t *testing.T) {
 
 	if m["token"] == "" {
 		t.Errorf("Expected 'token' to be non empty. Got %v.", m["token"])
+	}
+}
+
+func TestBadEmailLoginHandler(t *testing.T) {
+	clearTables()
+
+	jsonStr := []byte(`{"email":"test@example.com", "password": "123"}`)
+	req, _ := http.NewRequest("POST", "/api/v1/login", bytes.NewBuffer(jsonStr))
+	req.Header.Set("Content-Type", "application/json")
+	res := executeRequest(req)
+
+	checkResponseCode(t, http.StatusBadRequest, res.Code)
+
+	var m map[string]interface{}
+	json.Unmarshal(res.Body.Bytes(), &m)
+
+	if m["error"] != "invalid email and/or password" {
+		t.Errorf("Expected the 'error' to be 'invalid email and/or password'. Got '%v'", m["error"])
+	}
+}
+
+func TestBadPasswordLoginHandler(t *testing.T) {
+	clearTables()
+
+	var jsonStr = []byte(`{"email":"test@example.com", "password": "123"}`)
+	req, _ := http.NewRequest("POST", "/api/v1/register", bytes.NewBuffer(jsonStr))
+	req.Header.Set("Content-Type", "application/json")
+	res := executeRequest(req)
+
+	checkResponseCode(t, http.StatusOK, res.Code)
+
+	jsonStr = []byte(`{"email":"test@example.com", "password": "567"}`)
+	req, _ = http.NewRequest("POST", "/api/v1/login", bytes.NewBuffer(jsonStr))
+	req.Header.Set("Content-Type", "application/json")
+	res = executeRequest(req)
+
+	checkResponseCode(t, http.StatusBadRequest, res.Code)
+
+	var m map[string]interface{}
+	json.Unmarshal(res.Body.Bytes(), &m)
+
+	if m["error"] != "invalid email and/or password" {
+		t.Errorf("Expected the 'error' to be 'invalid email and/or password'. Got '%v'", m["error"])
 	}
 }
 
