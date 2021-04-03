@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
+import styles from './AuthCard.module.css';
 
 const AuthCard = (props) => {
   const { children } = props;
 
-  return <div>{children}</div>;
+  return <div className={styles.card}>{children}</div>;
 };
 
 AuthCard.propTypes = {

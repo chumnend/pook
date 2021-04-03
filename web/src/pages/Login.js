@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { useAuth } from '../context/auth';
 import {
@@ -7,6 +7,8 @@ import {
   AuthError,
   AuthForm,
   AuthInput,
+  AuthText,
+  AuthTitle,
 } from '../components/Auth';
 
 const Login = () => {
@@ -15,6 +17,11 @@ const Login = () => {
 
   const history = useHistory();
   const auth = useAuth();
+  const authRef = useRef(auth);
+
+  useEffect(() => {
+    authRef.current.clearError();
+  }, []);
 
   const validateInput = () => {
     return email.length > 0 && password.length > 0;
@@ -31,7 +38,7 @@ const Login = () => {
 
   return (
     <AuthCard>
-      <h2>Login</h2>
+      <AuthTitle>Welcome Back</AuthTitle>
       {auth.error && <AuthError>{auth.error}</AuthError>}
       <AuthForm>
         <AuthInput
@@ -50,9 +57,9 @@ const Login = () => {
           Login
         </AuthButton>
       </AuthForm>
-      <p>
+      <AuthText>
         Don&apos;t have an account? <Link to="/register">Sign Up</Link>
-      </p>
+      </AuthText>
     </AuthCard>
   );
 };

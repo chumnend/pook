@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
+import styles from './AuthError.module.css';
 
 const AuthError = (props) => {
   const { children } = props;
 
-  return <div>{children}</div>;
+  return <div className={styles.error}>{children}</div>;
 };
 
 AuthError.propTypes = {
