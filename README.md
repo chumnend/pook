@@ -1,4 +1,4 @@
-# Pook: Your Personal Planning Book
+# Pook: An app for managing tasks
 
 ## Demo
 TBD
