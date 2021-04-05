@@ -22,10 +22,10 @@
   "rules": {
     "react/react-in-jsx-scope": "off",
     "prettier/prettier": ["warn"],
-    "simple-import-sort/imports": "error",
-    "import/first": "error",
-    "import/newline-after-import": "error",
-    "import/no-duplicates": "error"
+    "simple-import-sort/imports": "warn",
+    "import/first": "warn",
+    "import/newline-after-import": "warn",
+    "import/no-duplicates": "warn"
   },
   "ignorePatterns": [
     "*.test.js"

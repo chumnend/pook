@@ -12,6 +12,6 @@ test('render <App />', () => {
     </AuthProvider>,
   );
 
-  const el = screen.getByText(/Landing/i);
+  const el = screen.getByText(/Pook/i);
   expect(el).toBeInTheDocument();
 });
