@@ -1,10 +1,12 @@
+import './index.css';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
-import './index.css';
-import App from './App';
-import { AuthProvider } from './context/auth';
+
+import App from './components/App';
 import reportWebVitals from './reportWebVitals';
+import { AuthProvider } from './services/context/auth';
 
 ReactDOM.render(
   <React.StrictMode>

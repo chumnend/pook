@@ -1,0 +1,85 @@
+import { useEffect, useRef, useState } from 'react';
+import { Link, useHistory, useLocation } from 'react-router-dom';
+
+import {
+  AuthButton,
+  AuthError,
+  AuthForm,
+  AuthInput,
+  AuthLayout,
+  AuthText,
+  AuthTitle,
+} from '../../common/components/Auth';
+import * as ROUTES from '../../common/constants/routes';
+import useAuth from '../../common/hooks/useAuth';
+
+const Register = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [password2, setPassword2] = useState('');
+
+  const history = useHistory();
+  const location = useLocation();
+  const auth = useAuth();
+  const authRef = useRef(auth);
+
+  useEffect(() => {
+    // sets email if passed using redirectWithEmail from Landing page
+    if (location.state !== undefined) {
+      setEmail(location.state.email);
+    }
+
+    authRef.current.clearError();
+  }, [location.state]);
+
+  const validateInput = () => {
+    return email.length > 0 && password.length > 0 && password === password2;
+  };
+
+  const handleRegister = async (event) => {
+    event.preventDefault();
+
+    const isSuccess = await auth.register(email, password);
+    if (isSuccess) {
+      history.push(ROUTES.HOME);
+    }
+  };
+
+  return (
+    <AuthLayout>
+      <AuthTitle>Let&apos;s Get Started</AuthTitle>
+      {auth.error && <AuthError>{auth.error}</AuthError>}
+      <AuthForm>
+        <AuthInput
+          type="email"
+          placeholder="Your Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <AuthInput
+          type="password"
+          placeholder="Your Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <AuthInput
+          type="password"
+          placeholder="Confirm Password"
+          value={password2}
+          onChange={(e) => setPassword2(e.target.value)}
+        />
+        <AuthButton onClick={handleRegister} disabled={!validateInput()}>
+          Register
+        </AuthButton>
+      </AuthForm>
+      <AuthText>
+        Already have an account? <Link to={ROUTES.LOGIN}>Sign In</Link>
+      </AuthText>
+      <AuthText>
+        <Link to={ROUTES.LANDING}>Back to Home</Link>
+      </AuthText>
+    </AuthLayout>
+  );
+};
+
+export default Register;

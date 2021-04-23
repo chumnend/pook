@@ -15,11 +15,17 @@
     "plugin:prettier/recommended"
   ],
   "plugins": [
-    "prettier"
+    "prettier",
+    "simple-import-sort",
+    "import"
   ],
   "rules": {
     "react/react-in-jsx-scope": "off",
-    "prettier/prettier": ["warn"]
+    "prettier/prettier": ["warn"],
+    "simple-import-sort/imports": "warn",
+    "import/first": "warn",
+    "import/newline-after-import": "warn",
+    "import/no-duplicates": "warn"
   },
   "ignorePatterns": [
     "*.test.js"
