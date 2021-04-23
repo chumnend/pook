@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { HeroLayout } from '../components/Hero';
-import Navbar from '../components/Navbar';
-import * as ROUTES from '../constants/routes';
-import { useAuth } from '../context/auth';
+import { HeroLayout } from '../../common/components/Hero';
+import Navbar from '../../common/components/Navbar';
+import * as ROUTES from '../../common/constants/routes';
+import useAuth from '../../common/hooks/useAuth';
 
 const Landing = () => {
   const [email, setEmail] = useState('');

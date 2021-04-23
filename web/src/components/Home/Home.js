@@ -1,5 +1,5 @@
-import Navbar from '../components/Navbar';
-import { useAuth } from '../context/auth';
+import Navbar from '../../common/components/Navbar';
+import useAuth from '../../common/hooks/useAuth';
 
 const Home = () => {
   const auth = useAuth();

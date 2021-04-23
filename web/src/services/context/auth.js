@@ -1,7 +1,7 @@
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
 import PropTypes from 'prop-types';
-import { createContext, useContext, useState } from 'react';
+import { createContext, useState } from 'react';
 
 // By default the react app runs on the same server as the api.
 // In development mode, a different server can be pointed to using REACT_APP_API_PREFIX
@@ -11,10 +11,6 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 const AuthContext = createContext();
-
-const useAuth = () => {
-  return useContext(AuthContext);
-};
 
 const AuthProvider = (props) => {
   const [isLoggedIn, setLoggedIn] = useState(false);
@@ -136,4 +132,4 @@ AuthProvider.propTypes = {
   children: PropTypes.node,
 };
 
-export { AuthContext, AuthProvider, useAuth };
+export { AuthContext, AuthProvider };

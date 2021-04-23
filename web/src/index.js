@@ -4,9 +4,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 
-import App from './containers/App';
-import { AuthProvider } from './context/auth';
+import App from './components/App';
 import reportWebVitals from './reportWebVitals';
+import { AuthProvider } from './services/context/auth';
 
 ReactDOM.render(
   <React.StrictMode>

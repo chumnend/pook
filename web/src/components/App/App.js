@@ -1,15 +1,15 @@
 import { useEffect, useRef } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
-import ProtectedRoute from '../components/ProtectedRoute';
-import * as ROUTES from '../constants/routes';
-import { useAuth } from '../context/auth';
-import Home from './Home';
-import Landing from './Landing';
-import Login from './Login';
-import Logout from './Logout';
-import NotFound from './NotFound';
-import Register from './Register';
+import * as ROUTES from '../../common/constants/routes';
+import useAuth from '../../common/hooks/useAuth';
+import Home from '../Home';
+import Landing from '../Landing';
+import Login from '../Login';
+import Logout from '../Logout';
+import NotFound from '../NotFound';
+import Register from '../Register';
+import ProtectedRoute from './components/ProtectedRoute';
 
 const App = () => {
   const auth = useAuth();

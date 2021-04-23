@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import {
   AuthButton,
@@ -9,37 +9,30 @@ import {
   AuthLayout,
   AuthText,
   AuthTitle,
-} from '../components/Auth';
-import * as ROUTES from '../constants/routes';
-import { useAuth } from '../context/auth';
+} from '../../common/components/Auth';
+import * as ROUTES from '../../common/constants/routes';
+import useAuth from '../../common/hooks/useAuth';
 
-const Register = () => {
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [password2, setPassword2] = useState('');
 
   const history = useHistory();
-  const location = useLocation();
   const auth = useAuth();
   const authRef = useRef(auth);
 
   useEffect(() => {
-    // sets email if passed using redirectWithEmail from Landing page
-    if (location.state !== undefined) {
-      setEmail(location.state.email);
-    }
-
     authRef.current.clearError();
-  }, [location.state]);
+  }, []);
 
   const validateInput = () => {
-    return email.length > 0 && password.length > 0 && password === password2;
+    return email.length > 0 && password.length > 0;
   };
 
-  const handleRegister = async (event) => {
+  const handleLogin = async (event) => {
     event.preventDefault();
 
-    const isSuccess = await auth.register(email, password);
+    const isSuccess = await auth.login(email, password);
     if (isSuccess) {
       history.push(ROUTES.HOME);
     }
@@ -47,7 +40,7 @@ const Register = () => {
 
   return (
     <AuthLayout>
-      <AuthTitle>Let&apos;s Get Started</AuthTitle>
+      <AuthTitle>Welcome Back</AuthTitle>
       {auth.error && <AuthError>{auth.error}</AuthError>}
       <AuthForm>
         <AuthInput
@@ -62,18 +55,12 @@ const Register = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <AuthInput
-          type="password"
-          placeholder="Confirm Password"
-          value={password2}
-          onChange={(e) => setPassword2(e.target.value)}
-        />
-        <AuthButton onClick={handleRegister} disabled={!validateInput()}>
-          Register
+        <AuthButton onClick={handleLogin} disabled={!validateInput()}>
+          Login
         </AuthButton>
       </AuthForm>
       <AuthText>
-        Already have an account? <Link to={ROUTES.LOGIN}>Sign In</Link>
+        Don&apos;t have an account? <Link to={ROUTES.REGISTER}>Sign Up</Link>
       </AuthText>
       <AuthText>
         <Link to={ROUTES.LANDING}>Back to Home</Link>
@@ -82,4 +69,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default Login;
