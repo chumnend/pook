@@ -1,5 +1,5 @@
-export const LANDING = '/';
-export const HOME = '/home';
-export const REGISTER = '/register';
-export const LOGIN = '/login';
-export const LOGOUT = '/logout';
+export const LANDING_ROUTE = '/';
+export const HOME_ROUTE = '/home';
+export const REGISTER_ROUTE = '/register';
+export const LOGIN_ROUTE = '/login';
+export const LOGOUT_ROUTE = '/logout';
