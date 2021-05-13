@@ -1,7 +1,7 @@
 import axios from 'axios';
-import jwt_decode from 'jwt-decode';
+import jwtDecode from 'jwt-decode';
 
-import { API_USER_LOGIN, API_USER_REGISTER } from './constants/routes';
+import { API_USER_LOGIN, API_USER_REGISTER } from './constants';
 
 /*
  * Registers a new user.
@@ -17,7 +17,7 @@ export const register = async (email, password) => {
     localStorage.setItem('token', token);
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-    const decoded = jwt_decode(token);
+    const decoded = jwtDecode(token);
     const user = {
       id: decoded.ID,
       email: decoded.Email,
@@ -45,7 +45,7 @@ export const login = async (email, password) => {
     localStorage.setItem('token', token);
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-    const decoded = jwt_decode(token);
+    const decoded = jwtDecode(token);
     const user = {
       id: decoded.ID,
       email: decoded.Email,
