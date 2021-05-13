@@ -12,8 +12,8 @@ const ProtectedRoute = (props) => {
 };
 
 ProtectedRoute.propTypes = {
-  condition: PropTypes.bool,
-  redirect: PropTypes.string,
+  condition: PropTypes.bool.isRequired,
+  redirect: PropTypes.string.isRequired,
 };
 
 export default ProtectedRoute;

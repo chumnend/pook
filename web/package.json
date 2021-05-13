@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.11.4",
+    "@sentry/react": "^6.3.6",
+    "@sentry/tracing": "^6.3.6",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
@@ -25,6 +27,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "coverage": "react-scripts test --coverage --watchAll=false",
     "eject": "react-scripts eject",
     "lint": "./node_modules/.bin/eslint ./src",
     "lint:fix": "./node_modules/.bin/eslint ./src --fix && ./node_modules/.bin/prettier --write ./src"

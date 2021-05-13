@@ -1,3 +1,4 @@
+// page routes
 export const LANDING_ROUTE = '/';
 export const HOME_ROUTE = '/home';
 export const REGISTER_ROUTE = '/register';

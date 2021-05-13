@@ -1,6 +1,7 @@
-import App from '.';
-import { render } from '../../common/test-utils';
+import { render } from '@testing-library/react';
 
-test('render <App />', () => {
+import App from './App';
+
+test('renders <App />', () => {
   render(<App />);
 });
