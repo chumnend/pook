@@ -9,11 +9,13 @@ build-react:
   	cd web && npm install; \
 	fi
 	@cd web && npm run build
+	@echo "React files built."
 
 .PHONY: build-go
 build-go:
 	@mkdir -p bin/
 	@cd bin/ && go build ../main.go
+	@echo "Go files built."
 
 .PHONY: serve
 serve:
