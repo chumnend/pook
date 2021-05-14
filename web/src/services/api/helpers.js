@@ -14,18 +14,17 @@ export const register = async (email, password) => {
     const res = await axios.post(API_USER_REGISTER, { email, password });
     const { token } = res.data;
 
-    localStorage.setItem('token', token);
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
     const decoded = jwtDecode(token);
     const user = {
       id: decoded.ID,
       email: decoded.Email,
+      token: token,
     };
 
     return user;
   } catch (error) {
-    localStorage.removeItem('token');
     delete axios.defaults.headers.common['Authorization'];
     throw error;
   }
@@ -42,18 +41,17 @@ export const login = async (email, password) => {
     const res = await axios.post(API_USER_LOGIN, { email, password });
     const { token } = res.data;
 
-    localStorage.setItem('token', token);
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
     const decoded = jwtDecode(token);
     const user = {
       id: decoded.ID,
       email: decoded.Email,
+      token: token,
     };
 
     return user;
   } catch (error) {
-    localStorage.removeItem('token');
     delete axios.defaults.headers.common['Authorization'];
     throw error;
   }
@@ -63,6 +61,5 @@ export const login = async (email, password) => {
  * Log user out of browser
  */
 export const logout = () => {
-  localStorage.removeItem('token');
   delete axios.defaults.headers.common['Authorization'];
 };
