@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
+import LandingPage from '../LandingPage';
+import NotFoundPage from '../NotFoundPage';
 import ProtectedRoute from '../ProtectedRoute';
 
 export const LANDING_ROUTE = '/';
@@ -44,8 +46,8 @@ const Router = ({ user = null }) => {
         />
 
         {/** default routes */}
-        <Route exact path={LANDING_ROUTE} component={() => <h1>Landing</h1>} />
-        <Route component={() => <h1>Not Found</h1>} />
+        <Route exact path={LANDING_ROUTE} component={LandingPage} />
+        <Route component={NotFoundPage} />
       </Switch>
     </BrowserRouter>
   );
