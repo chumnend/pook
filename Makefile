@@ -23,6 +23,9 @@ serve:
 
 .PHONY: test
 test:
+	@if [ ! -d "web/build" ]; then \
+  	cd web && npm run build; \
+	fi
 	@go test -v
 	@cd web && npm test -- --watchAll=false
 
