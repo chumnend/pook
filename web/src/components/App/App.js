@@ -1,10 +1,15 @@
-import { Route, Switch } from 'react-router-dom';
+import { ErrorBoundary } from '@sentry/react';
+
+import Router from '../Router';
+import ThemeProvider from '../Theme';
 
 const App = () => {
   return (
-    <Switch>
-      <Route component={() => <h1>Hello World</h1>} />
-    </Switch>
+    <ThemeProvider>
+      <ErrorBoundary fallback={'An error has occured'}>
+        <Router />
+      </ErrorBoundary>
+    </ThemeProvider>
   );
 };
 

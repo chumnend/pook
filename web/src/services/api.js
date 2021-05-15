@@ -1,7 +1,17 @@
 import axios from 'axios';
-import jwt_decode from 'jwt-decode';
+import jwtDecode from 'jwt-decode';
 
-import { API_USER_LOGIN, API_USER_REGISTER } from './constants/routes';
+// By default the react app runs on the same server as the api.
+// In development mode, a different server can be pointed to using REACT_APP_API_PREFIX
+let apiPrefix = '';
+/* istanbul ignore next */
+if (process.env.NODE_ENV === 'development') {
+  apiPrefix = process.env.REACT_APP_API_PREFIX;
+}
+
+/** user api routes */
+export const API_USER_REGISTER = apiPrefix + '/api/v1/register';
+export const API_USER_LOGIN = apiPrefix + '/api/v1/login';
 
 /*
  * Registers a new user.
@@ -14,18 +24,17 @@ export const register = async (email, password) => {
     const res = await axios.post(API_USER_REGISTER, { email, password });
     const { token } = res.data;
 
-    localStorage.setItem('token', token);
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-    const decoded = jwt_decode(token);
+    const decoded = jwtDecode(token);
     const user = {
       id: decoded.ID,
       email: decoded.Email,
+      token: token,
     };
 
     return user;
   } catch (error) {
-    localStorage.removeItem('token');
     delete axios.defaults.headers.common['Authorization'];
     throw error;
   }
@@ -42,18 +51,17 @@ export const login = async (email, password) => {
     const res = await axios.post(API_USER_LOGIN, { email, password });
     const { token } = res.data;
 
-    localStorage.setItem('token', token);
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-    const decoded = jwt_decode(token);
+    const decoded = jwtDecode(token);
     const user = {
       id: decoded.ID,
       email: decoded.Email,
+      token: token,
     };
 
     return user;
   } catch (error) {
-    localStorage.removeItem('token');
     delete axios.defaults.headers.common['Authorization'];
     throw error;
   }
@@ -63,6 +71,5 @@ export const login = async (email, password) => {
  * Log user out of browser
  */
 export const logout = () => {
-  localStorage.removeItem('token');
   delete axios.defaults.headers.common['Authorization'];
 };
