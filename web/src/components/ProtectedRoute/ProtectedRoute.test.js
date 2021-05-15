@@ -14,7 +14,7 @@ test('renders <ProtectedRoute /> with true condition', () => {
 test('renders <ProtectedRoute /> with false condition', () => {
   render(
     <MemoryRouter>
-      <ProtectedRoute path="/"  condition={false} redirect={'/redirect'} />
+      <ProtectedRoute path="/" condition={false} redirect={'/redirect'} />
     </MemoryRouter>,
   );
 });
