@@ -20,7 +20,7 @@ const Router = ({ user = null }) => {
   const isSignedIn = user !== null;
 
   return (
-    <Suspense fallback={<Loader />}>
+    <Suspense fallback={<Loader fullPage />}>
       <BrowserRouter>
         <Switch>
           {/** authenticated routes */}

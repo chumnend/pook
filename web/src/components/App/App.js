@@ -1,15 +1,18 @@
 import { ErrorBoundary } from '@sentry/react';
 
+import AuthProvider from '../AuthProvider';
 import Router from '../Router';
-import ThemeProvider from '../Theme';
+import ThemeProvider from '../ThemeProvider';
 
 const App = () => {
   return (
-    <ThemeProvider>
-      <ErrorBoundary fallback={'An error has occured'}>
-        <Router />
-      </ErrorBoundary>
-    </ThemeProvider>
+    <AuthProvider>
+      <ThemeProvider>
+        <ErrorBoundary fallback={'An error has occured'}>
+          <Router />
+        </ErrorBoundary>
+      </ThemeProvider>
+    </AuthProvider>
   );
 };
 
