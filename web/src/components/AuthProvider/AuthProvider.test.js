@@ -9,7 +9,7 @@ const MockComponent = () => {
       <h1>Hello World</h1>
     </div>
   );
-}
+};
 
 const customRender = (component) => {
   return render(<AuthProvider>{component}</AuthProvider>);

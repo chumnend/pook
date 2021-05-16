@@ -1,6 +1,13 @@
 import PropTypes from 'prop-types';
-import { createContext, useContext, useEffect, useState } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 
+import * as apiHelpers from '../../services/api';
 import Loader from '../Loader';
 
 export const AuthContext = createContext();
@@ -15,26 +22,81 @@ const AuthProvider = ({ children }) => {
   });
 
   useEffect(() => {
-    console.log('check localstorage?');
+    // check localstorage?
     setState((state) => ({ ...state, loading: false }));
   }, []);
 
-  if (state.loading) {
-    return <Loader fullPage />;
-  }
+  const register = useCallback(async (fname, lname, email, password) => {
+    try {
+      const user = await apiHelpers.register(fname, lname, email, password);
+      setState((state) => ({
+        ...state,
+        user: user,
+      }));
 
-  // check if user information in localStorage
-  // return loader until data is collected
+      return true;
+    } catch (error) {
+      let errorMessage;
+      if (error.response) {
+        errorMessage = error.response.data.error;
+      } else {
+        errorMessage = error.message;
+      }
 
-  const login = () => {};
-  const register = () => {};
-  const logout = () => {};
+      setState((state) => ({
+        ...state,
+        error: errorMessage,
+        user: null,
+      }));
+
+      return false;
+    }
+  }, []);
+
+  const login = useCallback(async (email, password) => {
+    try {
+      const user = await apiHelpers.login(email, password);
+      setState((state) => ({
+        ...state,
+        user: user,
+      }));
+
+      return true;
+    } catch (error) {
+      let errorMessage;
+      if (error.response) {
+        errorMessage = error.response.data.error;
+      } else {
+        errorMessage = error.message;
+      }
+
+      setState((state) => ({
+        ...state,
+        error: errorMessage,
+        user: null,
+      }));
+
+      return false;
+    }
+  }, []);
+
+  const logout = useCallback(() => {
+    apiHelpers.logout();
+  }, []);
 
   const values = {
-    login,
+    ...state,
+
+    isAuth: state.user !== null,
+
     register,
+    login,
     logout,
   };
+
+  if (state.initializing) {
+    return <Loader fullPage />;
+  }
 
   return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>;
 };

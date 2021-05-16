@@ -1,7 +1,7 @@
-import PropTypes from 'prop-types';
 import React, { Suspense } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
+import { useAuth } from '../AuthProvider';
 import Loader from '../Loader';
 import ProtectedRoute from '../ProtectedRoute';
 
@@ -16,8 +16,8 @@ export const LOGIN_ROUTE = '/login';
 export const LOGOUT_ROUTE = '/logout';
 export const NOT_FOUND_ROUTE = '/not-found';
 
-const Router = ({ user = null }) => {
-  const isSignedIn = user !== null;
+const Router = () => {
+  const { isAuth } = useAuth();
 
   return (
     <Suspense fallback={<Loader fullPage />}>
@@ -26,8 +26,8 @@ const Router = ({ user = null }) => {
           {/** authenticated routes */}
           <ProtectedRoute
             path={LOGOUT_ROUTE}
-            component={() => <h1>Register</h1>}
-            condition={isSignedIn}
+            component={() => <h1>Logout</h1>}
+            condition={isAuth}
             redirect={HOME_ROUTE}
           />
 
@@ -35,13 +35,13 @@ const Router = ({ user = null }) => {
           <ProtectedRoute
             path={LOGIN_ROUTE}
             component={SignInPage}
-            condition={!isSignedIn}
+            condition={!isAuth}
             redirect={HOME_ROUTE}
           />
           <ProtectedRoute
             path={REGISTER_ROUTE}
             component={SignUpPage}
-            condition={!isSignedIn}
+            condition={!isAuth}
             redirect={HOME_ROUTE}
           />
 
@@ -49,17 +49,13 @@ const Router = ({ user = null }) => {
           <Route
             exact
             path={HOME_ROUTE}
-            component={isSignedIn ? () => <h1>Home</h1> : LandingPage}
+            component={isAuth ? () => <h1>Home</h1> : LandingPage}
           />
           <Route component={NotFoundPage} />
         </Switch>
       </BrowserRouter>
     </Suspense>
   );
-};
-
-Router.propTypes = {
-  user: PropTypes.object,
 };
 
 export default Router;

@@ -8,9 +8,10 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useHistory } from 'react-router-dom';
 
-import { LOGIN_ROUTE } from '../Router';
+import { useAuth } from '../AuthProvider';
+import { HOME_ROUTE, LOGIN_ROUTE } from '../Router';
 
 const useStyles = makeStyles((theme) => ({
   authCard: {
@@ -37,13 +38,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const SignUpPage = () => {
-  // const [loading, setLoading] = useState(false);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
 
+  const auth = useAuth();
+  const history = useHistory();
   const classes = useStyles();
 
   const validate = () => {
@@ -56,9 +58,15 @@ const SignUpPage = () => {
     );
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert('NOT YET IMPLMENTED');
+
+    const success = await auth.register(firstName, lastName, email, password);
+    if (success) {
+      history.push(HOME_ROUTE);
+    } else {
+      alert(auth.error);
+    }
   };
 
   return (

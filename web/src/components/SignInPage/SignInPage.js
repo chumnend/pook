@@ -10,9 +10,10 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useHistory } from 'react-router-dom';
 
-import { NOT_FOUND_ROUTE, REGISTER_ROUTE } from '../Router';
+import { useAuth } from '../AuthProvider';
+import { HOME_ROUTE, NOT_FOUND_ROUTE, REGISTER_ROUTE } from '../Router';
 
 const useStyles = makeStyles((theme) => ({
   authCard: {
@@ -39,20 +40,27 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const SignInPage = () => {
-  // const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
 
+  const auth = useAuth();
+  const history = useHistory();
   const classes = useStyles();
 
   const validate = () => {
     return email.length > 0 && password.length > 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert('NOT YET IMPLEMENTED');
+
+    const success = await auth.login(email, password);
+    if (success) {
+      history.push(HOME_ROUTE);
+    } else {
+      alert(auth.error);
+    }
   };
 
   return (
