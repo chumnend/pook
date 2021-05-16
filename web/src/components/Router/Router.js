@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Suspense } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
+import Loader from '../Loader';
 import ProtectedRoute from '../ProtectedRoute';
 
 const LandingPage = React.lazy(() => import('../LandingPage'));
@@ -19,7 +20,7 @@ const Router = ({ user = null }) => {
   const isSignedIn = user !== null;
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<Loader />}>
       <BrowserRouter>
         <Switch>
           {/** authenticated routes */}
