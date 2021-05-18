@@ -22,7 +22,16 @@ const AuthProvider = ({ children }) => {
   });
 
   useEffect(() => {
-    // TODO: check localstorage?
+    const authState = localStorage.getItem('authState');
+
+    if (authState) {
+      setState((state) => ({
+        ...state,
+        loading: false,
+        user: JSON.parse(authState),
+      }));
+    }
+
     setState((state) => ({ ...state, loading: false }));
   }, []);
 
@@ -53,13 +62,17 @@ const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const login = useCallback(async (email, password) => {
+  const login = useCallback(async (email, password, saveUser = false) => {
     try {
       const user = await apiHelpers.login(email, password);
       setState((state) => ({
         ...state,
         user: user,
       }));
+
+      if (saveUser) {
+        localStorage.setItem('authState', JSON.stringify(user));
+      }
 
       return true;
     } catch (error) {
@@ -82,6 +95,7 @@ const AuthProvider = ({ children }) => {
 
   const logout = useCallback(() => {
     apiHelpers.logout();
+    localStorage.removeItem('authState');
     setState((state) => ({
       ...state,
       error: null,

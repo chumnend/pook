@@ -55,7 +55,7 @@ const SignInPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const success = await auth.login(email, password);
+    const success = await auth.login(email, password, rememberMe);
     if (success) {
       history.push(HOME_ROUTE);
     } else {
