@@ -75,6 +75,11 @@ const SignUpPage = () => {
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
         </Avatar>
+        <Grid className={classes.gridItem} item xs={12} md={7}>
+          <Link variant="body2" component={RouterLink} to={HOME_ROUTE}>
+            Back to Home
+          </Link>
+        </Grid>
         <Typography component="h1" variant="h5">
           {"Let's Get Started"}
         </Typography>

@@ -5,9 +5,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import MenuIcon from '@material-ui/icons/Menu';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
-import { LOGIN_ROUTE } from '../Router';
+import { LOGIN_ROUTE, LOGOUT_ROUTE } from '../Router';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Header = () => {
+const Header = ({ isAuth }) => {
   const classes = useStyles();
 
   return (
@@ -38,12 +39,26 @@ const Header = () => {
         <Typography variant="h6" className={classes.title}>
           Pook
         </Typography>
-        <Button color="inherit" component={Link} to={LOGIN_ROUTE}>
-          Login
-        </Button>
+        {isAuth ? (
+          <>
+            <Button color="inherit" component={Link} to={LOGOUT_ROUTE}>
+              Login
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button color="inherit" component={Link} to={LOGIN_ROUTE}>
+              Login
+            </Button>
+          </>
+        )}
       </Toolbar>
     </AppBar>
   );
+};
+
+Header.propTypes = {
+  isAuth: PropTypes.bool,
 };
 
 export default Header;

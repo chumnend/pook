@@ -22,7 +22,7 @@ const AuthProvider = ({ children }) => {
   });
 
   useEffect(() => {
-    // check localstorage?
+    // TODO: check localstorage?
     setState((state) => ({ ...state, loading: false }));
   }, []);
 
