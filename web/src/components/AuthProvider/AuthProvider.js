@@ -82,6 +82,11 @@ const AuthProvider = ({ children }) => {
 
   const logout = useCallback(() => {
     apiHelpers.logout();
+    setState((state) => ({
+      ...state,
+      error: null,
+      user: null,
+    }));
   }, []);
 
   const values = {

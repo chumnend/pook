@@ -5,7 +5,9 @@ import { useAuth } from '../AuthProvider';
 import Loader from '../Loader';
 import ProtectedRoute from '../ProtectedRoute';
 
+const HomePage = React.lazy(() => import('../HomePage'));
 const LandingPage = React.lazy(() => import('../LandingPage'));
+const LogoutPage = React.lazy(() => import('../LogoutPage'));
 const NotFoundPage = React.lazy(() => import('../NotFoundPage'));
 const SignInPage = React.lazy(() => import('../SignInPage'));
 const SignUpPage = React.lazy(() => import('../SignUpPage'));
@@ -26,7 +28,7 @@ const Router = () => {
           {/** authenticated routes */}
           <ProtectedRoute
             path={LOGOUT_ROUTE}
-            component={() => <h1>Logout</h1>}
+            component={LogoutPage}
             condition={isAuth}
             redirect={HOME_ROUTE}
           />
@@ -49,7 +51,7 @@ const Router = () => {
           <Route
             exact
             path={HOME_ROUTE}
-            component={isAuth ? () => <h1>Home</h1> : LandingPage}
+            component={isAuth ? HomePage : LandingPage}
           />
           <Route component={NotFoundPage} />
         </Switch>

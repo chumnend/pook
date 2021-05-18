@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import AuthProvider from '../AuthProvider';
 import LandingPage from './LandingPage';
 
-it('render <LandingPage>', () => {
+test('render <LandingPage>', () => {
   render(
     <AuthProvider>
       <MemoryRouter>

@@ -33,8 +33,8 @@ export const register = async (firstName, lastName, email, password) => {
 
     const decoded = jwtDecode(token);
     const user = {
-      id: decoded.ID,
-      email: decoded.Email,
+      id: decoded.id,
+      email: decoded.email,
       token: token,
     };
 
@@ -60,8 +60,8 @@ export const login = async (email, password) => {
 
     const decoded = jwtDecode(token);
     const user = {
-      id: decoded.ID,
-      email: decoded.Email,
+      id: decoded.id,
+      email: decoded.email,
       token: token,
     };
 

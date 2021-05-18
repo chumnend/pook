@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-import { login, register, logout } from '../api';
+import { login, register, logout } from './api';
 
 jest.mock('axios');
-jest.mock('jwt-decode', () => () => ({ ID: 'test_id', Email: 'test_email' }));
+jest.mock('jwt-decode', () => () => ({ id: 'test_id', email: 'test_email' }));
 
 describe('login', () => {
   afterEach(() => {
