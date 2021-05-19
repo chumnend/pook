@@ -22,17 +22,12 @@ const AuthProvider = ({ children }) => {
   });
 
   useEffect(() => {
-    const authState = localStorage.getItem('authState');
-
-    if (authState) {
-      setState((state) => ({
-        ...state,
-        loading: false,
-        user: JSON.parse(authState),
-      }));
-    }
-
-    setState((state) => ({ ...state, loading: false }));
+    const authState = apiHelpers.checkAuthState();
+    setState((state) => ({
+      ...state,
+      loading: false,
+      user: authState,
+    }));
   }, []);
 
   const register = useCallback(async (fname, lname, email, password) => {
@@ -71,7 +66,7 @@ const AuthProvider = ({ children }) => {
       }));
 
       if (saveUser) {
-        localStorage.setItem('authState', JSON.stringify(user));
+        apiHelpers.saveAuthState(user.id, user.email, user.token);
       }
 
       return true;
@@ -94,8 +89,7 @@ const AuthProvider = ({ children }) => {
   }, []);
 
   const logout = useCallback(() => {
-    apiHelpers.logout();
-    localStorage.removeItem('authState');
+    apiHelpers.clearAuthState();
     setState((state) => ({
       ...state,
       error: null,
@@ -105,7 +99,6 @@ const AuthProvider = ({ children }) => {
 
   const values = {
     ...state,
-
     isAuth: state.user !== null,
 
     register,
