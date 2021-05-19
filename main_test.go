@@ -63,7 +63,7 @@ func checkResponseCode(t *testing.T, expected, actual int) {
 }
 
 func fillTables(numBoards int, numTasks int) {
-	a.DB.Exec("INSERT INTO users(email, password) VALUES ($1, $2)", "tester", "123")
+	a.DB.Exec("INSERT INTO users(email, password, first_name, last_name) VALUES ($1, $2, $3, $4)", "tester", "123", "test_fname", "test_lname")
 
 	for i := 0; i < numBoards; i++ {
 		a.DB.Exec("INSERT INTO boards(title, user_id) VALUES ($1, $2)", "board"+strconv.Itoa(i+1), "1")

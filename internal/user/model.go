@@ -16,9 +16,9 @@ import (
 type User struct {
 	ID        uint      `gorm:"primaryKey" json:"id"`
 	Email     string    `gorm:"unique;not null" json:"email"`
-	Password  string    `gorm:"unique;not null" json:"password"`
-	Firstname string    `json:"firstname"`
-	Lastname  string    `json:"lastname"`
+	Password  string    `gorm:"not null" json:"password"`
+	FirstName string    `gorm:"not null" json:"firstname"`
+	LastName  string    `gorm:"not null" json:"lastname"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 	Admin     bool      `gorm:"default:false" json:"admin"`
