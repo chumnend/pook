@@ -19,17 +19,22 @@ export const API_USER_LOGIN = apiPrefix + '/api/v1/login';
  * @param {string} password - the user's password
  * @return {Object} the users information
  */
-export const register = async (email, password) => {
+export const register = async (firstName, lastName, email, password) => {
   try {
-    const res = await axios.post(API_USER_REGISTER, { email, password });
+    const res = await axios.post(API_USER_REGISTER, {
+      firstname: firstName,
+      lastname: lastName,
+      email: email,
+      password: password,
+    });
     const { token } = res.data;
 
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
     const decoded = jwtDecode(token);
     const user = {
-      id: decoded.ID,
-      email: decoded.Email,
+      id: decoded.id,
+      email: decoded.email,
       token: token,
     };
 
@@ -55,8 +60,8 @@ export const login = async (email, password) => {
 
     const decoded = jwtDecode(token);
     const user = {
-      id: decoded.ID,
-      email: decoded.Email,
+      id: decoded.id,
+      email: decoded.email,
       token: token,
     };
 

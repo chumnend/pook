@@ -5,6 +5,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
 
+import { useAuth } from '../AuthProvider';
+import Header from '../Header';
 import { REGISTER_ROUTE } from '../Router';
 
 const useStyles = makeStyles((theme) => ({
@@ -36,10 +38,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const LandingPage = () => {
+  const auth = useAuth();
   const classes = useStyles();
 
   return (
     <Paper className={classes.root}>
+      <Header isAuth={auth.isAuth} />
       <Box className={classes.box}>
         <Typography variant="h1">Welcome to Pook!</Typography>
         <Typography variant="h4">

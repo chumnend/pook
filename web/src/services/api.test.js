@@ -3,7 +3,7 @@ import axios from 'axios';
 import { login, register, logout } from './api';
 
 jest.mock('axios');
-jest.mock('jwt-decode', () => () => ({ ID: 'test_id', Email: 'test_email' }));
+jest.mock('jwt-decode', () => () => ({ id: 'test_id', email: 'test_email' }));
 
 describe('login', () => {
   afterEach(() => {
@@ -40,7 +40,12 @@ describe('register', () => {
   it('expects to successfully create a new user', async () => {
     axios.post.mockResolvedValue({ data: { token: 'test_token' } });
 
-    const user = await register('test@example.com', 'testpassword');
+    const user = await register(
+      'test_user',
+      'test_pw',
+      'test@example.com',
+      'testpassword',
+    );
 
     expect(user.id).toBe('test_id');
     expect(user.email).toBe('test_email');
@@ -56,7 +61,7 @@ describe('register', () => {
     });
 
     await expect(
-      register('test@example.com', 'testpassword'),
+      register('test_user', 'test_pw', 'test@example.com', 'testpassword'),
     ).rejects.toThrow();
   });
 });
