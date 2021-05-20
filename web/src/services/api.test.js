@@ -1,9 +1,35 @@
 import axios from 'axios';
 
-import { login, register, logout } from './api';
+import {
+  login,
+  register,
+  checkAuthState,
+  saveAuthState,
+  clearAuthState,
+  AUTH_STATE_KEY,
+} from './api';
 
 jest.mock('axios');
 jest.mock('jwt-decode', () => () => ({ id: 'test_id', email: 'test_email' }));
+
+const fakeLocalStorage = (function() {
+  let store = {};
+
+  return {
+    getItem: function(key) {
+      return store[key] || null;
+    },
+    setItem: function(key, value) {
+      store[key] = value.toString();
+    },
+    removeItem: function(key) {
+      delete store[key];
+    },
+    clear: function() {
+      store = {};
+    }
+  };
+})();
 
 describe('login', () => {
   afterEach(() => {
@@ -66,11 +92,78 @@ describe('register', () => {
   });
 });
 
-describe('logout', () => {
-  it('expects to erase Authorization header on logout', () => {
+describe('checkAuthState', () => {
+  beforeAll(() => {
+    Object.defineProperty(window, 'localStorage', {
+      value: fakeLocalStorage,
+    });
+  });
+
+  afterEach(() => {
+    localStorage.clear();
+  })
+
+  it('expects to return authState if it exists in localStorage', () => {
+    const testAuthState = {
+      id: 'test_id',
+      email: 'test_email',
+      token: 'test_token',
+    };
+    localStorage.setItem(AUTH_STATE_KEY, JSON.stringify(testAuthState));
+
+    const authState = checkAuthState();
+
+    expect(authState).toStrictEqual(testAuthState);
+  });
+
+  it('expects to return null if it does not exist in localStorage', () => {
+    const authState = checkAuthState();
+
+    expect(authState).toBe(null);
+  });
+});
+
+describe('saveAuthState', () => {
+  beforeAll(() => {
+    Object.defineProperty(window, 'localStorage', {
+      value: fakeLocalStorage,
+    });
+  });
+
+  afterEach(() => {
+    localStorage.clear();
+  })
+
+  it('expects to store data in localStorage', () => {
+    const testAuthState = {
+      id: 'test_id',
+      email: 'test_email',
+      token: 'test_token',
+    };
+
+    saveAuthState(testAuthState.id, testAuthState.email, testAuthState.token);
+
+    expect(window.localStorage.getItem(AUTH_STATE_KEY)).toBe(JSON.stringify(testAuthState));
+  });
+
+  it('expects to not save in localStorage if an argument is undefined', () => {
+    const testAuthState = {
+      id: 'test_id',
+      email: 'test_email',
+      token: undefined,
+    };
+
+    saveAuthState(testAuthState.id, testAuthState.email, testAuthState.token);
+
+    expect(window.localStorage.getItem(AUTH_STATE_KEY)).toBe(null);
+  });
+});
+
+describe('clearAuthState', () => {
+  it('expects to erase Authorization axios header', () => {
     axios.defaults.headers.common['Authorization'] = 'test';
 
-    logout();
+    clearAuthState();
 
     expect(axios.defaults.headers.common['Authorization']).toBe(undefined);
   });

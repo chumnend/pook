@@ -13,6 +13,9 @@ if (process.env.NODE_ENV === 'development') {
 export const API_USER_REGISTER = apiPrefix + '/api/v1/register';
 export const API_USER_LOGIN = apiPrefix + '/api/v1/login';
 
+/** local storage key */
+export const AUTH_STATE_KEY = 'authState';
+
 /*
  * Registers a new user.
  * @param {string} email - the user's email
@@ -29,18 +32,17 @@ export const register = async (firstName, lastName, email, password) => {
     });
     const { token } = res.data;
 
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
     const decoded = jwtDecode(token);
-    const user = {
+    const authState = {
       id: decoded.id,
       email: decoded.email,
       token: token,
     };
 
-    return user;
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+    return authState;
   } catch (error) {
-    delete axios.defaults.headers.common['Authorization'];
     throw error;
   }
 };
@@ -56,25 +58,55 @@ export const login = async (email, password) => {
     const res = await axios.post(API_USER_LOGIN, { email, password });
     const { token } = res.data;
 
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
     const decoded = jwtDecode(token);
-    const user = {
+    const authState = {
       id: decoded.id,
       email: decoded.email,
       token: token,
     };
 
-    return user;
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+    return authState;
   } catch (error) {
-    delete axios.defaults.headers.common['Authorization'];
     throw error;
   }
 };
 
 /*
- * Log user out of browser
+ * Checks for any saved authentication information
+ * @return {Object} saved user information ie. { id: '12122', email: 'user@example.com', token: 'sdadsdasd2e2e1' }
  */
-export const logout = () => {
+export const checkAuthState = () => {
+  const authState = localStorage.getItem(AUTH_STATE_KEY);
+  if (authState) {
+    axios.defaults.headers.common[
+      'Authorization'
+    ] = `Bearer ${authState.token}`;
+    return JSON.parse(authState);
+  }
+
+  return null;
+};
+
+/*
+ * Saves authentication information
+ * @param {string} id - the user's identifier
+ * @param {string} email - the user's email
+ * @param {string} token - the user's token
+ */
+export const saveAuthState = (id, email, token) => {
+  if (!id || !email || !token) {
+    return null;
+  }
+
+  localStorage.setItem(AUTH_STATE_KEY, JSON.stringify({ id, email, token }));
+};
+
+/*
+ * Erases all saved authentication information
+ */
+export const clearAuthState = () => {
+  localStorage.removeItem(AUTH_STATE_KEY);
   delete axios.defaults.headers.common['Authorization'];
 };
