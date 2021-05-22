@@ -1,8 +1,10 @@
 all: build serve
 
+# Build React and Go assets in bin folder
 .PHONY: build
 build: build-react build-go
 
+# Build React assets in bin folder
 .PHONY: build-react
 build-react:
 	@if [ ! -d "web/node_modules" ]; then \
@@ -11,16 +13,19 @@ build-react:
 	@cd web && npm run build
 	@echo "React files built."
 
+# Build Go assets in bin folder
 .PHONY: build-go
 build-go:
 	@mkdir -p bin/
 	@cd bin/ && go build ../main.go
 	@echo "Go files built."
 
+# Starts the app on port provided in .env file
 .PHONY: serve
 serve:
 	@./bin/main
 
+# Executes tests for React and Go apps
 .PHONY: test
 test:
 	@if [ ! -d "web/build" ]; then \
@@ -29,6 +34,7 @@ test:
 	@go test -v
 	@cd web && npm test -- --watchAll=false
 
+# Cleans up assets and node_modules
 .PHONY: clean
 clean:
 	@rm -rf bin web/build web/node_modules
