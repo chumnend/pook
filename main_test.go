@@ -12,11 +12,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/chumnend/pook/internal/pook"
 	"github.com/joho/godotenv"
 )
 
-var a *pook.App
+var a *App
 
 func TestMain(m *testing.M) {
 	// initialize app
@@ -42,7 +41,7 @@ func TestMain(m *testing.M) {
 		log.Fatal("missing env: SECRET_KEY")
 	}
 
-	a = pook.NewApp(dbURL)
+	a = NewApp(dbURL)
 
 	// start test runner
 	log.SetOutput(ioutil.Discard)
