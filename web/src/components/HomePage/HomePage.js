@@ -1,11 +1,16 @@
+import Container from '@material-ui/core/Container';
+
 import Header from '../Header';
 
 const HomePage = () => {
   return (
-    <div>
+    <Container maxWidth="sm">
       <Header isAuth />
-      <h1>Home</h1>
-    </div>
+      <div>
+        <input type="text" placeholder="filter" />
+      </div>
+      <div>Boards go here</div>
+    </Container>
   );
 };
 
