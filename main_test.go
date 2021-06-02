@@ -12,36 +12,16 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/joho/godotenv"
+	"github.com/chumnend/pook/internal/app"
+	"github.com/chumnend/pook/internal/config"
 )
 
-var a *App
+var a *app.App
 
 func TestMain(m *testing.M) {
-	// initialize app
-	var err error
-	err = godotenv.Load()
-
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
-	dbURL := os.Getenv("DATABASE_TEST_URL")
-	if dbURL == "" {
-		log.Fatal("missing env: DATABASE_TEST_URL")
-	}
-
-	port := os.Getenv("PORT")
-	if port == "" {
-		log.Fatal("missing env: DATABASE_URL")
-	}
-
-	secret := os.Getenv("SECRET_KEY")
-	if secret == "" {
-		log.Fatal("missing env: SECRET_KEY")
-	}
-
-	a = NewApp(dbURL)
+	// initialize the test application
+	config := config.Test()
+	a = app.Initialize(config)
 
 	// start test runner
 	log.SetOutput(ioutil.Discard)
