@@ -1,4 +1,4 @@
-package pook
+package app
 
 import (
 	"log"
@@ -6,9 +6,10 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/chumnend/pook/internal/board"
-	"github.com/chumnend/pook/internal/task"
-	"github.com/chumnend/pook/internal/user"
+	"github.com/chumnend/pook/internal/app/board"
+	"github.com/chumnend/pook/internal/app/task"
+	"github.com/chumnend/pook/internal/app/user"
+	"github.com/chumnend/pook/internal/config"
 	"github.com/chumnend/pook/internal/utils"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
@@ -17,55 +18,67 @@ import (
 
 // App struct declaration
 type App struct {
+	Config *config.Config
 	DB     *gorm.DB
 	Router *mux.Router
 }
 
-// NewApp returns an initialize App struct
-func NewApp(connectionURL string) *App {
+// New creates a new App struct
+func New() *App {
+	return &App{}
+}
+
+// Initialize takes a Config struct and builds the web server
+func (app *App) Initialize(config *config.Config) {
+	app.Config = config
+	app.migrateDB()
+	app.setupRouter()
+}
+
+// Run starts the application
+func (app *App) Run() {
+	addr := ":" + app.Config.Port
+	log.Println("Listening on " + addr)
+	log.Fatal(http.ListenAndServe(addr, app.Router))
+}
+
+func (app *App) migrateDB() {
+	var err error
+
 	// setup database connection
-	db, err := gorm.Open("postgres", connectionURL)
+	app.DB, err = gorm.Open("postgres", app.Config.DB)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// migrate models to db
-	db.AutoMigrate(user.User{})
-	db.AutoMigrate(board.Board{})
-	db.AutoMigrate(task.Task{})
+	app.DB.AutoMigrate(user.User{})
+	app.DB.AutoMigrate(board.Board{})
+	app.DB.AutoMigrate(task.Task{})
+}
 
+func (app *App) setupRouter() {
 	// create router
-	router := mux.NewRouter().StrictSlash(true)
-	router.Use(cors)
+	app.Router = mux.NewRouter().StrictSlash(true)
+	app.Router.Use(cors)
 
 	// setup api subrouter
-	api := router.PathPrefix("/api/v1").Subrouter()
+	api := app.Router.PathPrefix("/api/v1").Subrouter()
 	api.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		utils.RespondWithJSON(w, http.StatusOK, map[string]string{"message": "Ready to serve requests"})
 	}).Methods("GET")
 
 	// attach api routes
-	user.AttachHandler(api, db)
-	board.AttachHandler(api, db)
-	task.AttachHandler(api, db)
+	user.AttachHandler(api, app.DB)
+	board.AttachHandler(api, app.DB)
+	task.AttachHandler(api, app.DB)
 
 	// serve react files on catchall handler
 	spa := spaHandler{
 		staticPath: "web/build",
 		indexPath:  "index.html",
 	}
-	router.NotFoundHandler = spa
-
-	return &App{
-		Router: router,
-		DB:     db,
-	}
-}
-
-// Serve sets the App to listen on given address
-func (s *App) Serve(addr string) {
-	log.Println("Listening on " + addr)
-	log.Fatal(http.ListenAndServe(addr, s.Router))
+	app.Router.NotFoundHandler = spa
 }
 
 func cors(next http.Handler) http.Handler {

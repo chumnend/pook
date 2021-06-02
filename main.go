@@ -1,35 +1,14 @@
 package main
 
 import (
-	"log"
-	"os"
-
-	"github.com/chumnend/pook/internal/pook"
-	"github.com/joho/godotenv"
+	"github.com/chumnend/pook/internal/app"
+	"github.com/chumnend/pook/internal/config"
 )
 
 func main() {
-	// load environment variables
-	err := godotenv.Load()
-	if err != nil {
-		log.Println(".env file not found")
-	}
+	config := config.GetEnv()
 
-	dbURL := os.Getenv("DATABASE_URL")
-	if dbURL == "" {
-		log.Fatal("missing env: DATABASE_URL")
-	}
-
-	secret := os.Getenv("SECRET_KEY")
-	if secret == "" {
-		log.Fatal("missing env: SECRET_KEY")
-	}
-
-	port := os.Getenv("PORT")
-	if port == "" {
-		log.Fatal("missing env: DATABASE_URL")
-	}
-
-	a := pook.NewApp(dbURL)
-	a.Serve(":" + port)
+	app := app.New()
+	app.Initialize(config)
+	app.Run()
 }
