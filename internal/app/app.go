@@ -23,46 +23,16 @@ type App struct {
 	Router *mux.Router
 }
 
-// Initialize sets up a web server application
-func Initialize(config *config.Config) *App {
-	// setup database connection
-	db, err := gorm.Open("postgres", config.DB)
-	if err != nil {
-		log.Fatal(err)
-	}
+// New creates a new App struct
+func New() *App {
+	return &App{}
+}
 
-	// migrate models to db
-	db.AutoMigrate(user.User{})
-	db.AutoMigrate(board.Board{})
-	db.AutoMigrate(task.Task{})
-
-	// create router
-	router := mux.NewRouter().StrictSlash(true)
-	router.Use(cors)
-
-	// setup api subrouter
-	api := router.PathPrefix("/api/v1").Subrouter()
-	api.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		utils.RespondWithJSON(w, http.StatusOK, map[string]string{"message": "Ready to serve requests"})
-	}).Methods("GET")
-
-	// attach api routes
-	user.AttachHandler(api, db)
-	board.AttachHandler(api, db)
-	task.AttachHandler(api, db)
-
-	// serve react files on catchall handler
-	spa := spaHandler{
-		staticPath: "web/build",
-		indexPath:  "index.html",
-	}
-	router.NotFoundHandler = spa
-
-	return &App{
-		Config: config,
-		Router: router,
-		DB:     db,
-	}
+// Initialize takes a Config struct and builds the web server
+func (app *App) Initialize(config *config.Config) {
+	app.Config = config
+	app.migrateDB()
+	app.setupRouter()
 }
 
 // Run starts the application
@@ -70,6 +40,45 @@ func (app *App) Run() {
 	addr := ":" + app.Config.Port
 	log.Println("Listening on " + addr)
 	log.Fatal(http.ListenAndServe(addr, app.Router))
+}
+
+func (app *App) migrateDB() {
+	var err error
+
+	// setup database connection
+	app.DB, err = gorm.Open("postgres", app.Config.DB)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// migrate models to db
+	app.DB.AutoMigrate(user.User{})
+	app.DB.AutoMigrate(board.Board{})
+	app.DB.AutoMigrate(task.Task{})
+}
+
+func (app *App) setupRouter() {
+	// create router
+	app.Router = mux.NewRouter().StrictSlash(true)
+	app.Router.Use(cors)
+
+	// setup api subrouter
+	api := app.Router.PathPrefix("/api/v1").Subrouter()
+	api.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		utils.RespondWithJSON(w, http.StatusOK, map[string]string{"message": "Ready to serve requests"})
+	}).Methods("GET")
+
+	// attach api routes
+	user.AttachHandler(api, app.DB)
+	board.AttachHandler(api, app.DB)
+	task.AttachHandler(api, app.DB)
+
+	// serve react files on catchall handler
+	spa := spaHandler{
+		staticPath: "web/build",
+		indexPath:  "index.html",
+	}
+	app.Router.NotFoundHandler = spa
 }
 
 func cors(next http.Handler) http.Handler {

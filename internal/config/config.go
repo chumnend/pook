@@ -14,8 +14,8 @@ type Config struct {
 	Port   string
 }
 
-// Load returns the configuation for the application by reading the .env file
-func Load() *Config {
+// GetEnv returns the configuation for the application by reading the .env file
+func GetEnv() *Config {
 	config := Config{}
 
 	err := godotenv.Load()
@@ -41,8 +41,8 @@ func Load() *Config {
 	return &config
 }
 
-// Test returns the configuration for the testing by reading the .env file
-func Test() *Config {
+// GetTestEnv returns the configuration for the testing by reading the .env file
+func GetTestEnv() *Config {
 	config := Config{}
 
 	err := godotenv.Load()

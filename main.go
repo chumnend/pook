@@ -6,8 +6,9 @@ import (
 )
 
 func main() {
-	config := config.Load()
+	config := config.GetEnv()
 
-	app := app.Initialize(config)
+	app := app.New()
+	app.Initialize(config)
 	app.Run()
 }

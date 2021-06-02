@@ -20,8 +20,10 @@ var a *app.App
 
 func TestMain(m *testing.M) {
 	// initialize the test application
-	config := config.Test()
-	a = app.Initialize(config)
+	config := config.GetTestEnv()
+
+	a = app.New()
+	a.Initialize(config)
 
 	// start test runner
 	log.SetOutput(ioutil.Discard)
