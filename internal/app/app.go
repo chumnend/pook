@@ -75,8 +75,8 @@ func (app *App) setupRouter() {
 
 	// serve react files on catchall handler
 	spa := spaHandler{
-		staticPath: "web/build",
-		indexPath:  "index.html",
+		staticPath: app.Config.StaticPath,
+		indexPath:  app.Config.IndexPath,
 	}
 	app.Router.NotFoundHandler = spa
 }

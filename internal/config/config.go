@@ -9,6 +9,10 @@ import (
 
 // Config struct declaration
 type Config struct {
+	Env        string
+	StaticPath string
+	IndexPath  string
+
 	DB     string
 	Secret string
 	Port   string
@@ -17,6 +21,10 @@ type Config struct {
 // GetEnv returns the configuation for the application by reading the .env file
 func GetEnv() *Config {
 	config := Config{}
+
+	config.Env = "prod"
+	config.StaticPath = os.ExpandEnv("$GOPATH/src/github.com/chumnend/pook/web/build")
+	config.IndexPath = "index.html"
 
 	err := godotenv.Load()
 	if err != nil {
@@ -44,6 +52,10 @@ func GetEnv() *Config {
 // GetTestEnv returns the configuration for the testing by reading the .env file
 func GetTestEnv() *Config {
 	config := Config{}
+
+	config.Env = "test"
+	config.StaticPath = os.ExpandEnv("$GOPATH/src/github.com/chumnend/pook/web/build")
+	config.IndexPath = "index.html"
 
 	err := godotenv.Load(os.ExpandEnv("$GOPATH/src/github.com/chumnend/pook/.env")) // fix to run .env not in root
 	if err != nil {
