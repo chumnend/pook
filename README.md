@@ -34,7 +34,7 @@ BROWSER=none # by default stops the browser from opening when running thr React 
 REACT_APP_API_PREFIX= # this should point to the address the Go app runs on
 ```
 
-5) Now the apps are ready to run. Go back to the root folder and run `make` this will build the React and Go assets and start the app on the givien port. You can build assets on thier own using the `make build` command and just serve currently built assets using `make serve`. The Go and React apps
-can also just be interacted to as usual using the regular CLI commands.
+5) Now the apps are ready to run. Go back to the root folder and run `make` this will build the React and Go assets and start the app on the given port. You can build assets on thier own using the `make build` command and just serve currently built assets using `make serve`.
+
 ## Deployment
 Not currently deployed.
