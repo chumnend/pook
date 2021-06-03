@@ -45,7 +45,7 @@ func GetEnv() *Config {
 func GetTestEnv() *Config {
 	config := Config{}
 
-	err := godotenv.Load()
+	err := godotenv.Load(os.ExpandEnv("$GOPATH/src/github.com/chumnend/pook/.env")) // fix to run .env not in root
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}

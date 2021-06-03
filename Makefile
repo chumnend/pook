@@ -17,7 +17,7 @@ build-react:
 .PHONY: build-go
 build-go:
 	@mkdir -p bin/
-	@cd bin/ && go build ../main.go
+	@cd bin/ && go build ../cmd/pook/main.go
 	@echo "Go files built."
 
 # Starts the app on port provided in .env file
@@ -31,7 +31,7 @@ test:
 	@if [ ! -d "web/build" ]; then \
   	cd web && npm run build; \
 	fi
-	@go test -v
+	@go test ./cmd/pook -v
 	@cd web && npm test -- --watchAll=false
 
 # Cleans up assets and node_modules
