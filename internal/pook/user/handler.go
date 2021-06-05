@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/chumnend/pook/internal/utils"
+	"github.com/chumnend/pook/internal/response"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 )
@@ -35,7 +35,7 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 	// create new user struct
 	var u User
 	if err := json.NewDecoder(r.Body).Decode(&u); err != nil {
-		utils.RespondWithError(w, http.StatusBadRequest, err.Error())
+		response.Error(w, http.StatusBadRequest, err.Error())
 		return
 	}
 	defer r.Body.Close()
@@ -43,21 +43,21 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 	// validate the user struct
 	isValid := u.Validate()
 	if !isValid {
-		utils.RespondWithError(w, http.StatusBadRequest, "missing and/or invalid information")
+		response.Error(w, http.StatusBadRequest, "missing and/or invalid information")
 		return
 	}
 
 	// call method to create user in DB
 	if err := u.Create(h.DB); err != nil {
-		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		response.Error(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	// generate jwt token
 	if token, err := u.GenerateToken(); err != nil {
-		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		response.Error(w, http.StatusInternalServerError, err.Error())
 	} else {
-		utils.RespondWithJSON(w, http.StatusOK, map[string]string{"token": token})
+		response.JSON(w, http.StatusOK, map[string]string{"token": token})
 	}
 }
 
@@ -68,7 +68,7 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	// get credentials from request
 	var creds User
 	if err := json.NewDecoder(r.Body).Decode(&creds); err != nil {
-		utils.RespondWithError(w, http.StatusBadRequest, err.Error())
+		response.Error(w, http.StatusBadRequest, err.Error())
 		return
 	}
 	defer r.Body.Close()
@@ -76,45 +76,45 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	// check to see if user exists
 	u, err := FindUserByEmail(h.DB, creds.Email)
 	if err != nil {
-		utils.RespondWithError(w, http.StatusBadRequest, "invalid email and/or password")
+		response.Error(w, http.StatusBadRequest, "invalid email and/or password")
 		return
 	}
 
 	// compare password with found users
 	isValid := u.ComparePassword(creds.Password)
 	if !isValid {
-		utils.RespondWithError(w, http.StatusBadRequest, "invalid email and/or password")
+		response.Error(w, http.StatusBadRequest, "invalid email and/or password")
 		return
 	}
 
 	// generate jwt token
 	if token, err := u.GenerateToken(); err != nil {
-		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		response.Error(w, http.StatusInternalServerError, err.Error())
 	} else {
-		utils.RespondWithJSON(w, http.StatusOK, map[string]string{"token": token})
+		response.JSON(w, http.StatusOK, map[string]string{"token": token})
 	}
 }
 
 // ListUsers returns list of Users found in the DB
 func (h *Handler) ListUsers(w http.ResponseWriter, r *http.Request) {
 	log.Println("GET - list users")
-	utils.RespondWithError(w, http.StatusNotImplemented, "not yet implemented")
+	response.Error(w, http.StatusNotImplemented, "not yet implemented")
 }
 
 // GetUser returns a User in the DB
 func (h *Handler) GetUser(w http.ResponseWriter, r *http.Request) {
 	log.Println("GET - get user")
-	utils.RespondWithError(w, http.StatusNotImplemented, "not yet implemented")
+	response.Error(w, http.StatusNotImplemented, "not yet implemented")
 }
 
 // UpdateUser updates the user in the DB
 func (h *Handler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	log.Println("PUT - update user")
-	utils.RespondWithError(w, http.StatusNotImplemented, "not yet implemented")
+	response.Error(w, http.StatusNotImplemented, "not yet implemented")
 }
 
 // DeleteUser removes a user from the DB
 func (h *Handler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	log.Println("DELETE - delete user")
-	utils.RespondWithError(w, http.StatusNotImplemented, "not yet implemented")
+	response.Error(w, http.StatusNotImplemented, "not yet implemented")
 }

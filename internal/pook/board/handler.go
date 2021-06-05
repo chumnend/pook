@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/chumnend/pook/internal/utils"
+	"github.com/chumnend/pook/internal/response"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 )
@@ -36,18 +36,18 @@ func (h *Handler) ListBoardsByUserID(w http.ResponseWriter, r *http.Request) {
 	// check for userid in query
 	userid := query.Get("userid")
 	if userid == "" {
-		utils.RespondWithError(w, http.StatusBadRequest, "query 'userid' not found")
+		response.Error(w, http.StatusBadRequest, "query 'userid' not found")
 		return
 	}
 
 	// get all boards of a user
 	boards, err := ListBoardsByUserID(h.DB, userid)
 	if err != nil {
-		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		response.Error(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	utils.RespondWithJSON(w, http.StatusOK, map[string]interface{}{"results": boards})
+	response.JSON(w, http.StatusOK, map[string]interface{}{"results": boards})
 }
 
 // CreateBoard returns a Board
@@ -59,14 +59,14 @@ func (h *Handler) CreateBoard(w http.ResponseWriter, r *http.Request) {
 	// check for userid in query
 	userid := query.Get("userid")
 	if userid == "" {
-		utils.RespondWithError(w, http.StatusBadRequest, "query 'userid' not found")
+		response.Error(w, http.StatusBadRequest, "query 'userid' not found")
 		return
 	}
 
 	// create new board struct
 	var b Board
 	if err := json.NewDecoder(r.Body).Decode(&b); err != nil {
-		utils.RespondWithError(w, http.StatusBadRequest, err.Error())
+		response.Error(w, http.StatusBadRequest, err.Error())
 		return
 	}
 	defer r.Body.Close()
@@ -77,11 +77,11 @@ func (h *Handler) CreateBoard(w http.ResponseWriter, r *http.Request) {
 
 	// call method to create user in DB
 	if err := b.Create(h.DB); err != nil {
-		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		response.Error(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	utils.RespondWithJSON(w, http.StatusOK, map[string]interface{}{"result": b})
+	response.JSON(w, http.StatusOK, map[string]interface{}{"result": b})
 }
 
 // GetBoard returns a Board
@@ -93,7 +93,7 @@ func (h *Handler) GetBoard(w http.ResponseWriter, r *http.Request) {
 	// check for userid in query
 	userid := query.Get("userid")
 	if userid == "" {
-		utils.RespondWithError(w, http.StatusBadRequest, "query 'userid' not found")
+		response.Error(w, http.StatusBadRequest, "query 'userid' not found")
 		return
 	}
 
@@ -101,18 +101,18 @@ func (h *Handler) GetBoard(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		utils.RespondWithError(w, http.StatusBadRequest, "invalid board ID")
+		response.Error(w, http.StatusBadRequest, "invalid board ID")
 		return
 	}
 
 	// retrieve board
 	board := Board{ID: uint(id)}
 	if err := board.Get(h.DB); err != nil {
-		utils.RespondWithError(w, http.StatusNotFound, "board not found")
+		response.Error(w, http.StatusNotFound, "board not found")
 		return
 	}
 
-	utils.RespondWithJSON(w, http.StatusOK, map[string]interface{}{"result": board})
+	response.JSON(w, http.StatusOK, map[string]interface{}{"result": board})
 }
 
 // UpdateBoard returns a Board
@@ -124,7 +124,7 @@ func (h *Handler) UpdateBoard(w http.ResponseWriter, r *http.Request) {
 	// check for userid in query
 	userid := query.Get("userid")
 	if userid == "" {
-		utils.RespondWithError(w, http.StatusBadRequest, "query 'userid' not found")
+		response.Error(w, http.StatusBadRequest, "query 'userid' not found")
 		return
 	}
 
@@ -132,7 +132,7 @@ func (h *Handler) UpdateBoard(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		utils.RespondWithError(w, http.StatusBadRequest, "invalid board ID")
+		response.Error(w, http.StatusBadRequest, "invalid board ID")
 		return
 	}
 
@@ -140,7 +140,7 @@ func (h *Handler) UpdateBoard(w http.ResponseWriter, r *http.Request) {
 	var board Board
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&board); err != nil {
-		utils.RespondWithError(w, http.StatusBadRequest, "invalid request payload")
+		response.Error(w, http.StatusBadRequest, "invalid request payload")
 		return
 	}
 	defer r.Body.Close()
@@ -150,11 +150,11 @@ func (h *Handler) UpdateBoard(w http.ResponseWriter, r *http.Request) {
 
 	// save the user
 	if err := board.Update(h.DB); err != nil {
-		utils.RespondWithError(w, http.StatusInternalServerError, "unable to update board")
+		response.Error(w, http.StatusInternalServerError, "unable to update board")
 		return
 	}
 
-	utils.RespondWithJSON(w, http.StatusOK, map[string]interface{}{"result": board})
+	response.JSON(w, http.StatusOK, map[string]interface{}{"result": board})
 }
 
 // DeleteBoard returns a Board
@@ -166,7 +166,7 @@ func (h *Handler) DeleteBoard(w http.ResponseWriter, r *http.Request) {
 	// check for userid in query
 	userid := query.Get("userid")
 	if userid == "" {
-		utils.RespondWithError(w, http.StatusBadRequest, "query 'userid' not found")
+		response.Error(w, http.StatusBadRequest, "query 'userid' not found")
 		return
 	}
 
@@ -174,16 +174,16 @@ func (h *Handler) DeleteBoard(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		utils.RespondWithError(w, http.StatusBadRequest, "invalid board ID")
+		response.Error(w, http.StatusBadRequest, "invalid board ID")
 		return
 	}
 
 	// delete the board
 	board := Board{ID: uint(id)}
 	if err := board.Delete(h.DB); err != nil {
-		utils.RespondWithError(w, http.StatusInternalServerError, "unable to update board")
+		response.Error(w, http.StatusInternalServerError, "unable to update board")
 		return
 	}
 
-	utils.RespondWithJSON(w, http.StatusOK, map[string]interface{}{"result": "board delete successfully"})
+	response.JSON(w, http.StatusOK, map[string]interface{}{"result": "board delete successfully"})
 }

@@ -10,7 +10,7 @@ import (
 	"github.com/chumnend/pook/internal/pook/board"
 	"github.com/chumnend/pook/internal/pook/task"
 	"github.com/chumnend/pook/internal/pook/user"
-	"github.com/chumnend/pook/internal/utils"
+	"github.com/chumnend/pook/internal/response"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres" // Gorm Postgres Driver
@@ -62,7 +62,7 @@ func (app *App) setupRouter() {
 	// setup api subrouter
 	api := app.Router.PathPrefix("/api/v1").Subrouter()
 	api.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		utils.RespondWithJSON(w, http.StatusOK, map[string]string{"message": "Ready to serve requests"})
+		response.JSON(w, http.StatusOK, map[string]string{"message": "Ready to serve requests"})
 	}).Methods("GET")
 
 	// attach api routes

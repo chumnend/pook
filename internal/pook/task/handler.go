@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/chumnend/pook/internal/utils"
+	"github.com/chumnend/pook/internal/response"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 )
@@ -36,25 +36,25 @@ func (h *Handler) ListTasks(w http.ResponseWriter, r *http.Request) {
 	// check for userid in query
 	userid := query.Get("userid")
 	if userid == "" {
-		utils.RespondWithError(w, http.StatusBadRequest, "query 'userid' not found")
+		response.Error(w, http.StatusBadRequest, "query 'userid' not found")
 		return
 	}
 
 	// check for boardId in query
 	boardid := query.Get("boardid")
 	if boardid == "" {
-		utils.RespondWithError(w, http.StatusBadRequest, "query 'boardid' not found")
+		response.Error(w, http.StatusBadRequest, "query 'boardid' not found")
 		return
 	}
 
 	// get all tasks
 	tasks, err := ListTasksByBoardID(h.DB, boardid)
 	if err != nil {
-		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		response.Error(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	utils.RespondWithJSON(w, http.StatusOK, map[string]interface{}{"results": tasks})
+	response.JSON(w, http.StatusOK, map[string]interface{}{"results": tasks})
 }
 
 // CreateTask returns a task
@@ -66,21 +66,21 @@ func (h *Handler) CreateTask(w http.ResponseWriter, r *http.Request) {
 	// check for userid in query
 	userid := query.Get("userid")
 	if userid == "" {
-		utils.RespondWithError(w, http.StatusBadRequest, "query 'userid' not found")
+		response.Error(w, http.StatusBadRequest, "query 'userid' not found")
 		return
 	}
 
 	// check for boardId in query
 	boardid := query.Get("boardid")
 	if boardid == "" {
-		utils.RespondWithError(w, http.StatusBadRequest, "query 'boardid' not found")
+		response.Error(w, http.StatusBadRequest, "query 'boardid' not found")
 		return
 	}
 
 	// create new task struct
 	var t Task
 	if err := json.NewDecoder(r.Body).Decode(&t); err != nil {
-		utils.RespondWithError(w, http.StatusBadRequest, err.Error())
+		response.Error(w, http.StatusBadRequest, err.Error())
 		return
 	}
 	defer r.Body.Close()
@@ -95,11 +95,11 @@ func (h *Handler) CreateTask(w http.ResponseWriter, r *http.Request) {
 
 	// call method to create user in DB
 	if err := t.Create(h.DB); err != nil {
-		utils.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		response.Error(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	utils.RespondWithJSON(w, http.StatusOK, map[string]interface{}{"result": t})
+	response.JSON(w, http.StatusOK, map[string]interface{}{"result": t})
 }
 
 // GetTask returns a task
@@ -111,14 +111,14 @@ func (h *Handler) GetTask(w http.ResponseWriter, r *http.Request) {
 	// check for userid in query
 	userid := query.Get("userid")
 	if userid == "" {
-		utils.RespondWithError(w, http.StatusBadRequest, "query 'userid' not found")
+		response.Error(w, http.StatusBadRequest, "query 'userid' not found")
 		return
 	}
 
 	// check for boardId in query
 	boardid := query.Get("boardid")
 	if boardid == "" {
-		utils.RespondWithError(w, http.StatusBadRequest, "query 'boardid' not found")
+		response.Error(w, http.StatusBadRequest, "query 'boardid' not found")
 		return
 	}
 
@@ -126,18 +126,18 @@ func (h *Handler) GetTask(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		utils.RespondWithError(w, http.StatusBadRequest, "invalid task ID")
+		response.Error(w, http.StatusBadRequest, "invalid task ID")
 		return
 	}
 
 	// retrieve board
 	task := Task{ID: uint(id)}
 	if err := task.Get(h.DB); err != nil {
-		utils.RespondWithError(w, http.StatusNotFound, "task not found")
+		response.Error(w, http.StatusNotFound, "task not found")
 		return
 	}
 
-	utils.RespondWithJSON(w, http.StatusOK, map[string]interface{}{"result": task})
+	response.JSON(w, http.StatusOK, map[string]interface{}{"result": task})
 }
 
 // UpdateTask returns a task
@@ -149,14 +149,14 @@ func (h *Handler) UpdateTask(w http.ResponseWriter, r *http.Request) {
 	// check for userid in query
 	userid := query.Get("userid")
 	if userid == "" {
-		utils.RespondWithError(w, http.StatusBadRequest, "query 'userid' not found")
+		response.Error(w, http.StatusBadRequest, "query 'userid' not found")
 		return
 	}
 
 	// check for boardid in query
 	boardid := query.Get("boardid")
 	if boardid == "" {
-		utils.RespondWithError(w, http.StatusBadRequest, "query 'boardid' not found")
+		response.Error(w, http.StatusBadRequest, "query 'boardid' not found")
 		return
 	}
 
@@ -164,7 +164,7 @@ func (h *Handler) UpdateTask(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		utils.RespondWithError(w, http.StatusBadRequest, "invalid task ID")
+		response.Error(w, http.StatusBadRequest, "invalid task ID")
 		return
 	}
 
@@ -172,7 +172,7 @@ func (h *Handler) UpdateTask(w http.ResponseWriter, r *http.Request) {
 	var task Task
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&task); err != nil {
-		utils.RespondWithError(w, http.StatusBadRequest, "invalid request payload")
+		response.Error(w, http.StatusBadRequest, "invalid request payload")
 		return
 	}
 	defer r.Body.Close()
@@ -182,11 +182,11 @@ func (h *Handler) UpdateTask(w http.ResponseWriter, r *http.Request) {
 
 	// save the user
 	if err := task.Update(h.DB); err != nil {
-		utils.RespondWithError(w, http.StatusInternalServerError, "unable to update task")
+		response.Error(w, http.StatusInternalServerError, "unable to update task")
 		return
 	}
 
-	utils.RespondWithJSON(w, http.StatusOK, map[string]interface{}{"result": task})
+	response.JSON(w, http.StatusOK, map[string]interface{}{"result": task})
 }
 
 // DeleteTask returns a task
@@ -198,14 +198,14 @@ func (h *Handler) DeleteTask(w http.ResponseWriter, r *http.Request) {
 	// check for userid in query
 	userid := query.Get("userid")
 	if userid == "" {
-		utils.RespondWithError(w, http.StatusBadRequest, "query 'userid' not found")
+		response.Error(w, http.StatusBadRequest, "query 'userid' not found")
 		return
 	}
 
 	// check for boardid in query
 	boardid := query.Get("boardid")
 	if boardid == "" {
-		utils.RespondWithError(w, http.StatusBadRequest, "query 'boardid' not found")
+		response.Error(w, http.StatusBadRequest, "query 'boardid' not found")
 		return
 	}
 
@@ -213,16 +213,16 @@ func (h *Handler) DeleteTask(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		utils.RespondWithError(w, http.StatusBadRequest, "invalid task ID")
+		response.Error(w, http.StatusBadRequest, "invalid task ID")
 		return
 	}
 
 	// delete the board
 	task := Task{ID: uint(id)}
 	if err := task.Delete(h.DB); err != nil {
-		utils.RespondWithError(w, http.StatusInternalServerError, "unable to update task")
+		response.Error(w, http.StatusInternalServerError, "unable to update task")
 		return
 	}
 
-	utils.RespondWithJSON(w, http.StatusOK, map[string]interface{}{"result": "task delete successfully"})
+	response.JSON(w, http.StatusOK, map[string]interface{}{"result": "task delete successfully"})
 }
