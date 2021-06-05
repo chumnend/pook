@@ -5,8 +5,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/chumnend/pook/internal/app/board"
-	"github.com/chumnend/pook/internal/app/task"
+	"github.com/chumnend/pook/internal/pook/board"
+	"github.com/chumnend/pook/internal/pook/task"
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"

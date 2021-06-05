@@ -18,8 +18,8 @@ type Config struct {
 	Port   string
 }
 
-// GetEnv returns the configuation for the application by reading the .env file
-func GetEnv() *Config {
+// LoadEnv returns the configuation for the application by reading the .env file
+func LoadEnv() *Config {
 	config := Config{}
 
 	config.Env = "prod"
@@ -49,8 +49,8 @@ func GetEnv() *Config {
 	return &config
 }
 
-// GetTestEnv returns the configuration for the testing by reading the .env file
-func GetTestEnv() *Config {
+// LoadTestEnv returns the configuration for the testing by reading the .env file
+func LoadTestEnv() *Config {
 	config := Config{}
 
 	config.Env = "test"

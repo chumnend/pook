@@ -1,4 +1,4 @@
-package app
+package pook
 
 import (
 	"log"
@@ -6,10 +6,10 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/chumnend/pook/internal/app/board"
-	"github.com/chumnend/pook/internal/app/task"
-	"github.com/chumnend/pook/internal/app/user"
 	"github.com/chumnend/pook/internal/config"
+	"github.com/chumnend/pook/internal/pook/board"
+	"github.com/chumnend/pook/internal/pook/task"
+	"github.com/chumnend/pook/internal/pook/user"
 	"github.com/chumnend/pook/internal/utils"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
@@ -23,16 +23,13 @@ type App struct {
 	Router *mux.Router
 }
 
-// New creates a new App struct
-func New() *App {
-	return &App{}
-}
-
-// Initialize takes a Config struct and builds the web server
-func (app *App) Initialize(config *config.Config) {
-	app.Config = config
+// NewApp builds a new app instance with given configuration settings
+func NewApp(config *config.Config) *App {
+	app := App{Config: config}
 	app.migrateDB()
 	app.setupRouter()
+
+	return &app
 }
 
 // Run starts the application

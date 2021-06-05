@@ -3,7 +3,7 @@ package board
 import (
 	"time"
 
-	"github.com/chumnend/pook/internal/app/task"
+	"github.com/chumnend/pook/internal/pook/task"
 	"github.com/jinzhu/gorm"
 )
 

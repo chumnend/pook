@@ -12,18 +12,16 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/chumnend/pook/internal/app"
 	"github.com/chumnend/pook/internal/config"
+	"github.com/chumnend/pook/internal/pook"
 )
 
-var a *app.App
+var app *pook.App
 
 func TestMain(m *testing.M) {
 	// initialize the test application
-	config := config.GetTestEnv()
-
-	a = app.New()
-	a.Initialize(config)
+	config := config.LoadTestEnv()
+	app = pook.NewApp(config)
 
 	// start test runner
 	log.SetOutput(ioutil.Discard)
@@ -33,7 +31,7 @@ func TestMain(m *testing.M) {
 
 func executeRequest(req *http.Request) *httptest.ResponseRecorder {
 	rr := httptest.NewRecorder()
-	a.Router.ServeHTTP(rr, req)
+	app.Router.ServeHTTP(rr, req)
 	return rr
 }
 
@@ -44,24 +42,24 @@ func checkResponseCode(t *testing.T, expected, actual int) {
 }
 
 func fillTables(numBoards int, numTasks int) {
-	a.DB.Exec("INSERT INTO users(email, password, first_name, last_name) VALUES ($1, $2, $3, $4)", "tester", "123", "test_fname", "test_lname")
+	app.DB.Exec("INSERT INTO users(email, password, first_name, last_name) VALUES ($1, $2, $3, $4)", "tester", "123", "test_fname", "test_lname")
 
 	for i := 0; i < numBoards; i++ {
-		a.DB.Exec("INSERT INTO boards(title, user_id) VALUES ($1, $2)", "board"+strconv.Itoa(i+1), "1")
+		app.DB.Exec("INSERT INTO boards(title, user_id) VALUES ($1, $2)", "board"+strconv.Itoa(i+1), "1")
 
 		for j := 0; j < numTasks; j++ {
-			a.DB.Exec("INSERT INTO tasks(title, user_id, board_id) VALUES ($1, $2, $3)", "task"+strconv.Itoa(j+1), "1", strconv.Itoa(i+1))
+			app.DB.Exec("INSERT INTO tasks(title, user_id, board_id) VALUES ($1, $2, $3)", "task"+strconv.Itoa(j+1), "1", strconv.Itoa(i+1))
 		}
 	}
 }
 
 func clearTables() {
-	a.DB.Exec("DELETE FROM users")
-	a.DB.Exec("ALTER SEQUENCE users_id_seq RESTART WITH 1")
-	a.DB.Exec("DELETE FROM boards")
-	a.DB.Exec("ALTER SEQUENCE boards_id_seq RESTART WITH 1")
-	a.DB.Exec("DELETE FROM tasks")
-	a.DB.Exec("ALTER SEQUENCE tasks_id_seq RESTART WITH 1")
+	app.DB.Exec("DELETE FROM users")
+	app.DB.Exec("ALTER SEQUENCE users_id_seq RESTART WITH 1")
+	app.DB.Exec("DELETE FROM boards")
+	app.DB.Exec("ALTER SEQUENCE boards_id_seq RESTART WITH 1")
+	app.DB.Exec("DELETE FROM tasks")
+	app.DB.Exec("ALTER SEQUENCE tasks_id_seq RESTART WITH 1")
 }
 
 func TestApiHealthHandler(t *testing.T) {
