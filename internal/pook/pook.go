@@ -7,10 +7,6 @@ import (
 	"path/filepath"
 
 	"github.com/chumnend/pook/internal/config"
-	"github.com/chumnend/pook/internal/pook/board"
-	"github.com/chumnend/pook/internal/pook/task"
-	"github.com/chumnend/pook/internal/pook/user"
-	"github.com/chumnend/pook/internal/response"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres" // Gorm Postgres Driver
@@ -26,8 +22,24 @@ type App struct {
 // NewApp builds a new app instance with given configuration settings
 func NewApp(config *config.Config) *App {
 	app := App{Config: config}
-	app.migrateDB()
-	app.setupRouter()
+
+	// setup database connection
+	var err error
+	app.DB, err = gorm.Open("postgres", app.Config.DB)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// create router
+	app.Router = mux.NewRouter().StrictSlash(true)
+	app.Router.Use(cors)
+
+	// serve react files on catchall handler
+	spa := spaHandler{
+		staticPath: app.Config.StaticPath,
+		indexPath:  app.Config.IndexPath,
+	}
+	app.Router.NotFoundHandler = spa
 
 	return &app
 }
@@ -37,45 +49,6 @@ func (app *App) Run() {
 	addr := ":" + app.Config.Port
 	log.Println("Listening on " + addr)
 	log.Fatal(http.ListenAndServe(addr, app.Router))
-}
-
-func (app *App) migrateDB() {
-	var err error
-
-	// setup database connection
-	app.DB, err = gorm.Open("postgres", app.Config.DB)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// migrate models to db
-	app.DB.AutoMigrate(user.User{})
-	app.DB.AutoMigrate(board.Board{})
-	app.DB.AutoMigrate(task.Task{})
-}
-
-func (app *App) setupRouter() {
-	// create router
-	app.Router = mux.NewRouter().StrictSlash(true)
-	app.Router.Use(cors)
-
-	// setup api subrouter
-	api := app.Router.PathPrefix("/api/v1").Subrouter()
-	api.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		response.JSON(w, http.StatusOK, map[string]string{"message": "Ready to serve requests"})
-	}).Methods("GET")
-
-	// attach api routes
-	user.AttachHandler(api, app.DB)
-	board.AttachHandler(api, app.DB)
-	task.AttachHandler(api, app.DB)
-
-	// serve react files on catchall handler
-	spa := spaHandler{
-		staticPath: app.Config.StaticPath,
-		indexPath:  app.Config.IndexPath,
-	}
-	app.Router.NotFoundHandler = spa
 }
 
 func cors(next http.Handler) http.Handler {
