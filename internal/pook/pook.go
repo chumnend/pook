@@ -6,42 +6,39 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/chumnend/pook/internal/config"
+	"github.com/chumnend/pook/internal/pook/config"
+	"github.com/chumnend/pook/internal/pook/postgres"
 	"github.com/gorilla/mux"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres" // Gorm Postgres Driver
 )
 
 // App struct declaration
 type App struct {
-	Config *config.Config
-	DB     *gorm.DB
-	Router *mux.Router
+	Config     *config.Config
+	Connection *postgres.Conn
+	Router     *mux.Router
 }
 
 // NewApp builds a new app instance with given configuration settings
-func NewApp(config *config.Config) *App {
-	app := App{Config: config}
+func NewApp() *App {
+	cfg := config.LoadEnv()
+	conn := postgres.NewConnection(cfg.DB)
 
-	// setup database connection
-	var err error
-	app.DB, err = gorm.Open("postgres", app.Config.DB)
-	if err != nil {
-		log.Fatal(err)
-	}
+	// userRepo := user.NewPostgresRepository(conn)
+	// userSrv := user.NewService(userRepo)
 
-	// create router
-	app.Router = mux.NewRouter().StrictSlash(true)
-	app.Router.Use(cors)
-
-	// serve react files on catchall handler
+	router := mux.NewRouter().StrictSlash(true)
+	router.Use(cors)
 	spa := spaHandler{
-		staticPath: app.Config.StaticPath,
-		indexPath:  app.Config.IndexPath,
+		staticPath: cfg.StaticPath,
+		indexPath:  cfg.IndexPath,
 	}
-	app.Router.NotFoundHandler = spa
+	router.NotFoundHandler = spa
 
-	return &app
+	return &App{
+		Config:     cfg,
+		Connection: conn,
+		Router:     router,
+	}
 }
 
 // Run starts the application
