@@ -8,6 +8,7 @@ import (
 
 	"github.com/chumnend/pook/internal/pook/config"
 	"github.com/chumnend/pook/internal/pook/postgres"
+	"github.com/chumnend/pook/internal/pook/user"
 	"github.com/gorilla/mux"
 )
 
@@ -23,11 +24,19 @@ func NewApp() *App {
 	cfg := config.LoadEnv()
 	conn := postgres.NewConnection(cfg.DB)
 
-	// userRepo := user.NewPostgresRepository(conn)
-	// userSrv := user.NewService(userRepo)
+	userRepo := user.NewPostgresRepository(conn)
+	userSrv := user.NewService(userRepo)
+	userCtl := user.NewUserController(userSrv)
 
 	router := mux.NewRouter().StrictSlash(true)
 	router.Use(cors)
+
+	// setup api subrouter
+	api := router.PathPrefix("/api/v1").Subrouter()
+	api.HandleFunc("/register", userCtl.Register).Methods("POST", "OPTIONS")
+	api.HandleFunc("/login", userCtl.Login).Methods("POST", "OPTIONS")
+
+	// serve react files on catchall handler
 	spa := spaHandler{
 		staticPath: cfg.StaticPath,
 		indexPath:  cfg.IndexPath,
