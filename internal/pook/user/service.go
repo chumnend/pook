@@ -2,6 +2,10 @@ package user
 
 import (
 	"errors"
+	"os"
+
+	"github.com/dgrijalva/jwt-go"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // Service handles the busniess logic regarding Users
@@ -22,26 +26,55 @@ func NewService(repo Repository) Service {
 }
 
 func (srv *userSrv) FindAll() ([]User, error) {
-	var users []User
-	return users, errors.New("Not implemented")
+	users, err := srv.repo.FindAll()
+	if err != nil {
+		return users, err
+	}
+	return users, nil
 }
 
 func (srv *userSrv) FindByEmail(email string) (*User, error) {
-	return nil, errors.New("Not implemented")
+	user, err := srv.repo.FindByEmail(email)
+	if err != nil {
+		return user, err
+	}
+	return user, nil
 }
 
-func (srv *userSrv) Save(*User) error {
-	return errors.New("Not implemented")
+func (srv *userSrv) Save(user *User) error {
+	// hash the password
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	user.Password = string(hashedPassword)
+
+	return srv.repo.Save(user)
 }
 
 func (srv *userSrv) Validate(user *User) error {
-	return errors.New("Not implemented")
+	if user.Email == "" || user.Password == "" {
+		return errors.New("Invalid User")
+	}
+	return nil
 }
 
 func (srv *userSrv) GenerateToken(user *User) (string, error) {
-	return "", errors.New("Not implemented")
+	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), jwt.MapClaims{
+		"id":    user.ID,
+		"email": user.Email,
+	})
+	tokenStr, err := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
+	if err != nil {
+		return "", err
+	}
+	return tokenStr, nil
 }
 
 func (srv *userSrv) ComparePassword(user *User, password string) error {
-	return errors.New("Not implemented")
+	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+	if err != nil {
+		return errors.New("Invalid password")
+	}
+	return nil
 }

@@ -1,6 +1,7 @@
 package user
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 
@@ -24,10 +25,65 @@ func NewUserController(srv Service) Controller {
 
 func (ctl *userCtl) Register(w http.ResponseWriter, r *http.Request) {
 	log.Println("POST - register")
-	response.Error(w, http.StatusNotImplemented, "not yet implemented")
+
+	// create new user struct
+	var u User
+	if err := json.NewDecoder(r.Body).Decode(&u); err != nil {
+		response.Error(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	defer r.Body.Close()
+
+	// validate the user struct
+	validateErr := ctl.srv.Validate(&u)
+	if validateErr != nil {
+		response.Error(w, http.StatusBadRequest, "missing and/or invalid information")
+		return
+	}
+
+	// call method to create user in DB
+	if err := ctl.srv.Save(&u); err != nil {
+		response.Error(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	// generate jwt token
+	if token, err := ctl.srv.GenerateToken(&u); err != nil {
+		response.Error(w, http.StatusInternalServerError, err.Error())
+	} else {
+		response.JSON(w, http.StatusOK, map[string]string{"token": token})
+	}
 }
 
 func (ctl *userCtl) Login(w http.ResponseWriter, r *http.Request) {
 	log.Println("POST - login")
-	response.Error(w, http.StatusNotImplemented, "not yet implemented")
+
+	// get credentials from request
+	var creds User
+	if err := json.NewDecoder(r.Body).Decode(&creds); err != nil {
+		response.Error(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	defer r.Body.Close()
+
+	// check to see if user exists
+	u, err := ctl.srv.FindByEmail(creds.Email)
+	if err != nil {
+		response.Error(w, http.StatusBadRequest, "invalid email and/or password")
+		return
+	}
+
+	// compare password with found users
+	pwErr := ctl.srv.ComparePassword(u, creds.Password)
+	if pwErr != nil {
+		response.Error(w, http.StatusBadRequest, "invalid email and/or password")
+		return
+	}
+
+	// generate jwt token
+	if token, err := ctl.srv.GenerateToken(u); err != nil {
+		response.Error(w, http.StatusInternalServerError, err.Error())
+	} else {
+		response.JSON(w, http.StatusOK, map[string]string{"token": token})
+	}
 }
