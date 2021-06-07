@@ -7,29 +7,35 @@ import (
 	"path/filepath"
 
 	"github.com/chumnend/pook/internal/pook/config"
-	"github.com/chumnend/pook/internal/pook/postgres"
+	"github.com/chumnend/pook/internal/pook/middleware"
 	"github.com/chumnend/pook/internal/pook/user"
 	"github.com/gorilla/mux"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres" // Gorm Postgres Driver
 )
 
 // App struct declaration
 type App struct {
-	Config     *config.Config
-	Connection *postgres.Conn
-	Router     *mux.Router
+	Config *config.Config
+	Conn   *gorm.DB
+	Router *mux.Router
 }
 
 // NewApp builds a new app instance with given configuration settings
 func NewApp() *App {
 	cfg := config.LoadEnv()
-	conn := postgres.NewConnection(cfg.DB)
 
-	userRepo := user.NewPostgresRepository(conn)
+	db, err := gorm.Open("postgres", cfg.DB)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	userRepo := user.NewPostgresRepository(db)
 	userSrv := user.NewService(userRepo)
 	userCtl := user.NewUserController(userSrv)
 
 	router := mux.NewRouter().StrictSlash(true)
-	router.Use(cors)
+	router.Use(middleware.Cors)
 
 	// setup api subrouter
 	api := router.PathPrefix("/api/v1").Subrouter()
@@ -44,9 +50,9 @@ func NewApp() *App {
 	router.NotFoundHandler = spa
 
 	return &App{
-		Config:     cfg,
-		Connection: conn,
-		Router:     router,
+		Config: cfg,
+		Conn:   db,
+		Router: router,
 	}
 }
 
@@ -55,21 +61,6 @@ func (app *App) Run() {
 	addr := ":" + app.Config.Port
 	log.Println("Listening on " + addr)
 	log.Fatal(http.ListenAndServe(addr, app.Router))
-}
-
-func cors(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Allow-Control-Allow-Credentials", "true")
-		w.Header().Set("Access-Control-Allow-Methods", "GET,POST,OPTIONS,PUT,DELETE")
-		w.Header().Set("Access-Control-Allow-Headers", "Accept, Accept-Endcoding, Content-Type, Content-Length, Authorization, X-CSRF-token")
-
-		if r.Method == http.MethodOptions {
-			return
-		}
-
-		next.ServeHTTP(w, r)
-	})
 }
 
 type spaHandler struct {
