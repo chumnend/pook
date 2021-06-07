@@ -4,20 +4,21 @@ import (
 	"errors"
 	"os"
 
+	"github.com/chumnend/pook/internal/pook/domain"
 	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type userSrv struct {
-	repo Repository
+	repo domain.UserRepository
 }
 
 // NewService returns a Service utilizing provided Repository
-func NewService(repo Repository) Service {
+func NewService(repo domain.UserRepository) domain.UserService {
 	return &userSrv{repo: repo}
 }
 
-func (srv *userSrv) FindAll() ([]User, error) {
+func (srv *userSrv) FindAll() ([]domain.User, error) {
 	users, err := srv.repo.FindAll()
 	if err != nil {
 		return users, err
@@ -25,7 +26,7 @@ func (srv *userSrv) FindAll() ([]User, error) {
 	return users, nil
 }
 
-func (srv *userSrv) FindByEmail(email string) (*User, error) {
+func (srv *userSrv) FindByEmail(email string) (*domain.User, error) {
 	user, err := srv.repo.FindByEmail(email)
 	if err != nil {
 		return user, err
@@ -33,7 +34,7 @@ func (srv *userSrv) FindByEmail(email string) (*User, error) {
 	return user, nil
 }
 
-func (srv *userSrv) Save(user *User) error {
+func (srv *userSrv) Save(user *domain.User) error {
 	// hash the password
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
@@ -44,14 +45,14 @@ func (srv *userSrv) Save(user *User) error {
 	return srv.repo.Save(user)
 }
 
-func (srv *userSrv) Validate(user *User) error {
+func (srv *userSrv) Validate(user *domain.User) error {
 	if user.Email == "" || user.Password == "" {
 		return errors.New("Invalid User")
 	}
 	return nil
 }
 
-func (srv *userSrv) GenerateToken(user *User) (string, error) {
+func (srv *userSrv) GenerateToken(user *domain.User) (string, error) {
 	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), jwt.MapClaims{
 		"id":    user.ID,
 		"email": user.Email,
@@ -63,7 +64,7 @@ func (srv *userSrv) GenerateToken(user *User) (string, error) {
 	return tokenStr, nil
 }
 
-func (srv *userSrv) ComparePassword(user *User, password string) error {
+func (srv *userSrv) ComparePassword(user *domain.User, password string) error {
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
 		return errors.New("Invalid password")

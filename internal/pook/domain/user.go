@@ -1,4 +1,4 @@
-package user
+package domain
 
 import (
 	"net/http"
@@ -17,24 +17,24 @@ type User struct {
 	IsAdmin   bool      `gorm:"default:false" json:"isAdmin"`
 }
 
-// Repository is the contract between DB to the application
-type Repository interface {
+// UserRepository is the contract between DB to the application
+type UserRepository interface {
 	FindAll() ([]User, error)
 	FindByEmail(string) (*User, error)
 	Save(*User) error
 }
 
-// Service handles the business logic regarding Users
-type Service interface {
-	Repository
+// UserService handles the business logic regarding Users
+type UserService interface {
+	UserRepository
 
 	Validate(*User) error
 	GenerateToken(*User) (string, error)
 	ComparePassword(*User, string) error
 }
 
-// Controller interface declaration
-type Controller interface {
+// UserController interface declaration
+type UserController interface {
 	Register(w http.ResponseWriter, r *http.Request)
 	Login(w http.ResponseWriter, r *http.Request)
 }
