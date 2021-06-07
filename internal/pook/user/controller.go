@@ -8,12 +8,6 @@ import (
 	"github.com/chumnend/pook/internal/response"
 )
 
-// Controller interface declaration
-type Controller interface {
-	Register(w http.ResponseWriter, r *http.Request)
-	Login(w http.ResponseWriter, r *http.Request)
-}
-
 type userCtl struct {
 	srv Service
 }

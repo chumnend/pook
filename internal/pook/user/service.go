@@ -8,14 +8,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// Service handles the busniess logic regarding Users
-type Service interface {
-	Repository
-	Validate(user *User) error
-	GenerateToken(user *User) (string, error)
-	ComparePassword(user *User, password string) error
-}
-
 type userSrv struct {
 	repo Repository
 }

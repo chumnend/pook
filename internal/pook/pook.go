@@ -24,7 +24,7 @@ func NewApp() *App {
 	cfg := config.LoadEnv()
 	conn := postgres.NewConnection(cfg.DB)
 
-	userRepo := postgres.NewUserRepository(conn)
+	userRepo := user.NewPostgresRepository(conn)
 	userSrv := user.NewService(userRepo)
 	userCtl := user.NewUserController(userSrv)
 
