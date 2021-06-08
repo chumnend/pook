@@ -18,6 +18,8 @@ type Config struct {
 	Port   string
 }
 
+const projectName = "pook"
+
 // LoadEnv returns the configuation for the application by reading the .env file
 func LoadEnv() *Config {
 	config := Config{}
@@ -33,6 +35,38 @@ func LoadEnv() *Config {
 	config.DB = os.Getenv("DATABASE_URL")
 	if config.DB == "" {
 		log.Fatal("missing env: DATABASE_URL")
+	}
+
+	config.Secret = os.Getenv("SECRET_KEY")
+	if config.Secret == "" {
+		log.Fatal("missing env: SECRET_KEY")
+	}
+
+	config.Port = os.Getenv("PORT")
+	if config.Port == "" {
+		log.Fatal("missing env: PORT")
+	}
+
+	return &config
+}
+
+// LoadTestEnv returns the configuation for the application used for testing purposes
+func LoadTestEnv() *Config {
+	path := os.ExpandEnv("$GOPATH/src/github.com/chumnend/pook/")
+
+	config := Config{}
+	config.Env = "test"
+	config.StaticPath = path + "web/build"
+	config.IndexPath = "index.html"
+
+	err := godotenv.Load(path + ".env")
+	if err != nil {
+		log.Fatal(".env file not found")
+	}
+
+	config.DB = os.Getenv("DATABASE_TEST_URL")
+	if config.DB == "" {
+		log.Fatal("missing env: DATABASE_TEST_URL")
 	}
 
 	config.Secret = os.Getenv("SECRET_KEY")
