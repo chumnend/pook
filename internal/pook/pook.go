@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/chumnend/pook/internal/config"
+	"github.com/chumnend/pook/internal/pook/config"
 	"github.com/chumnend/pook/internal/pook/middleware"
 	"github.com/chumnend/pook/internal/pook/user"
 	"github.com/gorilla/mux"
@@ -22,16 +22,22 @@ type App struct {
 }
 
 // NewApp builds a new app instance
-func NewApp(cfg *config.Config) *App {
+func NewApp() *App {
+	// load config
+	cfg := config.LoadEnv()
+
+	// connect database
 	db, err := gorm.Open("postgres", cfg.DB)
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	// setup user controller
 	userRepo := user.NewPostgresRepository(db)
 	userSrv := user.NewService(userRepo)
 	userCtl := user.NewUserController(userSrv)
 
+	// setup router
 	router := mux.NewRouter().StrictSlash(true)
 	router.Use(middleware.Cors)
 
