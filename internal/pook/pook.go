@@ -24,7 +24,7 @@ type App struct {
 // NewApp builds a new app instance
 func NewApp() *App {
 	// load config
-	cfg := config.LoadEnv()
+	cfg := config.GetEnv()
 
 	// connect database
 	db, err := gorm.Open("postgres", cfg.DB)

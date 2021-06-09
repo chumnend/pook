@@ -46,6 +46,10 @@ func (srv *userSrv) Save(user *domain.User) error {
 }
 
 func (srv *userSrv) Validate(user *domain.User) error {
+	if user == nil {
+		return errors.New("User is empty")
+	}
+
 	if user.Email == "" || user.Password == "" {
 		return errors.New("Invalid User")
 	}

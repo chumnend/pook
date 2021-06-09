@@ -31,7 +31,7 @@ test:
 	@if [ ! -d "web/build" ]; then \
   	cd web && npm run build; \
 	fi
-	@go test ./internal/... -v
+	@go test ./internal/...
 	@cd web && npm test -- --watchAll=false
 
 # Cleans up assets and node_modules

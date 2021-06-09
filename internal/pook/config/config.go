@@ -16,16 +16,21 @@ type Config struct {
 	IndexPath  string
 }
 
-// LoadEnv returns the configuation for the application by reading the .env file
-func LoadEnv() *Config {
-	envPath := os.ExpandEnv("$GOPATH/src/github.com/chumnend/pook/")
+// GetEnv returns the configuation for the application by reading the .env file
+func GetEnv() *Config {
+	path := os.ExpandEnv("$GOPATH/src/github.com/chumnend/pook/")
 
-	err := godotenv.Load(envPath + ".env")
+	err := godotenv.Load(path + ".env")
 	if err != nil {
 		log.Fatal(".env file not found")
 	}
 
-	databaseURL := os.Getenv("DATABASE_URL")
+	var databaseURL string
+	if os.Getenv("ENV") != "test" {
+		databaseURL = os.Getenv("DATABASE_URL")
+	} else {
+		databaseURL = os.Getenv("DATABASE_TEST_URL")
+	}
 	if databaseURL == "" {
 		log.Fatal("missing env: DATABASE_URL")
 	}
@@ -44,7 +49,7 @@ func LoadEnv() *Config {
 		DB:         databaseURL,
 		Secret:     secret,
 		Port:       port,
-		StaticPath: "web/build",
-		IndexPath:  "index.html",
+		StaticPath: path + "web/build",
+		IndexPath:  path + "index.html",
 	}
 }
