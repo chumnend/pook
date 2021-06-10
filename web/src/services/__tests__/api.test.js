@@ -7,7 +7,7 @@ import {
   saveAuthState,
   clearAuthState,
   AUTH_STATE_KEY,
-} from './api';
+} from '../api';
 
 jest.mock('axios');
 jest.mock('jwt-decode', () => () => ({ id: 'test_id', email: 'test_email' }));
