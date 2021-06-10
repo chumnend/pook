@@ -33,7 +33,7 @@ type UserService interface {
 	ComparePassword(*User, string) error
 }
 
-// UserController interface declaration
+// UserController defines user handlers in the application
 type UserController interface {
 	Register(w http.ResponseWriter, r *http.Request)
 	Login(w http.ResponseWriter, r *http.Request)
