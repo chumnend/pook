@@ -15,6 +15,8 @@ type User struct {
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 	IsAdmin   bool      `gorm:"default:false" json:"isAdmin"`
+
+	Books []Book `json:"books"`
 }
 
 // UserRepository is the contract between DB to the application

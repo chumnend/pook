@@ -18,7 +18,8 @@ type Book struct {
 // BookRepository is the contract between DB to application
 type BookRepository interface {
 	FindAll() ([]Book, error)
-	FindBooksByUser(*User) ([]Book, error)
+	FindAllByUserID(uint) ([]Book, error)
+	FindBookByID(uint) (*Book, error)
 	Save(*Book) error
 	Delete(*Book) error
 }
