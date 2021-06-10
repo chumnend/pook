@@ -1,6 +1,5 @@
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
-import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
@@ -41,7 +40,7 @@ const NotFoundPage = () => {
   const classes = useStyles();
 
   return (
-    <Container component="main" className={classes.root}>
+    <div className={classes.root}>
       <Header isAuth={auth.isAuth} />
       <Box className={classes.box}>
         <Typography variant="h1">404</Typography>
@@ -55,7 +54,7 @@ const NotFoundPage = () => {
           Back to home
         </Button>
       </Box>
-    </Container>
+    </div>
   );
 };
 
