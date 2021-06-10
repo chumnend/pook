@@ -25,8 +25,8 @@ export const AUTH_STATE_KEY = 'authState';
 export const register = async (firstName, lastName, email, password) => {
   try {
     const res = await axios.post(API_USER_REGISTER, {
-      firstname: firstName,
-      lastname: lastName,
+      firstName: firstName,
+      lastName: lastName,
       email: email,
       password: password,
     });

@@ -21,7 +21,6 @@ PORT= # the port the app will run on
 SECRET_KEY= # string used for hashing
 DATABASE_URL= # database string used to connect to postgresql database
 DATABASE_TEST_URL= # database string to database used for integration tests
-
 ```
 
 4)This step is only needed if you plan to work on the React app. Go into the web folder ie. `cd web/` and copy run `cp env.example .env` and then open the `.env` and fill out the following fields,
