@@ -27,6 +27,8 @@ type BookRepository interface {
 // BookService handles the business logic regarding Books
 type BookService interface {
 	BookRepository
+
+	Validate(*Book) error
 }
 
 // BookController defines book handlers in the application

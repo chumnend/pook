@@ -1,8 +1,6 @@
 package book
 
 import (
-	"errors"
-
 	"github.com/chumnend/pook/internal/pook/domain"
 	"github.com/jinzhu/gorm"
 )
@@ -14,7 +12,7 @@ type bookRepo struct {
 // NewPostgresRepository returns a BookRepository struct utilizing PostgreSQL
 func NewPostgresRepository(conn *gorm.DB) domain.BookRepository {
 	conn.AutoMigrate(&domain.Book{})
-	return &bookRepo{}
+	return &bookRepo{conn: conn}
 }
 
 func (repo *bookRepo) FindAll() ([]domain.Book, error) {
@@ -23,7 +21,7 @@ func (repo *bookRepo) FindAll() ([]domain.Book, error) {
 	if result.Error != nil {
 		return books, result.Error
 	}
-	return books, errors.New("Not yet implemented")
+	return books, nil
 }
 
 func (repo *bookRepo) FindAllByUserID(id uint) ([]domain.Book, error) {
@@ -32,7 +30,7 @@ func (repo *bookRepo) FindAllByUserID(id uint) ([]domain.Book, error) {
 	if result.Error != nil {
 		return books, result.Error
 	}
-	return books, errors.New("Not yet implemented")
+	return books, nil
 }
 
 func (repo *bookRepo) FindBookByID(id uint) (*domain.Book, error) {
