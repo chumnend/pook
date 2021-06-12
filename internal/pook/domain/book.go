@@ -19,7 +19,7 @@ type Book struct {
 type BookRepository interface {
 	FindAll() ([]Book, error)
 	FindAllByUserID(uint) ([]Book, error)
-	FindBookByID(uint) (*Book, error)
+	FindByID(uint) (*Book, error)
 	Save(*Book) error
 	Delete(*Book) error
 }

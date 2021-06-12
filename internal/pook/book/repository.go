@@ -33,7 +33,7 @@ func (repo *bookRepo) FindAllByUserID(id uint) ([]domain.Book, error) {
 	return books, nil
 }
 
-func (repo *bookRepo) FindBookByID(id uint) (*domain.Book, error) {
+func (repo *bookRepo) FindByID(id uint) (*domain.Book, error) {
 	var book domain.Book
 	result := repo.conn.First(&book, id)
 	if result.Error != nil {
