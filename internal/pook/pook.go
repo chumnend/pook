@@ -7,7 +7,6 @@ import (
 	"path/filepath"
 
 	"github.com/chumnend/pook/internal/pook/config"
-	"github.com/chumnend/pook/internal/pook/middleware"
 	"github.com/chumnend/pook/internal/pook/user"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
@@ -38,11 +37,11 @@ func NewApp() *App {
 		log.Fatal(err)
 	}
 	userSrv := user.NewService(userRepo)
-	userCtl := user.NewUserController(userSrv)
+	userCtl := user.NewController(userSrv)
 
 	// setup router
 	router := mux.NewRouter().StrictSlash(true)
-	router.Use(middleware.Cors)
+	router.Use(cors)
 
 	// setup api subrouter
 	api := router.PathPrefix("/api/v1").Subrouter()
@@ -68,6 +67,21 @@ func (app *App) Run() {
 	addr := ":" + app.Config.Port
 	log.Println("Listening on " + addr)
 	log.Fatal(http.ListenAndServe(addr, app.Router))
+}
+
+func cors(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Allow-Control-Allow-Credentials", "true")
+		w.Header().Set("Access-Control-Allow-Methods", "GET,POST,OPTIONS,PUT,DELETE")
+		w.Header().Set("Access-Control-Allow-Headers", "Accept, Accept-Endcoding, Content-Type, Content-Length, Authorization, X-CSRF-token")
+
+		if r.Method == http.MethodOptions {
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
 }
 
 type spaHandler struct {
