@@ -32,8 +32,11 @@ func NewApp() *App {
 		log.Fatal(err)
 	}
 
-	// setup user controller
+	// setup user
 	userRepo := user.NewPostgresRepository(db)
+	if err := userRepo.Migrate(); err != nil {
+		log.Fatal(err)
+	}
 	userSrv := user.NewService(userRepo)
 	userCtl := user.NewUserController(userSrv)
 

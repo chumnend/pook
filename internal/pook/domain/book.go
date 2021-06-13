@@ -22,12 +22,16 @@ type BookRepository interface {
 	FindByID(uint) (*Book, error)
 	Save(*Book) error
 	Delete(*Book) error
+	Migrate() error
 }
 
 // BookService handles the business logic regarding Books
 type BookService interface {
-	BookRepository
-
+	FindAll() ([]Book, error)
+	FindAllByUserID(uint) ([]Book, error)
+	FindByID(uint) (*Book, error)
+	Save(*Book) error
+	Delete(*Book) error
 	Validate(*Book) error
 }
 

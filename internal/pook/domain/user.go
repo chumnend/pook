@@ -24,12 +24,14 @@ type UserRepository interface {
 	FindAll() ([]User, error)
 	FindByEmail(string) (*User, error)
 	Save(*User) error
+	Migrate() error
 }
 
 // UserService handles the business logic regarding Users
 type UserService interface {
-	UserRepository
-
+	FindAll() ([]User, error)
+	FindByEmail(string) (*User, error)
+	Save(*User) error
 	Validate(*User) error
 	GenerateToken(*User) (string, error)
 	ComparePassword(*User, string) error
