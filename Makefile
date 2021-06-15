@@ -25,13 +25,26 @@ build-go:
 serve:
 	@./bin/main
 
-# Executes tests for React and Go apps
+# Executes tests for Go packages and React app
 .PHONY: test
 test:
 	@if [ ! -d "web/build" ]; then \
   	cd web && npm run build; \
 	fi
 	@go test ./internal/... -cover -covermode=atomic
+	@cd web && npm test -- --watchAll=false
+
+# Executes tests for Go packages
+.PHONY: test-go
+test-go:
+	@if [ ! -d "web/build" ]; then \
+  	cd web && npm run build; \
+	fi
+	@go test ./internal/... -cover -covermode=atomic
+
+# Executes tests for React app
+.PHONY: test-react
+test-react:
 	@cd web && npm test -- --watchAll=false
 
 # Cleans up assets and node_modules

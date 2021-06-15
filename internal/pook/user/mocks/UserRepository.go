@@ -27,3 +27,9 @@ func (mock *UserRepository) Save(user *domain.User) error {
 	args := mock.Called(user)
 	return args.Error(0)
 }
+
+// Migrate provides a mock function
+func (mock *UserRepository) Migrate() error {
+	args := mock.Called()
+	return args.Error(0)
+}

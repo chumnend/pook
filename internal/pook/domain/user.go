@@ -15,6 +15,8 @@ type User struct {
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 	IsAdmin   bool      `gorm:"default:false" json:"isAdmin"`
+
+	Books []Book `json:"books"`
 }
 
 // UserRepository is the contract between DB to the application
@@ -22,18 +24,20 @@ type UserRepository interface {
 	FindAll() ([]User, error)
 	FindByEmail(string) (*User, error)
 	Save(*User) error
+	Migrate() error
 }
 
 // UserService handles the business logic regarding Users
 type UserService interface {
-	UserRepository
-
+	FindAll() ([]User, error)
+	FindByEmail(string) (*User, error)
+	Save(*User) error
 	Validate(*User) error
 	GenerateToken(*User) (string, error)
 	ComparePassword(*User, string) error
 }
 
-// UserController interface declaration
+// UserController defines user handlers in the application
 type UserController interface {
 	Register(w http.ResponseWriter, r *http.Request)
 	Login(w http.ResponseWriter, r *http.Request)

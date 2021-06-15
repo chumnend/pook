@@ -13,7 +13,7 @@ type userSrv struct {
 	repo domain.UserRepository
 }
 
-// NewService returns a Service utilizing provided Repository
+// NewService returns a UserService utilizing provided UserRepository
 func NewService(repo domain.UserRepository) domain.UserService {
 	return &userSrv{repo: repo}
 }

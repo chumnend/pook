@@ -11,7 +11,6 @@ type userRepo struct {
 
 // NewPostgresRepository returns a UserRepository struct utilizing PostgreSQL
 func NewPostgresRepository(conn *gorm.DB) domain.UserRepository {
-	conn.AutoMigrate(&domain.User{})
 	return &userRepo{conn: conn}
 }
 
@@ -36,4 +35,8 @@ func (repo *userRepo) FindByEmail(email string) (*domain.User, error) {
 func (repo *userRepo) Save(user *domain.User) error {
 	result := repo.conn.Create(user)
 	return result.Error
+}
+
+func (repo *userRepo) Migrate() error {
+	return repo.conn.AutoMigrate(&domain.User{}).Error
 }

@@ -13,8 +13,8 @@ type userCtl struct {
 	srv domain.UserService
 }
 
-// NewUserController creates a Controller with given service
-func NewUserController(srv domain.UserService) domain.UserController {
+// NewController creates a UserController with given UserService
+func NewController(srv domain.UserService) domain.UserController {
 	return &userCtl{srv: srv}
 }
 
