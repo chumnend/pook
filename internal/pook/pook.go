@@ -6,8 +6,9 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/chumnend/pook/internal/pook/api"
 	"github.com/chumnend/pook/internal/pook/config"
-	"github.com/chumnend/pook/internal/pook/user"
+	"github.com/chumnend/pook/internal/pook/middleware"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres" // Gorm Postgres Driver
@@ -31,26 +32,12 @@ func NewApp() *App {
 		log.Fatal(err)
 	}
 
-	// initialize repositories
-	userRepo := user.NewPostgresRepository(db)
-	if err := userRepo.Migrate(); err != nil {
-		log.Fatal(err)
-	}
-
-	// initialize services
-	userSrv := user.NewService(userRepo)
-
-	// initialize controllers
-	userCtl := user.NewController(userSrv)
-
 	// setup router
 	router := mux.NewRouter().StrictSlash(true)
-	router.Use(cors)
+	router.Use(middleware.Cors)
 
-	// setup api subrouter
-	api := router.PathPrefix("/api/v1").Subrouter()
-	api.HandleFunc("/register", userCtl.Register).Methods("POST", "OPTIONS")
-	api.HandleFunc("/login", userCtl.Login).Methods("POST", "OPTIONS")
+	// attach api
+	api.AttachRouter(router, db)
 
 	// serve react files on catchall handler
 	spa := spaHandler{
@@ -71,21 +58,6 @@ func (app *App) Run() {
 	addr := ":" + app.Config.Port
 	log.Println("Listening on " + addr)
 	log.Fatal(http.ListenAndServe(addr, app.Router))
-}
-
-func cors(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Allow-Control-Allow-Credentials", "true")
-		w.Header().Set("Access-Control-Allow-Methods", "GET,POST,OPTIONS,PUT,DELETE")
-		w.Header().Set("Access-Control-Allow-Headers", "Accept, Accept-Endcoding, Content-Type, Content-Length, Authorization, X-CSRF-token")
-
-		if r.Method == http.MethodOptions {
-			return
-		}
-
-		next.ServeHTTP(w, r)
-	})
 }
 
 type spaHandler struct {
