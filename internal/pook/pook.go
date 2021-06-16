@@ -17,7 +17,7 @@ import (
 // App struct declaration
 type App struct {
 	Config *config.Config
-	Conn   *gorm.DB
+	DB     *gorm.DB
 	Router *mux.Router
 }
 
@@ -48,7 +48,7 @@ func NewApp() *App {
 
 	return &App{
 		Config: cfg,
-		Conn:   db,
+		DB:     db,
 		Router: router,
 	}
 }
