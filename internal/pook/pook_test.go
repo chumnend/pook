@@ -41,8 +41,8 @@ func checkResponseCode(t *testing.T, expected, actual int) {
 }
 
 func emptyDB() {
-	app.Conn.Exec("DELETE FROM users")
-	app.Conn.Exec("ALTER SEQUENCE users_id_seq RESTART WITH 1")
+	app.DB.Exec("DELETE FROM users")
+	app.DB.Exec("ALTER SEQUENCE users_id_seq RESTART WITH 1")
 }
 
 func TestRegister(t *testing.T) {
