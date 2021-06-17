@@ -30,7 +30,6 @@ type PageService interface {
 	FindByID(uint) (*Page, error)
 	Save(*Page) error
 	Delete(*Page) error
-	Migrate() error
 	Validate(*Page) error
 }
 

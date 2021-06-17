@@ -53,7 +53,7 @@ func (srv *bookSrv) Validate(book *domain.Book) error {
 	}
 
 	if book.Title == "" || book.UserID == 0 {
-		return errors.New("Invalid User")
+		return errors.New("Invalid Book")
 	}
 	return nil
 }
