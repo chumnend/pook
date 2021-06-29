@@ -3,7 +3,7 @@ package book
 import (
 	"errors"
 
-	"github.com/chumnend/pook/internal/pook/domain"
+	"github.com/chumnend/pook/internal/api/domain"
 )
 
 type bookSrv struct {

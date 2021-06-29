@@ -1,7 +1,7 @@
 package mocks
 
 import (
-	"github.com/chumnend/pook/internal/pook/domain"
+	"github.com/chumnend/pook/internal/api/domain"
 	"github.com/stretchr/testify/mock"
 )
 

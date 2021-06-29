@@ -6,11 +6,10 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/chumnend/pook/internal/pook/book"
-	"github.com/chumnend/pook/internal/pook/config"
-	"github.com/chumnend/pook/internal/pook/middleware"
-	"github.com/chumnend/pook/internal/pook/page"
-	"github.com/chumnend/pook/internal/pook/user"
+	"github.com/chumnend/pook/internal/api/book"
+	"github.com/chumnend/pook/internal/api/page"
+	"github.com/chumnend/pook/internal/api/user"
+	"github.com/chumnend/pook/internal/middleware"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres" // Gorm Postgres Driver
@@ -18,7 +17,7 @@ import (
 
 // App struct declaration
 type App struct {
-	Config *config.Config
+	Config *Config
 	DB     *gorm.DB
 	Router *mux.Router
 }
@@ -26,7 +25,7 @@ type App struct {
 // NewApp builds a new app instance
 func NewApp() *App {
 	// load config
-	cfg := config.GetEnv()
+	cfg := NewConfig()
 
 	// connect database
 	db, err := gorm.Open("postgres", cfg.DB)

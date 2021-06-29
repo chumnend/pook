@@ -1,4 +1,4 @@
-package config
+package pook
 
 import (
 	"log"
@@ -16,8 +16,8 @@ type Config struct {
 	IndexPath  string
 }
 
-// GetEnv returns the configuation for the application by reading the .env file
-func GetEnv() *Config {
+// NewConfig returns the configuation for the application by reading the .env file
+func NewConfig() *Config {
 	path := os.ExpandEnv("$GOPATH/src/github.com/chumnend/pook/")
 
 	err := godotenv.Load(path + ".env")
