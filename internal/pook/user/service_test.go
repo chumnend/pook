@@ -7,8 +7,8 @@ import (
 	"github.com/stretchr/testify/mock"
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/chumnend/pook/internal/pook/api/user/mocks"
 	"github.com/chumnend/pook/internal/pook/domain"
+	"github.com/chumnend/pook/internal/pook/user/mocks"
 	"github.com/stretchr/testify/assert"
 )
 
