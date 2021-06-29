@@ -39,7 +39,7 @@ jobs:
           command: make build-react
       - run: 
           environment:
-            DATABASE_TEST_URL: "postgres://circle_user@localhost:5432/circle_db"
+            DATABASE_TEST_URL: "postgres://circle_user@localhost:5432/circle_db?sslmode=disable"
             SECRET_KEY: "shhh"
             PORT: "8000" 
           command: make test
