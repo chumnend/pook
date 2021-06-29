@@ -6,7 +6,7 @@ import Header from '../Header';
 it('render <Header>', () => {
   render(
     <MemoryRouter>
-        <Header />
+      <Header />
     </MemoryRouter>,
   );
 });
