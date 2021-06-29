@@ -22,7 +22,7 @@ func NewConfig() *Config {
 
 	err := godotenv.Load(path + ".env")
 	if err != nil {
-		log.Fatal(".env file not found")
+		log.Println(".env file not found")
 	}
 
 	var databaseURL string
