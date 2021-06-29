@@ -4,7 +4,7 @@ import (
 	"errors"
 	"os"
 
-	"github.com/chumnend/pook/internal/pook/domain"
+	"github.com/chumnend/pook/internal/api/domain"
 	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -47,11 +47,11 @@ func (srv *userSrv) Save(user *domain.User) error {
 
 func (srv *userSrv) Validate(user *domain.User) error {
 	if user == nil {
-		return errors.New("User is empty")
+		return errors.New("user is empty")
 	}
 
 	if user.Email == "" || user.Password == "" {
-		return errors.New("Invalid User")
+		return errors.New("invalid user")
 	}
 	return nil
 }
@@ -71,7 +71,7 @@ func (srv *userSrv) GenerateToken(user *domain.User) (string, error) {
 func (srv *userSrv) ComparePassword(user *domain.User, password string) error {
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
-		return errors.New("Invalid password")
+		return errors.New("invalid password")
 	}
 	return nil
 }

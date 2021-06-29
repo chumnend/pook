@@ -7,8 +7,8 @@ import (
 	"github.com/stretchr/testify/mock"
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/chumnend/pook/internal/pook/domain"
-	"github.com/chumnend/pook/internal/pook/user/mocks"
+	"github.com/chumnend/pook/internal/api/domain"
+	"github.com/chumnend/pook/internal/api/user/mocks"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -40,7 +40,7 @@ func TestFindAll(t *testing.T) {
 
 	t.Run("fail", func(t *testing.T) {
 		// setup
-		mockRepo.On("FindAll").Return([]domain.User{}, errors.New("Unexpected error")).Once()
+		mockRepo.On("FindAll").Return([]domain.User{}, errors.New("unexpected error")).Once()
 		testService := NewService(mockRepo)
 
 		// run
@@ -77,7 +77,7 @@ func TestFindByEmail(t *testing.T) {
 
 	t.Run("fail", func(t *testing.T) {
 		// setup
-		mockRepo.On("FindByEmail", mock.AnythingOfType("string")).Return(&domain.User{}, errors.New("Unexpected error")).Once()
+		mockRepo.On("FindByEmail", mock.AnythingOfType("string")).Return(&domain.User{}, errors.New("unexpected error")).Once()
 		testService := NewService(mockRepo)
 
 		// run
@@ -109,7 +109,7 @@ func TestSave(t *testing.T) {
 
 	t.Run("fail", func(t *testing.T) {
 		// setup
-		mockRepo.On("Save", mock.Anything).Return(errors.New("Unexpected error")).Once()
+		mockRepo.On("Save", mock.Anything).Return(errors.New("unexpected error")).Once()
 		testService := NewService(mockRepo)
 
 		// run
@@ -146,7 +146,7 @@ func TestValidate(t *testing.T) {
 
 		// check
 		assert.NotNil(t, err)
-		assert.Equal(t, err.Error(), "User is empty")
+		assert.Equal(t, err.Error(), "user is empty")
 	})
 
 	t.Run("fail - no email", func(t *testing.T) {
@@ -162,7 +162,7 @@ func TestValidate(t *testing.T) {
 
 		// check
 		assert.NotNil(t, err)
-		assert.Equal(t, err.Error(), "Invalid User")
+		assert.Equal(t, err.Error(), "invalid user")
 	})
 
 	t.Run("fail - no password", func(t *testing.T) {
@@ -178,7 +178,7 @@ func TestValidate(t *testing.T) {
 
 		// check
 		assert.NotNil(t, err)
-		assert.Equal(t, err.Error(), "Invalid User")
+		assert.Equal(t, err.Error(), "invalid user")
 	})
 }
 

@@ -5,8 +5,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/chumnend/pook/internal/pook/domain"
-	"github.com/chumnend/pook/internal/pook/response"
+	"github.com/chumnend/pook/internal/api/domain"
+	"github.com/chumnend/pook/internal/api/response"
 )
 
 type userCtl struct {

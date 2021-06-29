@@ -3,7 +3,7 @@ package page
 import (
 	"errors"
 
-	"github.com/chumnend/pook/internal/pook/domain"
+	"github.com/chumnend/pook/internal/api/domain"
 )
 
 type pageSrv struct {
@@ -41,11 +41,11 @@ func (srv *pageSrv) Delete(page *domain.Page) error {
 
 func (srv *pageSrv) Validate(page *domain.Page) error {
 	if page == nil {
-		return errors.New("Page is empty")
+		return errors.New("page is empty")
 	}
 
 	if page.Content == "" || page.BookID == 0 {
-		return errors.New("Invalid Page")
+		return errors.New("invalid Page")
 	}
 	return nil
 }
