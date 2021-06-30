@@ -23,22 +23,14 @@ jobs:
       - checkout
       - restore_cache:
           key: go-mod-v4-{{ checksum "go.sum" }}
+      - run: make build
       - save_cache:
           key: go-mod-v4-{{ checksum "go.sum" }}
           paths:
             - "/go/pkg/mod"
       - run: 
-          command: make build
-  
-  test:
-    executor: node-go
-    working_directory: ~/project
-    steps:
-      - checkout
-      - run:
-          command: make build-react
-      - run: 
           environment:
+            CIRCLECI: "true"
             DATABASE_TEST_URL: "postgres://circle_user@localhost:5432/circle_db?sslmode=disable"
             SECRET_KEY: "shhh"
             PORT: "8000" 
@@ -46,8 +38,6 @@ jobs:
 
 workflows:
   version: 2
-
-  build_and_test:
+  build-workflow:
     jobs:
       - build
-      - test
