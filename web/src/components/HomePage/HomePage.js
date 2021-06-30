@@ -1,10 +1,7 @@
-import Fab from '@material-ui/core/Fab';
+import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
-import AddIcon from '@material-ui/icons/Add';
 
-import Bookshelf from '../Bookshelf';
 import Header from '../Header';
-import Searchbar from '../Searchbar';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -12,6 +9,9 @@ const useStyles = makeStyles((theme) => ({
     height: '100vh',
     background: theme.palette.secondary.main,
     color: theme.palette.text.light,
+  },
+  button: {
+    margin: theme.spacing(1),
   },
 }));
 
@@ -21,11 +21,9 @@ const HomePage = () => {
   return (
     <div className={classes.root}>
       <Header isAuth />
-      <Searchbar />
-      <Bookshelf />
-      <Fab color="primary" aria-label="add">
-        <AddIcon />
-      </Fab>
+      <Container>
+        <h1>CONTENT</h1>
+      </Container>
     </div>
   );
 };
