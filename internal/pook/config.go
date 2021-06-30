@@ -18,11 +18,16 @@ type Config struct {
 
 // NewConfig returns the configuation for the application by reading the .env file
 func NewConfig() *Config {
-	path := os.ExpandEnv("$GOPATH/src/github.com/chumnend/pook/")
+	var path string
+	if os.Getenv("CIRCLECI") == "true" {
+		path = "/home/circleci/project/"
+	} else {
+		path = os.ExpandEnv("$GOPATH/src/github.com/chumnend/pook/")
+	}
 
 	err := godotenv.Load(path + ".env")
 	if err != nil {
-		log.Fatal(".env file not found")
+		log.Println(".env file not found")
 	}
 
 	var databaseURL string
@@ -32,7 +37,7 @@ func NewConfig() *Config {
 		databaseURL = os.Getenv("DATABASE_TEST_URL")
 	}
 	if databaseURL == "" {
-		log.Fatal("missing env: DATABASE_URL")
+		log.Fatal("missing env: DATABASE_URL and/or DATABASE_TEST_URL")
 	}
 
 	secret := os.Getenv("SECRET_KEY")
