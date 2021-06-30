@@ -26,37 +26,41 @@ const Header = ({ isAuth }) => {
   const classes = useStyles();
 
   return (
-    <AppBar>
-      <Toolbar>
-        <IconButton
-          edge="start"
-          className={classes.menuButton}
-          color="inherit"
-          aria-label="menu"
-        >
-          <MenuIcon />
-        </IconButton>
-        <Typography variant="h6" className={classes.title}>
-          Pook
-        </Typography>
-        {isAuth ? (
-          <>
-            <Button color="inherit" component={Link} to={LOGOUT_ROUTE}>
-              Logout
-            </Button>
-          </>
-        ) : (
-          <>
-            <Button color="inherit" component={Link} to={REGISTER_ROUTE}>
-              Register
-            </Button>
-            <Button color="inherit" component={Link} to={LOGIN_ROUTE}>
-              Login
-            </Button>
-          </>
-        )}
-      </Toolbar>
-    </AppBar>
+    <>
+      <AppBar>
+        <Toolbar>
+          <IconButton
+            edge="start"
+            className={classes.menuButton}
+            color="inherit"
+            aria-label="menu"
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" className={classes.title}>
+            Pook
+          </Typography>
+          {isAuth ? (
+            <>
+              <Button color="inherit" component={Link} to={LOGOUT_ROUTE}>
+                Logout
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button color="inherit" component={Link} to={REGISTER_ROUTE}>
+                Register
+              </Button>
+              <Button color="inherit" component={Link} to={LOGIN_ROUTE}>
+                Login
+              </Button>
+            </>
+          )}
+        </Toolbar>
+      </AppBar>
+      {/* Render another <Toolbar /> to keep content from being hidden behind the <AppBar /> */}
+      <Toolbar />
+    </>
   );
 };
 

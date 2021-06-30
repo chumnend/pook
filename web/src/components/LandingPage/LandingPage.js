@@ -1,6 +1,5 @@
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
@@ -42,7 +41,7 @@ const LandingPage = () => {
   const classes = useStyles();
 
   return (
-    <Paper className={classes.root}>
+    <div className={classes.root}>
       <Header isAuth={auth.isAuth} />
       <Box className={classes.box}>
         <Typography variant="h1">Welcome to Pook!</Typography>
@@ -58,7 +57,7 @@ const LandingPage = () => {
           Try for Free
         </Button>
       </Box>
-    </Paper>
+    </div>
   );
 };
 

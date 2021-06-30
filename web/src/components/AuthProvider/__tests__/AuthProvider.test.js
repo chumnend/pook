@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 
-import AuthProvider from './AuthProvider';
+import AuthProvider from '../AuthProvider';
 
 const MockComponent = () => {
   return (

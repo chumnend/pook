@@ -1,12 +1,12 @@
 import { render } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 
-import SignUpPage from './SignUpPage';
+import SignInPage from '../SignInPage';
 
-test('renders <SignUpPage />', () => {
+test('renders <SignInPage />', () => {
   render(
     <MemoryRouter>
-      <SignUpPage />
+      <SignInPage />
     </MemoryRouter>,
   );
 });

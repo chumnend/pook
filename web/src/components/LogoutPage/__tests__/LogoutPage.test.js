@@ -1,14 +1,14 @@
 import { render } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 
-import { AppProviders } from '../App';
-import HomePage from './HomePage';
+import { AppProviders } from '../../App';
+import LogoutPage from '../LogoutPage';
 
-test('renders <HomePage />', () => {
+test('renders <LogoutPage />', () => {
   render(
     <MemoryRouter>
       <AppProviders>
-        <HomePage />
+        <LogoutPage />
       </AppProviders>
     </MemoryRouter>,
   );

@@ -7,27 +7,27 @@ import {
   saveAuthState,
   clearAuthState,
   AUTH_STATE_KEY,
-} from './api';
+} from '../api';
 
 jest.mock('axios');
 jest.mock('jwt-decode', () => () => ({ id: 'test_id', email: 'test_email' }));
 
-const fakeLocalStorage = (function() {
+const fakeLocalStorage = (function () {
   let store = {};
 
   return {
-    getItem: function(key) {
+    getItem: function (key) {
       return store[key] || null;
     },
-    setItem: function(key, value) {
+    setItem: function (key, value) {
       store[key] = value.toString();
     },
-    removeItem: function(key) {
+    removeItem: function (key) {
       delete store[key];
     },
-    clear: function() {
+    clear: function () {
       store = {};
-    }
+    },
   };
 })();
 
@@ -101,7 +101,7 @@ describe('checkAuthState', () => {
 
   afterEach(() => {
     localStorage.clear();
-  })
+  });
 
   it('expects to return authState if it exists in localStorage', () => {
     const testAuthState = {
@@ -132,7 +132,7 @@ describe('saveAuthState', () => {
 
   afterEach(() => {
     localStorage.clear();
-  })
+  });
 
   it('expects to store data in localStorage', () => {
     const testAuthState = {
@@ -143,7 +143,9 @@ describe('saveAuthState', () => {
 
     saveAuthState(testAuthState.id, testAuthState.email, testAuthState.token);
 
-    expect(window.localStorage.getItem(AUTH_STATE_KEY)).toBe(JSON.stringify(testAuthState));
+    expect(window.localStorage.getItem(AUTH_STATE_KEY)).toBe(
+      JSON.stringify(testAuthState),
+    );
   });
 
   it('expects to not save in localStorage if an argument is undefined', () => {

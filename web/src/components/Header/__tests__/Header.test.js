@@ -1,12 +1,12 @@
 import { render } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 
-import SignInPage from './SignInPage';
+import Header from '../Header';
 
-test('renders <SignInPage />', () => {
+it('render <Header>', () => {
   render(
     <MemoryRouter>
-      <SignInPage />
+      <Header />
     </MemoryRouter>,
   );
 });
