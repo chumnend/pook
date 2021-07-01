@@ -1,5 +1,5 @@
-# Pook: An app for managing tasks
-Pook is a task management application made using React and Go. 
+# Pook: An app for creating storybooks
+Pook is a storybook creator application using React and Go. The idea if this app is to allow users to create fun novels in thier browser and share them with others.
 
 ## Demo
 TBD
