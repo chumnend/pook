@@ -19,7 +19,7 @@ func checkResponseCode(t *testing.T, expected, actual int) {
 	}
 }
 
-func TestRegister(t *testing.T) {
+func TestCtl_Register(t *testing.T) {
 	mockSrv := new(mocks.UserService)
 
 	t.Run("success", func(t *testing.T) {
@@ -108,7 +108,7 @@ func TestRegister(t *testing.T) {
 	})
 }
 
-func TestLogin(t *testing.T) {
+func TestCtl_Login(t *testing.T) {
 	mockSrv := new(mocks.UserService)
 
 	t.Run("success", func(t *testing.T) {
