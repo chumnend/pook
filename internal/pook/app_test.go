@@ -58,7 +58,6 @@ func TestRegister(t *testing.T) {
 
 		var m map[string]interface{}
 		json.Unmarshal(res.Body.Bytes(), &m)
-
 		if m["token"] == "" {
 			t.Errorf("Expected 'token' to be non empty. Got %v.", m["token"])
 		}
@@ -76,7 +75,6 @@ func TestRegister(t *testing.T) {
 
 		var m map[string]interface{}
 		json.Unmarshal(res.Body.Bytes(), &m)
-
 		if m["error"] != "missing and/or invalid information" {
 			t.Errorf("Expected the 'error' to be 'missing and/or invalid information'. Got '%v'", m["error"])
 		}
@@ -94,7 +92,6 @@ func TestRegister(t *testing.T) {
 
 		var m map[string]interface{}
 		json.Unmarshal(res.Body.Bytes(), &m)
-
 		if m["error"] != "missing and/or invalid information" {
 			t.Errorf("Expected the 'error' to be 'missing and/or invalid information'. Got '%v'", m["error"])
 		}
@@ -121,7 +118,6 @@ func TestLogin(t *testing.T) {
 
 		var m map[string]interface{}
 		json.Unmarshal(res.Body.Bytes(), &m)
-
 		if m["token"] == "" {
 			t.Errorf("Expected 'token' to be non empty. Got %v.", m["token"])
 		}
@@ -139,7 +135,6 @@ func TestLogin(t *testing.T) {
 
 		var m map[string]interface{}
 		json.Unmarshal(res.Body.Bytes(), &m)
-
 		if m["error"] != "invalid email and/or password" {
 			t.Errorf("Expected the 'error' to be 'invalid email and/or password'. Got '%v'", m["error"])
 		}
@@ -164,7 +159,6 @@ func TestLogin(t *testing.T) {
 
 		var m map[string]interface{}
 		json.Unmarshal(res.Body.Bytes(), &m)
-
 		if m["error"] != "invalid email and/or password" {
 			t.Errorf("Expected the 'error' to be 'invalid email and/or password'. Got '%v'", m["error"])
 		}
