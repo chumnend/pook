@@ -18,7 +18,6 @@ func TestSrv_FindAll(t *testing.T) {
 		Email:    "tester@pook.com",
 		Password: "123",
 	}
-
 	mockListUsers := make([]domain.User, 0)
 	mockListUsers = append(mockListUsers, mockUser)
 
