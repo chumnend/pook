@@ -114,6 +114,44 @@ func TestRepo_FindByEmail(t *testing.T) {
 	})
 }
 
-func TestRepo_Save(t *testing.T) {}
+func TestRepo_Save(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatal("an error occured when opening stub database", err)
+	}
 
-func TestRepo_Migrate(t *testing.T) {}
+	gdb, err := gorm.Open("postgres", db)
+	if err != nil {
+		t.Fatal("an error occured when opening stub database", err)
+	}
+
+	user := domain.User{
+		Email:     "tester@pook.com",
+		Password:  "123",
+		FirstName: "tester",
+		LastName:  "tester",
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+
+	t.Run("success", func(t *testing.T) {
+		// setup
+		headers := []string{"id"}
+		rows := sqlmock.NewRows(headers).AddRow(1)
+		query := regexp.QuoteMeta(`INSERT INTO "users" ("email","password","first_name","last_name","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6) RETURNING "users"."id"`)
+		mock.ExpectBegin() // begin transaction
+		mock.ExpectQuery(query).
+			WithArgs(user.Email, user.Password, user.FirstName, user.LastName, user.CreatedAt, user.UpdatedAt).
+			WillReturnRows(rows)
+		mock.ExpectCommit() // commit transaction
+
+		testRepo := NewPostgresRepository(gdb)
+
+		// run
+		err := testRepo.Save(&user)
+
+		// check
+		mock.ExpectationsWereMet()
+		assert.NoError(t, err)
+	})
+}
