@@ -1,38 +1,17 @@
-package pook
+package user
 
 import (
 	"bytes"
 	"encoding/json"
-	"io/ioutil"
-	"log"
+	"errors"
 	"net/http"
 	"net/http/httptest"
-	"os"
-	"strings"
 	"testing"
+
+	"github.com/chumnend/pook/internal/api/domain"
+	"github.com/chumnend/pook/internal/api/user/mocks"
+	"github.com/stretchr/testify/mock"
 )
-
-var app *App
-
-func TestMain(m *testing.M) {
-	// set test mode
-	os.Setenv("ENV", "test")
-	defer os.Unsetenv("ENV")
-
-	// initialize the test application
-	app = NewApp()
-
-	// start test runner
-	log.SetOutput(ioutil.Discard)
-	code := m.Run()
-	os.Exit(code)
-}
-
-func executeRequest(req *http.Request) *httptest.ResponseRecorder {
-	rr := httptest.NewRecorder()
-	app.Router.ServeHTTP(rr, req)
-	return rr
-}
 
 func checkResponseCode(t *testing.T, expected, actual int) {
 	if expected != actual {
@@ -40,19 +19,27 @@ func checkResponseCode(t *testing.T, expected, actual int) {
 	}
 }
 
-func emptyDB() {
-	app.DB.Exec("DELETE FROM users")
-	app.DB.Exec("ALTER SEQUENCE users_id_seq RESTART WITH 1")
-}
+func TestCtl_Register(t *testing.T) {
+	mockSrv := new(mocks.UserService)
 
-func TestRegister(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
-		emptyDB()
+		// setup
+		mockSrv.On("Validate", mock.Anything).Return(nil).Once()
+		mockSrv.On("Save", mock.Anything).Return(nil).Once()
+		mockSrv.On("GenerateToken", mock.Anything).Return("token", nil).Once()
 
+		testController := NewController(mockSrv)
+
+		res := httptest.NewRecorder()
 		var jsonStr = []byte(`{"email":"test@example.com", "password": "test123"}`)
 		req, _ := http.NewRequest("POST", "/api/v1/register", bytes.NewBuffer(jsonStr))
 		req.Header.Set("Content-Type", "application/json")
-		res := executeRequest(req)
+
+		// run
+		testController.Register(res, req)
+
+		// check
+		mockSrv.AssertExpectations(t)
 
 		checkResponseCode(t, http.StatusOK, res.Code)
 
@@ -64,29 +51,52 @@ func TestRegister(t *testing.T) {
 	})
 
 	t.Run("fail - no email", func(t *testing.T) {
-		emptyDB()
+		// setup
+		mockSrv.On("Validate", mock.Anything).Return(errors.New("missing and/or invalid information")).Once()
 
+		testController := NewController(mockSrv)
+
+		res := httptest.NewRecorder()
 		var jsonStr = []byte(`{"password": "test123"}`)
 		req, _ := http.NewRequest("POST", "/api/v1/register", bytes.NewBuffer(jsonStr))
 		req.Header.Set("Content-Type", "application/json")
-		res := executeRequest(req)
+
+		// run
+		testController.Register(res, req)
+
+		// check
+		mockSrv.AssertExpectations(t)
+		mockSrv.AssertNotCalled(t, "Save")
+		mockSrv.AssertNotCalled(t, "GenerateToken")
 
 		checkResponseCode(t, http.StatusBadRequest, res.Code)
 
 		var m map[string]interface{}
 		json.Unmarshal(res.Body.Bytes(), &m)
+
 		if m["error"] != "missing and/or invalid information" {
 			t.Errorf("Expected the 'error' to be 'missing and/or invalid information'. Got '%v'", m["error"])
 		}
 	})
 
 	t.Run("fail - no password", func(t *testing.T) {
-		emptyDB()
+		// setup
+		mockSrv.On("Validate", mock.Anything).Return(errors.New("missing and/or invalid information")).Once()
 
+		testController := NewController(mockSrv)
+
+		res := httptest.NewRecorder()
 		var jsonStr = []byte(`{"email":"test@example.com"}`)
 		req, _ := http.NewRequest("POST", "/api/v1/register", bytes.NewBuffer(jsonStr))
 		req.Header.Set("Content-Type", "application/json")
-		res := executeRequest(req)
+
+		// run
+		testController.Register(res, req)
+
+		// check
+		mockSrv.AssertExpectations(t)
+		mockSrv.AssertNotCalled(t, "Save")
+		mockSrv.AssertNotCalled(t, "GenerateToken")
 
 		checkResponseCode(t, http.StatusBadRequest, res.Code)
 
@@ -98,21 +108,27 @@ func TestRegister(t *testing.T) {
 	})
 }
 
-func TestLogin(t *testing.T) {
-	t.Run("success", func(t *testing.T) {
-		emptyDB()
+func TestCtl_Login(t *testing.T) {
+	mockSrv := new(mocks.UserService)
 
+	t.Run("success", func(t *testing.T) {
+		// setup
+		mockSrv.On("FindByEmail", mock.AnythingOfType("string")).Return(&domain.User{}, nil).Once()
+		mockSrv.On("ComparePassword", mock.Anything, mock.AnythingOfType("string")).Return(nil).Once()
+		mockSrv.On("GenerateToken", mock.Anything).Return("token", nil).Once()
+
+		testController := NewController(mockSrv)
+
+		res := httptest.NewRecorder()
 		var jsonStr = []byte(`{"email":"test@example.com", "password": "123"}`)
 		req, _ := http.NewRequest("POST", "/api/v1/register", bytes.NewBuffer(jsonStr))
 		req.Header.Set("Content-Type", "application/json")
-		res := executeRequest(req)
 
-		checkResponseCode(t, http.StatusOK, res.Code)
+		// run
+		testController.Login(res, req)
 
-		jsonStr = []byte(`{"email":"test@example.com", "password": "123"}`)
-		req, _ = http.NewRequest("POST", "/api/v1/login", bytes.NewBuffer(jsonStr))
-		req.Header.Set("Content-Type", "application/json")
-		res = executeRequest(req)
+		// check
+		mockSrv.AssertExpectations(t)
 
 		checkResponseCode(t, http.StatusOK, res.Code)
 
@@ -124,12 +140,23 @@ func TestLogin(t *testing.T) {
 	})
 
 	t.Run("fail - bad email", func(t *testing.T) {
-		emptyDB()
+		// setup
+		mockSrv.On("FindByEmail", mock.AnythingOfType("string")).Return(&domain.User{}, errors.New("invalid email and/or password")).Once()
 
-		jsonStr := []byte(`{"email":"test@example.com", "password": "123"}`)
-		req, _ := http.NewRequest("POST", "/api/v1/login", bytes.NewBuffer(jsonStr))
+		testController := NewController(mockSrv)
+
+		res := httptest.NewRecorder()
+		var jsonStr = []byte(`{"email":"test@example.com", "password": "123"}`)
+		req, _ := http.NewRequest("POST", "/api/v1/register", bytes.NewBuffer(jsonStr))
 		req.Header.Set("Content-Type", "application/json")
-		res := executeRequest(req)
+
+		// run
+		testController.Login(res, req)
+
+		// check
+		mockSrv.AssertExpectations(t)
+		mockSrv.AssertNotCalled(t, "ComparePassword")
+		mockSrv.AssertNotCalled(t, "GenerateToken")
 
 		checkResponseCode(t, http.StatusBadRequest, res.Code)
 
@@ -141,19 +168,23 @@ func TestLogin(t *testing.T) {
 	})
 
 	t.Run("fail - bad password", func(t *testing.T) {
-		emptyDB()
+		// setup
+		mockSrv.On("FindByEmail", mock.AnythingOfType("string")).Return(&domain.User{}, nil).Once()
+		mockSrv.On("ComparePassword", mock.Anything, mock.AnythingOfType("string")).Return(errors.New("invalid email and/or password")).Once()
 
-		var jsonStr = []byte(`{"email":"test@example.com", "password": "123"}`)
+		testController := NewController(mockSrv)
+
+		res := httptest.NewRecorder()
+		jsonStr := []byte(`{"email":"test@example.com", "password": "123"}`)
 		req, _ := http.NewRequest("POST", "/api/v1/register", bytes.NewBuffer(jsonStr))
 		req.Header.Set("Content-Type", "application/json")
-		res := executeRequest(req)
 
-		checkResponseCode(t, http.StatusOK, res.Code)
+		// run
+		testController.Login(res, req)
 
-		jsonStr = []byte(`{"email":"test@example.com", "password": "567"}`)
-		req, _ = http.NewRequest("POST", "/api/v1/login", bytes.NewBuffer(jsonStr))
-		req.Header.Set("Content-Type", "application/json")
-		res = executeRequest(req)
+		// check
+		mockSrv.AssertExpectations(t)
+		mockSrv.AssertNotCalled(t, "GenerateToken")
 
 		checkResponseCode(t, http.StatusBadRequest, res.Code)
 
@@ -163,15 +194,4 @@ func TestLogin(t *testing.T) {
 			t.Errorf("Expected the 'error' to be 'invalid email and/or password'. Got '%v'", m["error"])
 		}
 	})
-}
-
-func TestSpaHandler(t *testing.T) {
-	req, _ := http.NewRequest("GET", "/", nil)
-	res := executeRequest(req)
-
-	checkResponseCode(t, http.StatusOK, res.Code)
-
-	if body := res.Body.String(); !strings.Contains(body, "doctype html") {
-		t.Errorf("Expected string to contain html. Got %s", body)
-	}
 }

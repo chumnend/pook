@@ -12,13 +12,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestFindAll(t *testing.T) {
+func TestSrv_FindAll(t *testing.T) {
 	mockRepo := new(mocks.UserRepository)
 	mockUser := domain.User{
 		Email:    "tester@pook.com",
 		Password: "123",
 	}
-
 	mockListUsers := make([]domain.User, 0)
 	mockListUsers = append(mockListUsers, mockUser)
 
@@ -53,7 +52,7 @@ func TestFindAll(t *testing.T) {
 	})
 }
 
-func TestFindByEmail(t *testing.T) {
+func TestSrv_FindByEmail(t *testing.T) {
 	mockRepo := new(mocks.UserRepository)
 	mockUser := domain.User{
 		Email:    "tester@pook.com",
@@ -91,7 +90,7 @@ func TestFindByEmail(t *testing.T) {
 	})
 }
 
-func TestSave(t *testing.T) {
+func TestSrv_Save(t *testing.T) {
 	mockRepo := new(mocks.UserRepository)
 
 	t.Run("success", func(t *testing.T) {
@@ -121,7 +120,7 @@ func TestSave(t *testing.T) {
 	})
 }
 
-func TestValidate(t *testing.T) {
+func TestSrv_Validate(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		// setup
 		testService := NewService(nil)
@@ -182,7 +181,7 @@ func TestValidate(t *testing.T) {
 	})
 }
 
-func TestGenerateToken(t *testing.T) {
+func TestSrv_GenerateToken(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		// setup
 		testService := NewService(nil)
@@ -200,7 +199,7 @@ func TestGenerateToken(t *testing.T) {
 	})
 }
 
-func TestComparePassword(t *testing.T) {
+func TestSrv_ComparePassword(t *testing.T) {
 	testService := NewService(nil)
 	password := "123"
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)

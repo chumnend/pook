@@ -23,6 +23,7 @@ func (srv *userSrv) FindAll() ([]domain.User, error) {
 	if err != nil {
 		return users, err
 	}
+
 	return users, nil
 }
 
@@ -31,6 +32,7 @@ func (srv *userSrv) FindByEmail(email string) (*domain.User, error) {
 	if err != nil {
 		return user, err
 	}
+
 	return user, nil
 }
 
@@ -53,6 +55,7 @@ func (srv *userSrv) Validate(user *domain.User) error {
 	if user.Email == "" || user.Password == "" {
 		return errors.New("invalid user")
 	}
+
 	return nil
 }
 
@@ -65,6 +68,7 @@ func (srv *userSrv) GenerateToken(user *domain.User) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	return tokenStr, nil
 }
 
@@ -73,5 +77,6 @@ func (srv *userSrv) ComparePassword(user *domain.User, password string) error {
 	if err != nil {
 		return errors.New("invalid password")
 	}
+
 	return nil
 }
