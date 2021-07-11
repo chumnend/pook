@@ -1,4 +1,4 @@
-package book
+package controller
 
 import (
 	"log"

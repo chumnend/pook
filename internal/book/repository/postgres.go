@@ -1,4 +1,4 @@
-package book
+package repository
 
 import (
 	"github.com/chumnend/pook/internal/domain"
