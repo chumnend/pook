@@ -8,12 +8,12 @@ import (
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/chumnend/pook/internal/domain"
-	"github.com/chumnend/pook/internal/user/mocks"
+	"github.com/chumnend/pook/internal/user/repository"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestSrv_FindAll(t *testing.T) {
-	mockRepo := new(mocks.UserRepository)
+	mockRepo := new(repository.MockUserRepository)
 	mockUser := domain.User{
 		Email:    "tester@pook.com",
 		Password: "123",
@@ -53,7 +53,7 @@ func TestSrv_FindAll(t *testing.T) {
 }
 
 func TestSrv_FindByEmail(t *testing.T) {
-	mockRepo := new(mocks.UserRepository)
+	mockRepo := new(repository.MockUserRepository)
 	mockUser := domain.User{
 		Email:    "tester@pook.com",
 		Password: "123",
@@ -91,7 +91,7 @@ func TestSrv_FindByEmail(t *testing.T) {
 }
 
 func TestSrv_Save(t *testing.T) {
-	mockRepo := new(mocks.UserRepository)
+	mockRepo := new(repository.MockUserRepository)
 
 	t.Run("success", func(t *testing.T) {
 		// setup
