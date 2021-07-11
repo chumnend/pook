@@ -28,7 +28,7 @@ func TestCtl_Register(t *testing.T) {
 		mockSrv.On("Save", mock.Anything).Return(nil).Once()
 		mockSrv.On("GenerateToken", mock.Anything).Return("token", nil).Once()
 
-		testController := NewController(mockSrv)
+		ctl := NewController(mockSrv)
 
 		res := httptest.NewRecorder()
 		var jsonStr = []byte(`{"email":"test@example.com", "password": "test123"}`)
@@ -36,7 +36,7 @@ func TestCtl_Register(t *testing.T) {
 		req.Header.Set("Content-Type", "application/json")
 
 		// run
-		testController.Register(res, req)
+		ctl.Register(res, req)
 
 		// check
 		mockSrv.AssertExpectations(t)
@@ -54,7 +54,7 @@ func TestCtl_Register(t *testing.T) {
 		// setup
 		mockSrv.On("Validate", mock.Anything).Return(errors.New("missing and/or invalid information")).Once()
 
-		testController := NewController(mockSrv)
+		ctl := NewController(mockSrv)
 
 		res := httptest.NewRecorder()
 		var jsonStr = []byte(`{"password": "test123"}`)
@@ -62,7 +62,7 @@ func TestCtl_Register(t *testing.T) {
 		req.Header.Set("Content-Type", "application/json")
 
 		// run
-		testController.Register(res, req)
+		ctl.Register(res, req)
 
 		// check
 		mockSrv.AssertExpectations(t)
@@ -83,7 +83,7 @@ func TestCtl_Register(t *testing.T) {
 		// setup
 		mockSrv.On("Validate", mock.Anything).Return(errors.New("missing and/or invalid information")).Once()
 
-		testController := NewController(mockSrv)
+		ctl := NewController(mockSrv)
 
 		res := httptest.NewRecorder()
 		var jsonStr = []byte(`{"email":"test@example.com"}`)
@@ -91,7 +91,7 @@ func TestCtl_Register(t *testing.T) {
 		req.Header.Set("Content-Type", "application/json")
 
 		// run
-		testController.Register(res, req)
+		ctl.Register(res, req)
 
 		// check
 		mockSrv.AssertExpectations(t)
@@ -117,7 +117,7 @@ func TestCtl_Login(t *testing.T) {
 		mockSrv.On("ComparePassword", mock.Anything, mock.AnythingOfType("string")).Return(nil).Once()
 		mockSrv.On("GenerateToken", mock.Anything).Return("token", nil).Once()
 
-		testController := NewController(mockSrv)
+		ctl := NewController(mockSrv)
 
 		res := httptest.NewRecorder()
 		var jsonStr = []byte(`{"email":"test@example.com", "password": "123"}`)
@@ -125,7 +125,7 @@ func TestCtl_Login(t *testing.T) {
 		req.Header.Set("Content-Type", "application/json")
 
 		// run
-		testController.Login(res, req)
+		ctl.Login(res, req)
 
 		// check
 		mockSrv.AssertExpectations(t)
@@ -143,7 +143,7 @@ func TestCtl_Login(t *testing.T) {
 		// setup
 		mockSrv.On("FindByEmail", mock.AnythingOfType("string")).Return(&domain.User{}, errors.New("invalid email and/or password")).Once()
 
-		testController := NewController(mockSrv)
+		ctl := NewController(mockSrv)
 
 		res := httptest.NewRecorder()
 		var jsonStr = []byte(`{"email":"test@example.com", "password": "123"}`)
@@ -151,7 +151,7 @@ func TestCtl_Login(t *testing.T) {
 		req.Header.Set("Content-Type", "application/json")
 
 		// run
-		testController.Login(res, req)
+		ctl.Login(res, req)
 
 		// check
 		mockSrv.AssertExpectations(t)
@@ -172,7 +172,7 @@ func TestCtl_Login(t *testing.T) {
 		mockSrv.On("FindByEmail", mock.AnythingOfType("string")).Return(&domain.User{}, nil).Once()
 		mockSrv.On("ComparePassword", mock.Anything, mock.AnythingOfType("string")).Return(errors.New("invalid email and/or password")).Once()
 
-		testController := NewController(mockSrv)
+		ctl := NewController(mockSrv)
 
 		res := httptest.NewRecorder()
 		jsonStr := []byte(`{"email":"test@example.com", "password": "123"}`)
@@ -180,7 +180,7 @@ func TestCtl_Login(t *testing.T) {
 		req.Header.Set("Content-Type", "application/json")
 
 		// run
-		testController.Login(res, req)
+		ctl.Login(res, req)
 
 		// check
 		mockSrv.AssertExpectations(t)
