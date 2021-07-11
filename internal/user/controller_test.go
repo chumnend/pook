@@ -8,8 +8,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/chumnend/pook/internal/api/domain"
-	"github.com/chumnend/pook/internal/api/user/mocks"
+	"github.com/chumnend/pook/internal/domain"
+	"github.com/chumnend/pook/internal/user/mocks"
 	"github.com/stretchr/testify/mock"
 )
 

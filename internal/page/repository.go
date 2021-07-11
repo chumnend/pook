@@ -1,7 +1,7 @@
 package page
 
 import (
-	"github.com/chumnend/pook/internal/api/domain"
+	"github.com/chumnend/pook/internal/domain"
 	"github.com/jinzhu/gorm"
 )
 

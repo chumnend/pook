@@ -45,6 +45,17 @@ func emptyDB() {
 	app.DB.Exec("ALTER SEQUENCE users_id_seq RESTART WITH 1")
 }
 
+func TestSpaHandler(t *testing.T) {
+	req, _ := http.NewRequest("GET", "/", nil)
+	res := executeRequest(req)
+
+	checkResponseCode(t, http.StatusOK, res.Code)
+
+	if body := res.Body.String(); !strings.Contains(body, "doctype html") {
+		t.Errorf("Expected string to contain html. Got %s", body)
+	}
+}
+
 func TestRegister(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		emptyDB()
@@ -163,15 +174,4 @@ func TestLogin(t *testing.T) {
 			t.Errorf("Expected the 'error' to be 'invalid email and/or password'. Got '%v'", m["error"])
 		}
 	})
-}
-
-func TestSpaHandler(t *testing.T) {
-	req, _ := http.NewRequest("GET", "/", nil)
-	res := executeRequest(req)
-
-	checkResponseCode(t, http.StatusOK, res.Code)
-
-	if body := res.Body.String(); !strings.Contains(body, "doctype html") {
-		t.Errorf("Expected string to contain html. Got %s", body)
-	}
 }

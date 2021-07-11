@@ -4,7 +4,7 @@ import (
 	"errors"
 	"os"
 
-	"github.com/chumnend/pook/internal/api/domain"
+	"github.com/chumnend/pook/internal/domain"
 	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
 )
