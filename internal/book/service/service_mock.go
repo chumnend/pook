@@ -1,47 +1,47 @@
-package repository
+package service
 
 import (
 	"github.com/chumnend/pook/internal/domain"
 	"github.com/stretchr/testify/mock"
 )
 
-// MockBookRepository is a mock for the BookRepository
-type MockBookRepository struct {
+// MockBookService is a mock struct of a BookService
+type MockBookService struct {
 	mock.Mock
 }
 
 // FindAll mock method
-func (mock *MockBookRepository) FindAll() ([]domain.Book, error) {
+func (mock *MockBookService) FindAll() ([]domain.Book, error) {
 	args := mock.Called()
 	return args.Get(0).([]domain.Book), args.Error(1)
 }
 
 // FindAllByUserID mock method
-func (mock *MockBookRepository) FindAllByUserID(id uint) ([]domain.Book, error) {
+func (mock *MockBookService) FindAllByUserID(id uint) ([]domain.Book, error) {
 	args := mock.Called(id)
 	return args.Get(0).([]domain.Book), args.Error(1)
 }
 
 // FindByID mock method
-func (mock *MockBookRepository) FindByID(id uint) (*domain.Book, error) {
+func (mock *MockBookService) FindByID(id uint) (*domain.Book, error) {
 	args := mock.Called(id)
 	return args.Get(0).(*domain.Book), args.Error(1)
 }
 
 // Save mock method
-func (mock *MockBookRepository) Save(book *domain.Book) error {
+func (mock *MockBookService) Save(book *domain.Book) error {
 	args := mock.Called(book)
 	return args.Error(0)
 }
 
 // Delete mock method
-func (mock *MockBookRepository) Delete(book *domain.Book) error {
+func (mock *MockBookService) Delete(book *domain.Book) error {
 	args := mock.Called(book)
 	return args.Error(0)
 }
 
-// Migrate mock method
-func (mock *MockBookRepository) Migrate() error {
-	args := mock.Called()
+// Validate mock method
+func (mock *MockBookService) Validate(book *domain.Book) error {
+	args := mock.Called(book)
 	return args.Error(0)
 }
