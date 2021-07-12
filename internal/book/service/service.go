@@ -49,11 +49,11 @@ func (srv *bookSrv) Delete(book *domain.Book) error {
 
 func (srv *bookSrv) Validate(book *domain.Book) error {
 	if book == nil {
-		return errors.New("Book is empty")
+		return errors.New("book is empty")
 	}
 
 	if book.Title == "" || book.UserID == 0 {
-		return errors.New("Invalid Book")
+		return errors.New("invalid book")
 	}
 	return nil
 }

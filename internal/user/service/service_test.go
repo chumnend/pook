@@ -86,8 +86,7 @@ func TestSrv_FindByEmail(t *testing.T) {
 
 		// check
 		mockRepo.AssertExpectations(t)
-		assert.Equal(t, "", user.Email)
-		assert.Equal(t, "", user.Password)
+		assert.Equal(t, &domain.User{}, user)
 		assert.Error(t, err)
 	})
 }
