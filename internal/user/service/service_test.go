@@ -14,16 +14,18 @@ import (
 
 func TestSrv_FindAll(t *testing.T) {
 	mockRepo := new(repository.MockUserRepository)
-	mockUser := domain.User{
-		Email:    "tester@pook.com",
-		Password: "123",
+	mockUsers := []domain.User{
+		domain.User{
+			Email:     "tester@pook.com",
+			FirstName: "tester",
+			LastName:  "tester",
+			Password:  "123",
+		},
 	}
-	mockListUsers := make([]domain.User, 0)
-	mockListUsers = append(mockListUsers, mockUser)
 
 	t.Run("success", func(t *testing.T) {
 		// setup
-		mockRepo.On("FindAll").Return(mockListUsers, nil).Once()
+		mockRepo.On("FindAll").Return(mockUsers, nil).Once()
 		srv := NewService(mockRepo)
 
 		// run
@@ -31,9 +33,7 @@ func TestSrv_FindAll(t *testing.T) {
 
 		// check
 		mockRepo.AssertExpectations(t)
-		assert.Len(t, result, len(mockListUsers))
-		assert.Equal(t, mockUser.Email, result[0].Email)
-		assert.Equal(t, mockUser.Password, result[0].Password)
+		assert.Len(t, result, len(mockUsers))
 		assert.NoError(t, err)
 	})
 
@@ -43,11 +43,11 @@ func TestSrv_FindAll(t *testing.T) {
 		srv := NewService(mockRepo)
 
 		// run
-		result, err := srv.FindAll()
+		users, err := srv.FindAll()
 
 		// check
 		mockRepo.AssertExpectations(t)
-		assert.Len(t, result, 0)
+		assert.Len(t, users, 0)
 		assert.Error(t, err)
 	})
 }
@@ -55,8 +55,10 @@ func TestSrv_FindAll(t *testing.T) {
 func TestSrv_FindByEmail(t *testing.T) {
 	mockRepo := new(repository.MockUserRepository)
 	mockUser := domain.User{
-		Email:    "tester@pook.com",
-		Password: "123",
+		Email:     "tester@pook.com",
+		FirstName: "tester",
+		LastName:  "tester",
+		Password:  "123",
 	}
 
 	t.Run("success", func(t *testing.T) {
@@ -65,12 +67,12 @@ func TestSrv_FindByEmail(t *testing.T) {
 		srv := NewService(mockRepo)
 
 		// run
-		result, err := srv.FindByEmail("tester@pook.com")
+		user, err := srv.FindByEmail("tester@pook.com")
 
 		// check
 		mockRepo.AssertExpectations(t)
-		assert.Equal(t, mockUser.Email, result.Email)
-		assert.Equal(t, mockUser.Password, result.Password)
+		assert.Equal(t, mockUser.Email, user.Email)
+		assert.Equal(t, mockUser.Password, user.Password)
 		assert.NoError(t, err)
 	})
 
@@ -80,12 +82,12 @@ func TestSrv_FindByEmail(t *testing.T) {
 		srv := NewService(mockRepo)
 
 		// run
-		result, err := srv.FindByEmail("tester@pook.com")
+		user, err := srv.FindByEmail("tester@pook.com")
 
 		// check
 		mockRepo.AssertExpectations(t)
-		assert.Equal(t, "", result.Email)
-		assert.Equal(t, "", result.Password)
+		assert.Equal(t, "", user.Email)
+		assert.Equal(t, "", user.Password)
 		assert.Error(t, err)
 	})
 }
@@ -99,11 +101,11 @@ func TestSrv_Save(t *testing.T) {
 		srv := NewService(mockRepo)
 
 		// run
-		result := srv.Save(&domain.User{})
+		err := srv.Save(&domain.User{})
 
 		// check
 		mockRepo.AssertExpectations(t)
-		assert.NoError(t, result)
+		assert.NoError(t, err)
 	})
 
 	t.Run("fail", func(t *testing.T) {
@@ -112,11 +114,11 @@ func TestSrv_Save(t *testing.T) {
 		srv := NewService(mockRepo)
 
 		// run
-		result := srv.Save(&domain.User{})
+		err := srv.Save(&domain.User{})
 
 		// check
 		mockRepo.AssertExpectations(t)
-		assert.Error(t, result)
+		assert.Error(t, err)
 	})
 }
 
@@ -124,13 +126,15 @@ func TestSrv_Validate(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		// setup
 		srv := NewService(nil)
-		mockUser := &domain.User{
-			Email:    "tester@pook.com",
-			Password: "123",
+		mockUser := domain.User{
+			Email:     "tester@pook.com",
+			FirstName: "tester",
+			LastName:  "tester",
+			Password:  "123",
 		}
 
 		// run
-		err := srv.Validate(mockUser)
+		err := srv.Validate(&mockUser)
 
 		// check
 		assert.Nil(t, err)
@@ -151,13 +155,15 @@ func TestSrv_Validate(t *testing.T) {
 	t.Run("fail - no email", func(t *testing.T) {
 		// setup
 		srv := NewService(nil)
-		mockUser := &domain.User{
-			Email:    "",
-			Password: "123",
+		mockUser := domain.User{
+			Email:     "",
+			FirstName: "tester",
+			LastName:  "tester",
+			Password:  "123",
 		}
 
 		// run
-		err := srv.Validate(mockUser)
+		err := srv.Validate(&mockUser)
 
 		// check
 		assert.NotNil(t, err)
@@ -167,13 +173,15 @@ func TestSrv_Validate(t *testing.T) {
 	t.Run("fail - no password", func(t *testing.T) {
 		// setup
 		srv := NewService(nil)
-		mockUser := &domain.User{
-			Email:    "tester@pook.com",
-			Password: "",
+		mockUser := domain.User{
+			Email:     "tester@pook.com",
+			FirstName: "tester",
+			LastName:  "tester",
+			Password:  "",
 		}
 
 		// run
-		err := srv.Validate(mockUser)
+		err := srv.Validate(&mockUser)
 
 		// check
 		assert.NotNil(t, err)
@@ -185,13 +193,15 @@ func TestSrv_GenerateToken(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		// setup
 		srv := NewService(nil)
-		mockUser := &domain.User{
-			Email:    "tester@pook.com",
-			Password: "123",
+		mockUser := domain.User{
+			Email:     "tester@pook.com",
+			FirstName: "tester",
+			LastName:  "tester",
+			Password:  "123",
 		}
 
 		// run
-		token, err := srv.GenerateToken(mockUser)
+		token, err := srv.GenerateToken(&mockUser)
 
 		// check
 		assert.Greater(t, len(token), 0)
@@ -204,8 +214,10 @@ func TestSrv_ComparePassword(t *testing.T) {
 	password := "123"
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	mockUser := &domain.User{
-		Email:    "tester@pook.com",
-		Password: string(hashedPassword),
+		Email:     "tester@pook.com",
+		FirstName: "tester",
+		LastName:  "tester",
+		Password:  string(hashedPassword),
 	}
 
 	t.Run("success", func(t *testing.T) {
