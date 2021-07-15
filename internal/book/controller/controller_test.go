@@ -10,6 +10,7 @@ import (
 
 	"github.com/chumnend/pook/internal/book/service"
 	"github.com/chumnend/pook/internal/domain"
+	"github.com/stretchr/testify/mock"
 )
 
 func checkResponseCode(t *testing.T, expected, actual int) {
@@ -49,28 +50,10 @@ func TestCtl_ListBooks(t *testing.T) {
 
 		// check
 		mockSrv.AssertExpectations(t)
-		mockSrv.AssertNotCalled(t, "FindAllByUserID")
 		checkResponseCode(t, http.StatusOK, res.Code)
 	})
 
-	t.Run("success - find all of a particular user's books", func(t *testing.T) {
-		// setup
-		mockSrv.On("FindAllByUserID").Return(mockBooks, nil).Once()
-		ctl := NewController(mockSrv)
-		res := httptest.NewRecorder()
-		var jsonStr = []byte(`{"user_id": 1}`)
-		req, _ := http.NewRequest("GET", "/books", bytes.NewBuffer(jsonStr))
-
-		// run
-		ctl.ListBooks(res, req)
-
-		// check
-		mockSrv.AssertExpectations(t)
-		mockSrv.AssertNotCalled(t, "FindAll")
-		checkResponseCode(t, http.StatusOK, res.Code)
-	})
-
-	t.Run("fail - failed to get books", func(t *testing.T) {
+	t.Run("fail - failed to get all books", func(t *testing.T) {
 		// setup
 		mockSrv.On("FindAll").Return([]domain.Book{}, errors.New("unable to access db")).Once()
 		ctl := NewController(mockSrv)
@@ -82,16 +65,15 @@ func TestCtl_ListBooks(t *testing.T) {
 
 		// check
 		mockSrv.AssertExpectations(t)
-		mockSrv.AssertNotCalled(t, "FindAllByUserID")
 		checkResponseCode(t, http.StatusBadRequest, res.Code)
 	})
 
-	t.Run("fail - failed to to get books", func(t *testing.T) {
+	t.Run("success - find all of a user's books", func(t *testing.T) {
 		// setup
-		mockSrv.On("FindAllByUserID").Return([]domain.Book{}, errors.New("unable to access db")).Once()
+		mockSrv.On("FindAllByUserID", mock.AnythingOfType("uint")).Return(mockBooks, nil).Once()
 		ctl := NewController(mockSrv)
 		res := httptest.NewRecorder()
-		var jsonStr = []byte(`{"user_id": 1}`)
+		var jsonStr = []byte(`{"userID": 1}`)
 		req, _ := http.NewRequest("GET", "/books", bytes.NewBuffer(jsonStr))
 
 		// run
@@ -99,7 +81,22 @@ func TestCtl_ListBooks(t *testing.T) {
 
 		// check
 		mockSrv.AssertExpectations(t)
-		mockSrv.AssertNotCalled(t, "FindAll")
+		checkResponseCode(t, http.StatusOK, res.Code)
+	})
+
+	t.Run("fail - failed to to get user's books", func(t *testing.T) {
+		// setup
+		mockSrv.On("FindAllByUserID", mock.AnythingOfType("uint")).Return([]domain.Book{}, errors.New("unable to access db")).Once()
+		ctl := NewController(mockSrv)
+		res := httptest.NewRecorder()
+		var jsonStr = []byte(`{"userID": 1}`)
+		req, _ := http.NewRequest("GET", "/books", bytes.NewBuffer(jsonStr))
+
+		// run
+		ctl.ListBooks(res, req)
+
+		// check
+		mockSrv.AssertExpectations(t)
 		checkResponseCode(t, http.StatusBadRequest, res.Code)
 	})
 }

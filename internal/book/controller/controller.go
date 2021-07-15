@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 
@@ -18,7 +19,34 @@ func NewController(srv domain.BookService) domain.BookController {
 
 func (ctl *bookCtl) ListBooks(w http.ResponseWriter, r *http.Request) {
 	log.Println("GET - list books")
-	respondWithError(w, http.StatusNotImplemented, "Not yet implemented")
+
+	var (
+		books []domain.Book
+		err   error
+	)
+
+	// get a user's books if request body passed
+	if r.Body != nil {
+		type requestBody struct {
+			ID uint `json:"userID"`
+		}
+		var request requestBody
+		if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+			respondWithError(w, http.StatusBadRequest, "something went wrong")
+			return
+		}
+		defer r.Body.Close()
+
+		books, err = ctl.srv.FindAllByUserID(request.ID)
+	} else {
+		books, err = ctl.srv.FindAll()
+	}
+
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "something went wrong")
+		return
+	}
+	respondWithJSON(w, http.StatusOK, map[string][]domain.Book{"books": books})
 }
 
 func (ctl *bookCtl) CreateBook(w http.ResponseWriter, r *http.Request) {
