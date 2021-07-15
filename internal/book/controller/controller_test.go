@@ -2,6 +2,7 @@ package controller
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"net/http"
 	"net/http/httptest"
@@ -51,6 +52,16 @@ func TestCtl_ListBooks(t *testing.T) {
 		// check
 		mockSrv.AssertExpectations(t)
 		checkResponseCode(t, http.StatusOK, res.Code)
+		var m map[string]interface{}
+		json.Unmarshal(res.Body.Bytes(), &m)
+		if _, ok := m["books"]; !ok {
+			t.Errorf("Expected `books` to exist. Got '%v'", m)
+			return
+		}
+		books := m["books"].([]interface{})
+		if len(books) != 2 {
+			t.Errorf("Expected 'books' to have length of 2. Got %v.", m["books"])
+		}
 	})
 
 	t.Run("fail - failed to get all books", func(t *testing.T) {
@@ -66,6 +77,11 @@ func TestCtl_ListBooks(t *testing.T) {
 		// check
 		mockSrv.AssertExpectations(t)
 		checkResponseCode(t, http.StatusBadRequest, res.Code)
+		var m map[string]interface{}
+		json.Unmarshal(res.Body.Bytes(), &m)
+		if m["error"] != "something went wrong" {
+			t.Errorf("Expected the 'error' to be 'something went wrong'. Got '%v'", m["error"])
+		}
 	})
 
 	t.Run("success - find all of a user's books", func(t *testing.T) {
@@ -82,6 +98,16 @@ func TestCtl_ListBooks(t *testing.T) {
 		// check
 		mockSrv.AssertExpectations(t)
 		checkResponseCode(t, http.StatusOK, res.Code)
+		var m map[string]interface{}
+		json.Unmarshal(res.Body.Bytes(), &m)
+		if _, ok := m["books"]; !ok {
+			t.Errorf("Expected `books` to exist. Got '%v'", m)
+			return
+		}
+		books := m["books"].([]interface{})
+		if len(books) != 2 {
+			t.Errorf("Expected 'books' to have length of 2. Got %v.", m["books"])
+		}
 	})
 
 	t.Run("fail - failed to to get user's books", func(t *testing.T) {
@@ -98,6 +124,11 @@ func TestCtl_ListBooks(t *testing.T) {
 		// check
 		mockSrv.AssertExpectations(t)
 		checkResponseCode(t, http.StatusBadRequest, res.Code)
+		var m map[string]interface{}
+		json.Unmarshal(res.Body.Bytes(), &m)
+		if m["error"] != "something went wrong" {
+			t.Errorf("Expected the 'error' to be 'something went wrong'. Got '%v'", m["error"])
+		}
 	})
 }
 
