@@ -23,7 +23,7 @@ func (ctl *userCtl) Register(w http.ResponseWriter, r *http.Request) {
 	// create new user struct
 	var user domain.User
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
-		respondWithError(w, http.StatusBadRequest, err.Error())
+		respondWithError(w, http.StatusBadRequest, "something went wrong")
 		return
 	}
 	defer r.Body.Close()
@@ -37,13 +37,13 @@ func (ctl *userCtl) Register(w http.ResponseWriter, r *http.Request) {
 
 	// call method to create user in DB
 	if err := ctl.srv.Save(&user); err != nil {
-		respondWithError(w, http.StatusInternalServerError, err.Error())
+		respondWithError(w, http.StatusInternalServerError, "something went wrong")
 		return
 	}
 
 	// generate jwt token
 	if token, err := ctl.srv.GenerateToken(&user); err != nil {
-		respondWithError(w, http.StatusInternalServerError, err.Error())
+		respondWithError(w, http.StatusInternalServerError, "something went wrong")
 	} else {
 		respondWithJSON(w, http.StatusOK, map[string]string{"token": token})
 	}
@@ -55,7 +55,7 @@ func (ctl *userCtl) Login(w http.ResponseWriter, r *http.Request) {
 	// get credentials from request
 	var creds domain.User
 	if err := json.NewDecoder(r.Body).Decode(&creds); err != nil {
-		respondWithError(w, http.StatusBadRequest, err.Error())
+		respondWithError(w, http.StatusBadRequest, "something went wrong")
 		return
 	}
 	defer r.Body.Close()
@@ -76,7 +76,7 @@ func (ctl *userCtl) Login(w http.ResponseWriter, r *http.Request) {
 
 	// generate jwt token
 	if token, err := ctl.srv.GenerateToken(u); err != nil {
-		respondWithError(w, http.StatusInternalServerError, err.Error())
+		respondWithError(w, http.StatusInternalServerError, "something went wrong")
 	} else {
 		respondWithJSON(w, http.StatusOK, map[string]string{"token": token})
 	}

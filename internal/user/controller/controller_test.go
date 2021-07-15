@@ -60,8 +60,6 @@ func TestCtl_Register(t *testing.T) {
 
 		// check
 		mockSrv.AssertExpectations(t)
-		mockSrv.AssertNotCalled(t, "Save")
-		mockSrv.AssertNotCalled(t, "GenerateToken")
 		checkResponseCode(t, http.StatusBadRequest, res.Code)
 		var m map[string]interface{}
 		json.Unmarshal(res.Body.Bytes(), &m)
@@ -84,8 +82,6 @@ func TestCtl_Register(t *testing.T) {
 
 		// check
 		mockSrv.AssertExpectations(t)
-		mockSrv.AssertNotCalled(t, "Save")
-		mockSrv.AssertNotCalled(t, "GenerateToken")
 		checkResponseCode(t, http.StatusBadRequest, res.Code)
 		var m map[string]interface{}
 		json.Unmarshal(res.Body.Bytes(), &m)
@@ -136,8 +132,6 @@ func TestCtl_Login(t *testing.T) {
 
 		// check
 		mockSrv.AssertExpectations(t)
-		mockSrv.AssertNotCalled(t, "ComparePassword")
-		mockSrv.AssertNotCalled(t, "GenerateToken")
 		checkResponseCode(t, http.StatusBadRequest, res.Code)
 		var m map[string]interface{}
 		json.Unmarshal(res.Body.Bytes(), &m)
@@ -161,7 +155,6 @@ func TestCtl_Login(t *testing.T) {
 
 		// check
 		mockSrv.AssertExpectations(t)
-		mockSrv.AssertNotCalled(t, "GenerateToken")
 		checkResponseCode(t, http.StatusBadRequest, res.Code)
 		var m map[string]interface{}
 		json.Unmarshal(res.Body.Bytes(), &m)
