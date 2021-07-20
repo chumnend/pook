@@ -68,8 +68,8 @@ func (ctl *bookCtl) CreateBook(w http.ResponseWriter, r *http.Request) {
 
 	var book domain.Book
 	book.Title = dummyBook.Title
-	id, _ := strconv.Atoi(dummyBook.UserID)
-	book.UserID = uint(id)
+	userID, _ := strconv.Atoi(dummyBook.UserID)
+	book.UserID = uint(userID)
 
 	// validate the new book struct
 	validateErr := ctl.srv.Validate(&book)
@@ -111,10 +111,66 @@ func (ctl *bookCtl) GetBook(w http.ResponseWriter, r *http.Request) {
 
 func (ctl *bookCtl) UpdateBook(w http.ResponseWriter, r *http.Request) {
 	log.Println("PUT - update book")
-	respondWithError(w, http.StatusNotImplemented, "Not yet implemented")
+
+	// get book id
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "invalid book id")
+		return
+	}
+
+	// get updated book
+	type DummyBook struct {
+		Title  string `json:"title"`
+		UserID string `json:"userID"`
+	}
+	var dummyBook DummyBook
+	if err := json.NewDecoder(r.Body).Decode(&dummyBook); err != nil {
+		respondWithError(w, http.StatusBadRequest, "something went wrong")
+		return
+	}
+	defer r.Body.Close()
+
+	var book domain.Book
+	book.ID = uint(id)
+	book.Title = dummyBook.Title
+	userID, _ := strconv.Atoi(dummyBook.UserID)
+	book.UserID = uint(userID)
+
+	// save book
+	if err := ctl.srv.Save(&book); err != nil {
+		respondWithError(w, http.StatusInternalServerError, "something went wrong")
+		return
+	}
+
+	// return success
+	respondWithJSON(w, http.StatusOK, map[string]interface{}{"result": book})
 }
 
 func (ctl *bookCtl) DeleteBook(w http.ResponseWriter, r *http.Request) {
 	log.Println("DELETE - delete book")
-	respondWithError(w, http.StatusNotImplemented, "Not yet implemented")
+
+	// get book id
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "invalid book id")
+		return
+	}
+
+	// retrieve book
+	book, err := ctl.srv.FindByID(uint(id))
+	if err != nil {
+		respondWithError(w, http.StatusNotFound, "book not found")
+		return
+	}
+
+	// delete book
+	if err := ctl.srv.Delete(book); err != nil {
+		respondWithError(w, http.StatusInternalServerError, "something went wrong")
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, map[string]interface{}{"result": "book delete successfully"})
 }
