@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/chumnend/pook/internal/domain"
 )
@@ -51,7 +52,39 @@ func (ctl *bookCtl) ListBooks(w http.ResponseWriter, r *http.Request) {
 
 func (ctl *bookCtl) CreateBook(w http.ResponseWriter, r *http.Request) {
 	log.Println("POST - create book")
-	respondWithError(w, http.StatusNotImplemented, "Not yet implemented")
+
+	// create new book struct
+	type DummyBook struct {
+		Title  string `json:"title"`
+		UserID string `json:"userID"`
+	}
+	var dummyBook DummyBook
+	if err := json.NewDecoder(r.Body).Decode(&dummyBook); err != nil {
+		respondWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	defer r.Body.Close()
+
+	var book domain.Book
+	book.Title = dummyBook.Title
+	id, _ := strconv.ParseUint(dummyBook.UserID, 10, 64)
+	book.UserID = uint(id)
+
+	// validate the new book struct
+	validateErr := ctl.srv.Validate(&book)
+	if validateErr != nil {
+		respondWithError(w, http.StatusBadRequest, "missing and/or invalid information")
+		return
+	}
+
+	// save the book struct
+	if err := ctl.srv.Save(&book); err != nil {
+		respondWithError(w, http.StatusInternalServerError, "something went wrong")
+		return
+	}
+
+	// return success
+	respondWithJSON(w, http.StatusOK, map[string]interface{}{"result": book})
 }
 
 func (ctl *bookCtl) GetBook(w http.ResponseWriter, r *http.Request) {

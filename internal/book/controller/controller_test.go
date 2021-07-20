@@ -133,11 +133,39 @@ func TestCtl_ListBooks(t *testing.T) {
 }
 
 func TestCtl_CreateBook(t *testing.T) {
+	mockSrv := new(service.MockBookService)
+
 	t.Run("success", func(t *testing.T) {
 		// setup
+		mockSrv.On("Validate", mock.Anything).Return(nil).Once()
+		mockSrv.On("Save", mock.Anything).Return(nil).Once()
+		ctl := NewController(mockSrv)
+		res := httptest.NewRecorder()
+		var jsonStr = []byte(`{"title":"test", "userID": "1"}`)
+		req, _ := http.NewRequest("POST", "/api/v1/books", bytes.NewBuffer(jsonStr))
+		req.Header.Set("Content-Type", "application/json")
+
 		// run
+		ctl.CreateBook(res, req)
+
 		// check
+		mockSrv.AssertExpectations(t)
+		checkResponseCode(t, http.StatusOK, res.Code)
+		var m map[string]interface{}
+		json.Unmarshal(res.Body.Bytes(), &m)
+		if _, ok := m["result"]; !ok {
+			t.Errorf("Expected `result` to exist. Got '%v'", m)
+			return
+		}
+		result := m["result"].(map[string]interface{})
+		if result["title"] != "test" {
+			t.Errorf("Expected 'title' to be 'test'. Got '%v'", m["title"])
+		}
+		if result["userID"] != 1.0 {
+			t.Errorf("Expected `id` to be '1'. Got '%v'", m["id"])
+		}
 	})
+
 	t.Run("fail", func(t *testing.T) {
 		// setup
 		// check
