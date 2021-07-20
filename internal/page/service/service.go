@@ -1,4 +1,4 @@
-package page
+package service
 
 import (
 	"errors"

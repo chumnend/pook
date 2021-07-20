@@ -1,6 +1,7 @@
-package user
+package repository
 
 import (
+	"errors"
 	"regexp"
 	"testing"
 	"time"
@@ -48,17 +49,31 @@ func TestRepo_FindAll(t *testing.T) {
 				mockUsers[0].UpdatedAt,
 			)
 		query := regexp.QuoteMeta(`SELECT * FROM "users"`)
-
 		mock.ExpectQuery(query).WillReturnRows(rows)
-		testRepo := NewPostgresRepository(gdb)
+		repo := NewPostgresRepository(gdb)
 
 		// run
-		users, err := testRepo.FindAll()
+		users, err := repo.FindAll()
 
 		// check
 		mock.ExpectationsWereMet()
 		assert.Len(t, users, 1)
 		assert.NoError(t, err)
+	})
+
+	t.Run("fail", func(t *testing.T) {
+		// setup
+		query := regexp.QuoteMeta(`SELECT * FROM "users"`)
+		mock.ExpectQuery(query).WillReturnError(errors.New("unexpected error"))
+		repo := NewPostgresRepository(gdb)
+
+		// run
+		users, err := repo.FindAll()
+
+		// check
+		mock.ExpectationsWereMet()
+		assert.Len(t, users, 0)
+		assert.Error(t, err)
 	})
 }
 
@@ -87,22 +102,13 @@ func TestRepo_FindByEmail(t *testing.T) {
 		// setup
 		headers := []string{"id", "email", "password", "first_name", "last_name", "created_at", "updated_at"}
 		rows := sqlmock.NewRows(headers).
-			AddRow(
-				mockUser.ID,
-				mockUser.Email,
-				mockUser.Password,
-				mockUser.FirstName,
-				mockUser.LastName,
-				mockUser.CreatedAt,
-				mockUser.UpdatedAt,
-			)
+			AddRow(mockUser.ID, mockUser.Email, mockUser.Password, mockUser.FirstName, mockUser.LastName, mockUser.CreatedAt, mockUser.UpdatedAt)
 		query := regexp.QuoteMeta(`SELECT * FROM "users" WHERE (email = $1) ORDER BY "users"."id" ASC LIMIT 1`)
-
 		mock.ExpectQuery(query).WillReturnRows(rows)
-		testRepo := NewPostgresRepository(gdb)
+		repo := NewPostgresRepository(gdb)
 
 		// run
-		user, err := testRepo.FindByEmail("tester@pook.com")
+		user, err := repo.FindByEmail("tester@pook.com")
 
 		// check
 		mock.ExpectationsWereMet()
@@ -111,6 +117,24 @@ func TestRepo_FindByEmail(t *testing.T) {
 		assert.Equal(t, mockUser.FirstName, user.FirstName)
 		assert.Equal(t, mockUser.LastName, user.LastName)
 		assert.NoError(t, err)
+	})
+
+	t.Run("fail", func(t *testing.T) {
+		// setup
+		query := regexp.QuoteMeta(`SELECT * FROM "users" WHERE (email = $1) ORDER BY "users"."id" ASC LIMIT 1`)
+		mock.ExpectQuery(query).WillReturnError(errors.New("unexpected error"))
+		repo := NewPostgresRepository(gdb)
+
+		// run
+		user, err := repo.FindByEmail("tester@pook.com")
+
+		// check
+		mock.ExpectationsWereMet()
+		assert.Equal(t, domain.User{}.ID, user.ID)
+		assert.Equal(t, domain.User{}.Email, user.Email)
+		assert.Equal(t, domain.User{}.FirstName, user.FirstName)
+		assert.Equal(t, domain.User{}.LastName, user.LastName)
+		assert.Error(t, err)
 	})
 }
 
@@ -144,14 +168,31 @@ func TestRepo_Save(t *testing.T) {
 			WithArgs(user.Email, user.Password, user.FirstName, user.LastName, user.CreatedAt, user.UpdatedAt).
 			WillReturnRows(rows)
 		mock.ExpectCommit() // commit transaction
-
-		testRepo := NewPostgresRepository(gdb)
+		repo := NewPostgresRepository(gdb)
 
 		// run
-		err := testRepo.Save(&user)
+		err := repo.Save(&user)
 
 		// check
 		mock.ExpectationsWereMet()
 		assert.NoError(t, err)
+	})
+
+	t.Run("fail", func(t *testing.T) {
+		// setup
+		query := regexp.QuoteMeta(`INSERT INTO "users" ("email","password","first_name","last_name","created_at","updated_at") VALUES ($1,$2,$3,$4,$5,$6) RETURNING "users"."id"`)
+		mock.ExpectBegin() // begin transaction
+		mock.ExpectQuery(query).
+			WithArgs(user.Email, user.Password, user.FirstName, user.LastName, user.CreatedAt, user.UpdatedAt).
+			WillReturnError(errors.New("unexpected error"))
+		mock.ExpectCommit() // commit transaction
+		repo := NewPostgresRepository(gdb)
+
+		// run
+		err := repo.Save(&user)
+
+		// check
+		mock.ExpectationsWereMet()
+		assert.Error(t, err)
 	})
 }

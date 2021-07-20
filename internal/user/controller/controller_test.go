@@ -1,4 +1,4 @@
-package user
+package controller
 
 import (
 	"bytes"
@@ -9,7 +9,7 @@ import (
 	"testing"
 
 	"github.com/chumnend/pook/internal/domain"
-	"github.com/chumnend/pook/internal/user/mocks"
+	"github.com/chumnend/pook/internal/user/service"
 	"github.com/stretchr/testify/mock"
 )
 
@@ -20,31 +20,27 @@ func checkResponseCode(t *testing.T, expected, actual int) {
 }
 
 func TestCtl_Register(t *testing.T) {
-	mockSrv := new(mocks.UserService)
+	mockSrv := new(service.MockUserService)
 
 	t.Run("success", func(t *testing.T) {
 		// setup
 		mockSrv.On("Validate", mock.Anything).Return(nil).Once()
 		mockSrv.On("Save", mock.Anything).Return(nil).Once()
 		mockSrv.On("GenerateToken", mock.Anything).Return("token", nil).Once()
-
-		testController := NewController(mockSrv)
-
-		res := httptest.NewRecorder()
+		ctl := NewController(mockSrv)
+		w := httptest.NewRecorder()
 		var jsonStr = []byte(`{"email":"test@example.com", "password": "test123"}`)
-		req, _ := http.NewRequest("POST", "/api/v1/register", bytes.NewBuffer(jsonStr))
-		req.Header.Set("Content-Type", "application/json")
+		r, _ := http.NewRequest("POST", "/api/v1/register", bytes.NewBuffer(jsonStr))
+		r.Header.Set("Content-Type", "application/json")
 
 		// run
-		testController.Register(res, req)
+		ctl.Register(w, r)
 
 		// check
 		mockSrv.AssertExpectations(t)
-
-		checkResponseCode(t, http.StatusOK, res.Code)
-
+		checkResponseCode(t, http.StatusOK, w.Code)
 		var m map[string]interface{}
-		json.Unmarshal(res.Body.Bytes(), &m)
+		json.Unmarshal(w.Body.Bytes(), &m)
 		if m["token"] == "" {
 			t.Errorf("Expected 'token' to be non empty. Got %v.", m["token"])
 		}
@@ -53,27 +49,20 @@ func TestCtl_Register(t *testing.T) {
 	t.Run("fail - no email", func(t *testing.T) {
 		// setup
 		mockSrv.On("Validate", mock.Anything).Return(errors.New("missing and/or invalid information")).Once()
-
-		testController := NewController(mockSrv)
-
-		res := httptest.NewRecorder()
+		ctl := NewController(mockSrv)
+		w := httptest.NewRecorder()
 		var jsonStr = []byte(`{"password": "test123"}`)
-		req, _ := http.NewRequest("POST", "/api/v1/register", bytes.NewBuffer(jsonStr))
-		req.Header.Set("Content-Type", "application/json")
+		r, _ := http.NewRequest("POST", "/api/v1/register", bytes.NewBuffer(jsonStr))
+		r.Header.Set("Content-Type", "application/json")
 
 		// run
-		testController.Register(res, req)
+		ctl.Register(w, r)
 
 		// check
 		mockSrv.AssertExpectations(t)
-		mockSrv.AssertNotCalled(t, "Save")
-		mockSrv.AssertNotCalled(t, "GenerateToken")
-
-		checkResponseCode(t, http.StatusBadRequest, res.Code)
-
+		checkResponseCode(t, http.StatusBadRequest, w.Code)
 		var m map[string]interface{}
-		json.Unmarshal(res.Body.Bytes(), &m)
-
+		json.Unmarshal(w.Body.Bytes(), &m)
 		if m["error"] != "missing and/or invalid information" {
 			t.Errorf("Expected the 'error' to be 'missing and/or invalid information'. Got '%v'", m["error"])
 		}
@@ -82,26 +71,20 @@ func TestCtl_Register(t *testing.T) {
 	t.Run("fail - no password", func(t *testing.T) {
 		// setup
 		mockSrv.On("Validate", mock.Anything).Return(errors.New("missing and/or invalid information")).Once()
-
-		testController := NewController(mockSrv)
-
-		res := httptest.NewRecorder()
+		ctl := NewController(mockSrv)
+		w := httptest.NewRecorder()
 		var jsonStr = []byte(`{"email":"test@example.com"}`)
-		req, _ := http.NewRequest("POST", "/api/v1/register", bytes.NewBuffer(jsonStr))
-		req.Header.Set("Content-Type", "application/json")
+		r, _ := http.NewRequest("POST", "/api/v1/register", bytes.NewBuffer(jsonStr))
+		r.Header.Set("Content-Type", "application/json")
 
 		// run
-		testController.Register(res, req)
+		ctl.Register(w, r)
 
 		// check
 		mockSrv.AssertExpectations(t)
-		mockSrv.AssertNotCalled(t, "Save")
-		mockSrv.AssertNotCalled(t, "GenerateToken")
-
-		checkResponseCode(t, http.StatusBadRequest, res.Code)
-
+		checkResponseCode(t, http.StatusBadRequest, w.Code)
 		var m map[string]interface{}
-		json.Unmarshal(res.Body.Bytes(), &m)
+		json.Unmarshal(w.Body.Bytes(), &m)
 		if m["error"] != "missing and/or invalid information" {
 			t.Errorf("Expected the 'error' to be 'missing and/or invalid information'. Got '%v'", m["error"])
 		}
@@ -109,31 +92,27 @@ func TestCtl_Register(t *testing.T) {
 }
 
 func TestCtl_Login(t *testing.T) {
-	mockSrv := new(mocks.UserService)
+	mockSrv := new(service.MockUserService)
 
 	t.Run("success", func(t *testing.T) {
 		// setup
 		mockSrv.On("FindByEmail", mock.AnythingOfType("string")).Return(&domain.User{}, nil).Once()
 		mockSrv.On("ComparePassword", mock.Anything, mock.AnythingOfType("string")).Return(nil).Once()
 		mockSrv.On("GenerateToken", mock.Anything).Return("token", nil).Once()
-
-		testController := NewController(mockSrv)
-
-		res := httptest.NewRecorder()
+		ctl := NewController(mockSrv)
+		w := httptest.NewRecorder()
 		var jsonStr = []byte(`{"email":"test@example.com", "password": "123"}`)
-		req, _ := http.NewRequest("POST", "/api/v1/register", bytes.NewBuffer(jsonStr))
-		req.Header.Set("Content-Type", "application/json")
+		r, _ := http.NewRequest("POST", "/api/v1/register", bytes.NewBuffer(jsonStr))
+		r.Header.Set("Content-Type", "application/json")
 
 		// run
-		testController.Login(res, req)
+		ctl.Login(w, r)
 
 		// check
 		mockSrv.AssertExpectations(t)
-
-		checkResponseCode(t, http.StatusOK, res.Code)
-
+		checkResponseCode(t, http.StatusOK, w.Code)
 		var m map[string]interface{}
-		json.Unmarshal(res.Body.Bytes(), &m)
+		json.Unmarshal(w.Body.Bytes(), &m)
 		if m["token"] == "" {
 			t.Errorf("Expected 'token' to be non empty. Got %v.", m["token"])
 		}
@@ -142,26 +121,20 @@ func TestCtl_Login(t *testing.T) {
 	t.Run("fail - bad email", func(t *testing.T) {
 		// setup
 		mockSrv.On("FindByEmail", mock.AnythingOfType("string")).Return(&domain.User{}, errors.New("invalid email and/or password")).Once()
-
-		testController := NewController(mockSrv)
-
-		res := httptest.NewRecorder()
+		ctl := NewController(mockSrv)
+		w := httptest.NewRecorder()
 		var jsonStr = []byte(`{"email":"test@example.com", "password": "123"}`)
-		req, _ := http.NewRequest("POST", "/api/v1/register", bytes.NewBuffer(jsonStr))
-		req.Header.Set("Content-Type", "application/json")
+		r, _ := http.NewRequest("POST", "/api/v1/register", bytes.NewBuffer(jsonStr))
+		r.Header.Set("Content-Type", "application/json")
 
 		// run
-		testController.Login(res, req)
+		ctl.Login(w, r)
 
 		// check
 		mockSrv.AssertExpectations(t)
-		mockSrv.AssertNotCalled(t, "ComparePassword")
-		mockSrv.AssertNotCalled(t, "GenerateToken")
-
-		checkResponseCode(t, http.StatusBadRequest, res.Code)
-
+		checkResponseCode(t, http.StatusBadRequest, w.Code)
 		var m map[string]interface{}
-		json.Unmarshal(res.Body.Bytes(), &m)
+		json.Unmarshal(w.Body.Bytes(), &m)
 		if m["error"] != "invalid email and/or password" {
 			t.Errorf("Expected the 'error' to be 'invalid email and/or password'. Got '%v'", m["error"])
 		}
@@ -171,25 +144,20 @@ func TestCtl_Login(t *testing.T) {
 		// setup
 		mockSrv.On("FindByEmail", mock.AnythingOfType("string")).Return(&domain.User{}, nil).Once()
 		mockSrv.On("ComparePassword", mock.Anything, mock.AnythingOfType("string")).Return(errors.New("invalid email and/or password")).Once()
-
-		testController := NewController(mockSrv)
-
-		res := httptest.NewRecorder()
+		ctl := NewController(mockSrv)
+		w := httptest.NewRecorder()
 		jsonStr := []byte(`{"email":"test@example.com", "password": "123"}`)
-		req, _ := http.NewRequest("POST", "/api/v1/register", bytes.NewBuffer(jsonStr))
-		req.Header.Set("Content-Type", "application/json")
+		r, _ := http.NewRequest("POST", "/api/v1/register", bytes.NewBuffer(jsonStr))
+		r.Header.Set("Content-Type", "application/json")
 
 		// run
-		testController.Login(res, req)
+		ctl.Login(w, r)
 
 		// check
 		mockSrv.AssertExpectations(t)
-		mockSrv.AssertNotCalled(t, "GenerateToken")
-
-		checkResponseCode(t, http.StatusBadRequest, res.Code)
-
+		checkResponseCode(t, http.StatusBadRequest, w.Code)
 		var m map[string]interface{}
-		json.Unmarshal(res.Body.Bytes(), &m)
+		json.Unmarshal(w.Body.Bytes(), &m)
 		if m["error"] != "invalid email and/or password" {
 			t.Errorf("Expected the 'error' to be 'invalid email and/or password'. Got '%v'", m["error"])
 		}

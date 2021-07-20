@@ -11,7 +11,7 @@ type Book struct {
 	Title     string    `gorm:"not null" json:"title"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
-	UserID    uint      `gorm:"not null" json:"user_id"`
+	UserID    uint      `gorm:"not null" json:"userID"`
 
 	Pages []Page `json:"pages"`
 }

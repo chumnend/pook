@@ -1,4 +1,4 @@
-package book
+package repository
 
 import (
 	"github.com/chumnend/pook/internal/domain"
@@ -36,7 +36,7 @@ func (repo *bookRepo) FindByID(id uint) (*domain.Book, error) {
 	var book domain.Book
 	result := repo.conn.First(&book, id)
 	if result.Error != nil {
-		return nil, result.Error
+		return &book, result.Error
 	}
 	return &book, nil
 }

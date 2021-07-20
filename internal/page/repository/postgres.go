@@ -1,4 +1,4 @@
-package page
+package repository
 
 import (
 	"github.com/chumnend/pook/internal/domain"
