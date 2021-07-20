@@ -36,7 +36,7 @@ func NewApp() *App {
 	router.Use(middleware.Cors)
 
 	// setup api routes
-	api.SetupRouter(router, db)
+	api.SetupRoutes(router, db)
 
 	// serve react files on catchall handler
 	spa := spaHandler{
