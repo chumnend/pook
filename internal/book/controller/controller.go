@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/chumnend/pook/internal/domain"
+	"github.com/gorilla/mux"
 )
 
 type bookCtl struct {
@@ -60,14 +61,14 @@ func (ctl *bookCtl) CreateBook(w http.ResponseWriter, r *http.Request) {
 	}
 	var dummyBook DummyBook
 	if err := json.NewDecoder(r.Body).Decode(&dummyBook); err != nil {
-		respondWithError(w, http.StatusBadRequest, err.Error())
+		respondWithError(w, http.StatusBadRequest, "something went wrong")
 		return
 	}
 	defer r.Body.Close()
 
 	var book domain.Book
 	book.Title = dummyBook.Title
-	id, _ := strconv.ParseUint(dummyBook.UserID, 10, 64)
+	id, _ := strconv.Atoi(dummyBook.UserID)
 	book.UserID = uint(id)
 
 	// validate the new book struct
@@ -89,7 +90,23 @@ func (ctl *bookCtl) CreateBook(w http.ResponseWriter, r *http.Request) {
 
 func (ctl *bookCtl) GetBook(w http.ResponseWriter, r *http.Request) {
 	log.Println("GET - get book")
-	respondWithError(w, http.StatusNotImplemented, "Not yet implemented")
+
+	// get book id
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "invalid book id")
+		return
+	}
+
+	// retrieve book
+	book, err := ctl.srv.FindByID(uint(id))
+	if err != nil {
+		respondWithError(w, http.StatusNotFound, "book not found")
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, map[string]interface{}{"result": book})
 }
 
 func (ctl *bookCtl) UpdateBook(w http.ResponseWriter, r *http.Request) {

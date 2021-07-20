@@ -11,6 +11,8 @@ import (
 
 	"github.com/chumnend/pook/internal/book/service"
 	"github.com/chumnend/pook/internal/domain"
+	"github.com/gorilla/mux"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
 
@@ -43,17 +45,17 @@ func TestCtl_ListBooks(t *testing.T) {
 		// setup
 		mockSrv.On("FindAll").Return(mockBooks, nil).Once()
 		ctl := NewController(mockSrv)
-		res := httptest.NewRecorder()
-		req, _ := http.NewRequest("GET", "/books", nil)
+		w := httptest.NewRecorder()
+		r, _ := http.NewRequest("GET", "/books", nil)
 
 		// run
-		ctl.ListBooks(res, req)
+		ctl.ListBooks(w, r)
 
 		// check
 		mockSrv.AssertExpectations(t)
-		checkResponseCode(t, http.StatusOK, res.Code)
+		checkResponseCode(t, http.StatusOK, w.Code)
 		var m map[string]interface{}
-		json.Unmarshal(res.Body.Bytes(), &m)
+		json.Unmarshal(w.Body.Bytes(), &m)
 		if _, ok := m["books"]; !ok {
 			t.Errorf("Expected `books` to exist. Got '%v'", m)
 			return
@@ -68,17 +70,17 @@ func TestCtl_ListBooks(t *testing.T) {
 		// setup
 		mockSrv.On("FindAll").Return([]domain.Book{}, errors.New("unable to access db")).Once()
 		ctl := NewController(mockSrv)
-		res := httptest.NewRecorder()
-		req, _ := http.NewRequest("GET", "/books", nil)
+		w := httptest.NewRecorder()
+		r, _ := http.NewRequest("GET", "/books", nil)
 
 		// run
-		ctl.ListBooks(res, req)
+		ctl.ListBooks(w, r)
 
 		// check
 		mockSrv.AssertExpectations(t)
-		checkResponseCode(t, http.StatusBadRequest, res.Code)
+		checkResponseCode(t, http.StatusBadRequest, w.Code)
 		var m map[string]interface{}
-		json.Unmarshal(res.Body.Bytes(), &m)
+		json.Unmarshal(w.Body.Bytes(), &m)
 		if m["error"] != "something went wrong" {
 			t.Errorf("Expected the 'error' to be 'something went wrong'. Got '%v'", m["error"])
 		}
@@ -88,18 +90,18 @@ func TestCtl_ListBooks(t *testing.T) {
 		// setup
 		mockSrv.On("FindAllByUserID", mock.AnythingOfType("uint")).Return(mockBooks, nil).Once()
 		ctl := NewController(mockSrv)
-		res := httptest.NewRecorder()
+		w := httptest.NewRecorder()
 		var jsonStr = []byte(`{"userID": 1}`)
-		req, _ := http.NewRequest("GET", "/books", bytes.NewBuffer(jsonStr))
+		r, _ := http.NewRequest("GET", "/books", bytes.NewBuffer(jsonStr))
 
 		// run
-		ctl.ListBooks(res, req)
+		ctl.ListBooks(w, r)
 
 		// check
 		mockSrv.AssertExpectations(t)
-		checkResponseCode(t, http.StatusOK, res.Code)
+		checkResponseCode(t, http.StatusOK, w.Code)
 		var m map[string]interface{}
-		json.Unmarshal(res.Body.Bytes(), &m)
+		json.Unmarshal(w.Body.Bytes(), &m)
 		if _, ok := m["books"]; !ok {
 			t.Errorf("Expected `books` to exist. Got '%v'", m)
 			return
@@ -114,18 +116,18 @@ func TestCtl_ListBooks(t *testing.T) {
 		// setup
 		mockSrv.On("FindAllByUserID", mock.AnythingOfType("uint")).Return([]domain.Book{}, errors.New("unable to access db")).Once()
 		ctl := NewController(mockSrv)
-		res := httptest.NewRecorder()
+		w := httptest.NewRecorder()
 		var jsonStr = []byte(`{"userID": 1}`)
-		req, _ := http.NewRequest("GET", "/books", bytes.NewBuffer(jsonStr))
+		r, _ := http.NewRequest("GET", "/books", bytes.NewBuffer(jsonStr))
 
 		// run
-		ctl.ListBooks(res, req)
+		ctl.ListBooks(w, r)
 
 		// check
 		mockSrv.AssertExpectations(t)
-		checkResponseCode(t, http.StatusBadRequest, res.Code)
+		checkResponseCode(t, http.StatusBadRequest, w.Code)
 		var m map[string]interface{}
-		json.Unmarshal(res.Body.Bytes(), &m)
+		json.Unmarshal(w.Body.Bytes(), &m)
 		if m["error"] != "something went wrong" {
 			t.Errorf("Expected the 'error' to be 'something went wrong'. Got '%v'", m["error"])
 		}
@@ -140,19 +142,19 @@ func TestCtl_CreateBook(t *testing.T) {
 		mockSrv.On("Validate", mock.Anything).Return(nil).Once()
 		mockSrv.On("Save", mock.Anything).Return(nil).Once()
 		ctl := NewController(mockSrv)
-		res := httptest.NewRecorder()
+		w := httptest.NewRecorder()
 		var jsonStr = []byte(`{"title":"test", "userID": "1"}`)
-		req, _ := http.NewRequest("POST", "/api/v1/books", bytes.NewBuffer(jsonStr))
-		req.Header.Set("Content-Type", "application/json")
+		r, _ := http.NewRequest("POST", "/api/v1/books", bytes.NewBuffer(jsonStr))
+		r.Header.Set("Content-Type", "application/json")
 
 		// run
-		ctl.CreateBook(res, req)
+		ctl.CreateBook(w, r)
 
 		// check
 		mockSrv.AssertExpectations(t)
-		checkResponseCode(t, http.StatusOK, res.Code)
+		checkResponseCode(t, http.StatusOK, w.Code)
 		var m map[string]interface{}
-		json.Unmarshal(res.Body.Bytes(), &m)
+		json.Unmarshal(w.Body.Bytes(), &m)
 		if _, ok := m["result"]; !ok {
 			t.Errorf("Expected `result` to exist. Got '%v'", m)
 			return
@@ -166,23 +168,130 @@ func TestCtl_CreateBook(t *testing.T) {
 		}
 	})
 
-	t.Run("fail", func(t *testing.T) {
+	t.Run("fail - bad book", func(t *testing.T) {
 		// setup
-		// check
+		mockSrv.On("Validate", mock.Anything).Return(errors.New("unexpected error")).Once()
+		ctl := NewController(mockSrv)
+		w := httptest.NewRecorder()
+		var jsonStr = []byte(`{"title":"test"}`)
+		r, _ := http.NewRequest("POST", "/api/v1/books", bytes.NewBuffer(jsonStr))
+		r.Header.Set("Content-Type", "application/json")
+
 		// run
+		ctl.CreateBook(w, r)
+
+		// check
+		mockSrv.AssertExpectations(t)
+		checkResponseCode(t, http.StatusBadRequest, w.Code)
+		var m map[string]interface{}
+		json.Unmarshal(w.Body.Bytes(), &m)
+		if m["error"] != "missing and/or invalid information" {
+			t.Errorf("Expected the 'error' to be 'missing and/or invalid information'. Got '%v'", m["error"])
+		}
+	})
+
+	t.Run("fail - bad save", func(t *testing.T) {
+		// setup
+		mockSrv.On("Validate", mock.Anything).Return(nil).Once()
+		mockSrv.On("Save", mock.Anything).Return(errors.New("unexpected error")).Once()
+		ctl := NewController(mockSrv)
+		w := httptest.NewRecorder()
+		var jsonStr = []byte(`{"title":"test", "userID": "1"}`)
+		r, _ := http.NewRequest("POST", "/api/v1/books", bytes.NewBuffer(jsonStr))
+		r.Header.Set("Content-Type", "application/json")
+
+		// run
+		ctl.CreateBook(w, r)
+
+		// check
+		mockSrv.AssertExpectations(t)
+		checkResponseCode(t, http.StatusInternalServerError, w.Code)
+		var m map[string]interface{}
+		json.Unmarshal(w.Body.Bytes(), &m)
+		if m["error"] != "something went wrong" {
+			t.Errorf("Expected the 'error' to be 'something went wrong'. Got '%v'", m["error"])
+		}
 	})
 }
 
 func TestCtl_GetBook(t *testing.T) {
+	mockSrv := new(service.MockBookService)
+	mockBook := domain.Book{
+		ID:        1,
+		Title:     "test book",
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		UserID:    1,
+	}
+
 	t.Run("success", func(t *testing.T) {
 		// setup
+		mockSrv.On("FindByID", mock.AnythingOfType("uint")).Return(&mockBook, nil).Once()
+		ctl := NewController(mockSrv)
+		w := httptest.NewRecorder()
+		r, _ := http.NewRequest("GET", "/api/v1/book/1", nil)
+		vars := map[string]string{"id": "1"}
+		r = mux.SetURLVars(r, vars)
+
 		// run
+		ctl.GetBook(w, r)
+
 		// check
+		mockSrv.AssertExpectations(t)
+		checkResponseCode(t, http.StatusOK, w.Code)
+		var m map[string]interface{}
+		json.Unmarshal(w.Body.Bytes(), &m)
+		if _, ok := m["result"]; !ok {
+			t.Errorf("Expected `result` to exist. Got '%v'", m)
+			return
+		}
+		result := m["result"].(map[string]interface{})
+		assert.Equal(t, float64(mockBook.ID), result["id"]) // FixMe: Hacky comparison of uint
+		assert.Equal(t, mockBook.Title, result["title"])
+		assert.Equal(t, float64(mockBook.UserID), result["userID"]) // FixMe: Hacky comparison of uint
 	})
-	t.Run("fail", func(t *testing.T) {
+
+	t.Run("fail - invalid book id", func(t *testing.T) {
 		// setup
-		// check
+		ctl := NewController(mockSrv)
+		w := httptest.NewRecorder()
+		r, _ := http.NewRequest("GET", "/api/v1/book/abc", nil)
+		vars := map[string]string{"id": "abc"}
+		r = mux.SetURLVars(r, vars)
+
 		// run
+		ctl.GetBook(w, r)
+
+		// check
+		mockSrv.AssertExpectations(t)
+		checkResponseCode(t, http.StatusBadRequest, w.Code)
+		var m map[string]interface{}
+		json.Unmarshal(w.Body.Bytes(), &m)
+		if m["error"] != "invalid book id" {
+			t.Errorf("Expected the 'error' to be 'invalid book id'. Got '%v'", m["error"])
+		}
+	})
+
+	t.Run("fail - book not found", func(t *testing.T) {
+		// setup
+		mockSrv.On("FindByID", mock.AnythingOfType("uint")).Return(&domain.Book{}, errors.New("unexpected error")).Once()
+		ctl := NewController(mockSrv)
+		w := httptest.NewRecorder()
+		r, _ := http.NewRequest("GET", "/api/v1/book/1", nil)
+		vars := map[string]string{"id": "1"}
+		r = mux.SetURLVars(r, vars)
+
+		// run
+		ctl.GetBook(w, r)
+
+		// check
+		mockSrv.AssertExpectations(t)
+		checkResponseCode(t, http.StatusNotFound, w.Code)
+		var m map[string]interface{}
+		json.Unmarshal(w.Body.Bytes(), &m)
+		if m["error"] != "book not found" {
+			t.Errorf("Expected the 'error' to be 'book not found'. Got '%v'", m["error"])
+		}
 	})
 }
 
