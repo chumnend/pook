@@ -42,6 +42,14 @@ test-go:
 	fi
 	@go test ./tests/...
 
+# Executes only unit tests for Go packages
+.PHONY: test-gounit
+test-gounit:
+	@if [ ! -d "web/build" ]; then \
+  	cd web && npm run build; \
+	fi
+	@go test -short ./tests/...
+
 # Cleans up assets and node_modules
 .PHONY: clean
 clean:

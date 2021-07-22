@@ -59,6 +59,10 @@ func TestSpaHandler(t *testing.T) {
 }
 
 func TestRegister(t *testing.T) {
+	if testing.Short() {
+		t.Skip("skipping integration test")
+	}
+
 	t.Run("success", func(t *testing.T) {
 		emptyDB()
 
@@ -112,6 +116,10 @@ func TestRegister(t *testing.T) {
 }
 
 func TestLogin(t *testing.T) {
+	if testing.Short() {
+		t.Skip("skipping integration test")
+	}
+
 	t.Run("success", func(t *testing.T) {
 		emptyDB()
 
