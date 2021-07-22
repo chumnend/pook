@@ -10,8 +10,8 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 /** user api routes */
-export const API_USER_REGISTER = apiPrefix + '/api/v1/register';
-export const API_USER_LOGIN = apiPrefix + '/api/v1/login';
+export const API_USER_REGISTER = apiPrefix + '/v1/register';
+export const API_USER_LOGIN = apiPrefix + '/v1/login';
 
 /** local storage key */
 export const AUTH_STATE_KEY = 'authState';

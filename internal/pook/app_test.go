@@ -61,7 +61,7 @@ func TestRegister(t *testing.T) {
 		emptyDB()
 
 		var jsonStr = []byte(`{"email":"test@example.com", "password": "test123"}`)
-		req, _ := http.NewRequest("POST", "/api/v1/register", bytes.NewBuffer(jsonStr))
+		req, _ := http.NewRequest("POST", "/v1/register", bytes.NewBuffer(jsonStr))
 		req.Header.Set("Content-Type", "application/json")
 		res := executeRequest(req)
 
@@ -78,7 +78,7 @@ func TestRegister(t *testing.T) {
 		emptyDB()
 
 		var jsonStr = []byte(`{"password": "test123"}`)
-		req, _ := http.NewRequest("POST", "/api/v1/register", bytes.NewBuffer(jsonStr))
+		req, _ := http.NewRequest("POST", "/v1/register", bytes.NewBuffer(jsonStr))
 		req.Header.Set("Content-Type", "application/json")
 		res := executeRequest(req)
 
@@ -95,7 +95,7 @@ func TestRegister(t *testing.T) {
 		emptyDB()
 
 		var jsonStr = []byte(`{"email":"test@example.com"}`)
-		req, _ := http.NewRequest("POST", "/api/v1/register", bytes.NewBuffer(jsonStr))
+		req, _ := http.NewRequest("POST", "/v1/register", bytes.NewBuffer(jsonStr))
 		req.Header.Set("Content-Type", "application/json")
 		res := executeRequest(req)
 
@@ -114,14 +114,14 @@ func TestLogin(t *testing.T) {
 		emptyDB()
 
 		var jsonStr = []byte(`{"email":"test@example.com", "password": "123"}`)
-		req, _ := http.NewRequest("POST", "/api/v1/register", bytes.NewBuffer(jsonStr))
+		req, _ := http.NewRequest("POST", "/v1/register", bytes.NewBuffer(jsonStr))
 		req.Header.Set("Content-Type", "application/json")
 		res := executeRequest(req)
 
 		checkResponseCode(t, http.StatusOK, res.Code)
 
 		jsonStr = []byte(`{"email":"test@example.com", "password": "123"}`)
-		req, _ = http.NewRequest("POST", "/api/v1/login", bytes.NewBuffer(jsonStr))
+		req, _ = http.NewRequest("POST", "/v1/login", bytes.NewBuffer(jsonStr))
 		req.Header.Set("Content-Type", "application/json")
 		res = executeRequest(req)
 
@@ -138,7 +138,7 @@ func TestLogin(t *testing.T) {
 		emptyDB()
 
 		jsonStr := []byte(`{"email":"test@example.com", "password": "123"}`)
-		req, _ := http.NewRequest("POST", "/api/v1/login", bytes.NewBuffer(jsonStr))
+		req, _ := http.NewRequest("POST", "/v1/login", bytes.NewBuffer(jsonStr))
 		req.Header.Set("Content-Type", "application/json")
 		res := executeRequest(req)
 
@@ -155,14 +155,14 @@ func TestLogin(t *testing.T) {
 		emptyDB()
 
 		var jsonStr = []byte(`{"email":"test@example.com", "password": "123"}`)
-		req, _ := http.NewRequest("POST", "/api/v1/register", bytes.NewBuffer(jsonStr))
+		req, _ := http.NewRequest("POST", "/v1/register", bytes.NewBuffer(jsonStr))
 		req.Header.Set("Content-Type", "application/json")
 		res := executeRequest(req)
 
 		checkResponseCode(t, http.StatusOK, res.Code)
 
 		jsonStr = []byte(`{"email":"test@example.com", "password": "567"}`)
-		req, _ = http.NewRequest("POST", "/api/v1/login", bytes.NewBuffer(jsonStr))
+		req, _ = http.NewRequest("POST", "/v1/login", bytes.NewBuffer(jsonStr))
 		req.Header.Set("Content-Type", "application/json")
 		res = executeRequest(req)
 
