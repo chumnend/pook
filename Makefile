@@ -40,7 +40,7 @@ test-go:
 	@if [ ! -d "web/build" ]; then \
   	cd web && npm run build; \
 	fi
-	@go test ./internal/...
+	@go test ./tests/...
 
 # Cleans up assets and node_modules
 .PHONY: clean
