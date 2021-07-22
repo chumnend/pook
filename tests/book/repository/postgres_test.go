@@ -197,6 +197,63 @@ func TestRepo_FindByID(t *testing.T) {
 	})
 }
 
+func TestRepo_Create(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatal("an error occured when opening stub database", err)
+	}
+
+	gdb, err := gorm.Open("postgres", db)
+	if err != nil {
+		t.Fatal("an error occured when opening stub database", err)
+	}
+
+	book := domain.Book{
+		Title:     "test book",
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		UserID:    1,
+	}
+
+	t.Run("success", func(t *testing.T) {
+		// setup
+		headers := []string{"id"}
+		rows := sqlmock.NewRows(headers).AddRow(1)
+		query := regexp.QuoteMeta(`INSERT INTO "books" ("title","created_at","updated_at","user_id") VALUES ($1,$2,$3,$4) RETURNING "books"."id"`)
+		mock.ExpectBegin() // begin transaction
+		mock.ExpectQuery(query).
+			WithArgs(book.Title, book.CreatedAt, book.UpdatedAt, book.UserID).
+			WillReturnRows(rows)
+		mock.ExpectCommit() // commit transaction
+		repo := repository.NewPostgresRepository(gdb)
+
+		// run
+		err := repo.Create(&book)
+
+		// check
+		mock.ExpectationsWereMet()
+		assert.NoError(t, err)
+	})
+
+	t.Run("fail", func(t *testing.T) {
+		// setup
+		query := regexp.QuoteMeta(`INSERT INTO "books" ("title","created_at","updated_at","user_id") VALUES ($1,$2,$3,$4) RETURNING "books"."id"`)
+		mock.ExpectBegin() // begin transaction
+		mock.ExpectQuery(query).
+			WithArgs(book.Title, book.CreatedAt, book.UpdatedAt, book.UserID).
+			WillReturnError(errors.New("unexpected error"))
+		mock.ExpectCommit() // commit transaction
+		repo := repository.NewPostgresRepository(gdb)
+
+		// run
+		err := repo.Create(&book)
+
+		// check
+		mock.ExpectationsWereMet()
+		assert.Error(t, err)
+	})
+}
+
 func TestRepo_Save(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {

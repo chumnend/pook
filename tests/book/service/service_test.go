@@ -149,6 +149,36 @@ func TestSrv_FindByID(t *testing.T) {
 	})
 }
 
+func TestSrv_Create(t *testing.T) {
+	mockRepo := new(repository.MockBookRepository)
+
+	t.Run("success", func(t *testing.T) {
+		// setup
+		mockRepo.On("Create", mock.Anything).Return(nil).Once()
+		srv := service.NewService(mockRepo)
+
+		// run
+		err := srv.Create(&domain.Book{})
+
+		// check
+		mockRepo.AssertExpectations(t)
+		assert.NoError(t, err)
+	})
+
+	t.Run("fail", func(t *testing.T) {
+		// setup
+		mockRepo.On("Create", mock.Anything).Return(errors.New("unexpected error")).Once()
+		srv := service.NewService(mockRepo)
+
+		// run
+		err := srv.Create(&domain.Book{})
+
+		// check
+		mockRepo.AssertExpectations(t)
+		assert.Error(t, err)
+	})
+}
+
 func TestSrv_Save(t *testing.T) {
 	mockRepo := new(repository.MockBookRepository)
 

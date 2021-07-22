@@ -39,6 +39,10 @@ func (srv *bookSrv) FindByID(id uint) (*domain.Book, error) {
 	return book, nil
 }
 
+func (srv *bookSrv) Create(book *domain.Book) error {
+	return srv.repo.Create(book)
+}
+
 func (srv *bookSrv) Save(book *domain.Book) error {
 	return srv.repo.Save(book)
 }
