@@ -21,6 +21,7 @@ type BookRepository interface {
 	FindAll() ([]Book, error)
 	FindAllByUserID(uint) ([]Book, error)
 	FindByID(uint) (*Book, error)
+	Create(*Book) error
 	Save(*Book) error
 	Delete(*Book) error
 	Migrate() error
@@ -31,6 +32,7 @@ type BookService interface {
 	FindAll() ([]Book, error)
 	FindAllByUserID(uint) ([]Book, error)
 	FindByID(uint) (*Book, error)
+	Create(*Book) error
 	Save(*Book) error
 	Delete(*Book) error
 	Validate(*Book) error

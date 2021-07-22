@@ -79,7 +79,7 @@ func (ctl *bookCtl) CreateBook(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// save the book struct
-	if err := ctl.srv.Save(&book); err != nil {
+	if err := ctl.srv.Create(&book); err != nil {
 		respondWithError(w, http.StatusInternalServerError, "something went wrong")
 		return
 	}

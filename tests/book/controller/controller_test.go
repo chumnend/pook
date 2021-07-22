@@ -141,7 +141,7 @@ func TestCtl_CreateBook(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		// setup
 		mockSrv.On("Validate", mock.Anything).Return(nil).Once()
-		mockSrv.On("Save", mock.Anything).Return(nil).Once()
+		mockSrv.On("Create", mock.Anything).Return(nil).Once()
 		ctl := controller.NewController(mockSrv)
 		w := httptest.NewRecorder()
 		var jsonStr = []byte(`{"title":"test", "userID": "1"}`)
@@ -194,7 +194,7 @@ func TestCtl_CreateBook(t *testing.T) {
 	t.Run("fail - bad save", func(t *testing.T) {
 		// setup
 		mockSrv.On("Validate", mock.Anything).Return(nil).Once()
-		mockSrv.On("Save", mock.Anything).Return(errors.New("unexpected error")).Once()
+		mockSrv.On("Create", mock.Anything).Return(errors.New("unexpected error")).Once()
 		ctl := controller.NewController(mockSrv)
 		w := httptest.NewRecorder()
 		var jsonStr = []byte(`{"title":"test", "userID": "1"}`)

@@ -41,8 +41,13 @@ func (repo *bookRepo) FindByID(id uint) (*domain.Book, error) {
 	return &book, nil
 }
 
-func (repo *bookRepo) Save(book *domain.Book) error {
+func (repo *bookRepo) Create(book *domain.Book) error {
 	result := repo.conn.Create(book)
+	return result.Error
+}
+
+func (repo *bookRepo) Save(book *domain.Book) error {
+	result := repo.conn.Save(book)
 	return result.Error
 }
 

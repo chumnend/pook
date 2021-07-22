@@ -28,6 +28,12 @@ func (mock *MockBookRepository) FindByID(id uint) (*domain.Book, error) {
 	return args.Get(0).(*domain.Book), args.Error(1)
 }
 
+// Create mock method
+func (mock *MockBookRepository) Create(book *domain.Book) error {
+	args := mock.Called(book)
+	return args.Error(0)
+}
+
 // Save mock method
 func (mock *MockBookRepository) Save(book *domain.Book) error {
 	args := mock.Called(book)
