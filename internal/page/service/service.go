@@ -49,7 +49,7 @@ func (srv *pageSrv) Validate(page *domain.Page) error {
 	}
 
 	if page.Content == "" || page.BookID == 0 {
-		return errors.New("invalid Page")
+		return errors.New("invalid page")
 	}
 	return nil
 }
