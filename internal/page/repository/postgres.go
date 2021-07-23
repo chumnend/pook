@@ -27,7 +27,7 @@ func (repo *pageRepo) FindByID(id uint) (*domain.Page, error) {
 	var page domain.Page
 	result := repo.db.First(&page, id)
 	if result.Error != nil {
-		return nil, result.Error
+		return &page, result.Error
 	}
 	return &page, nil
 }
