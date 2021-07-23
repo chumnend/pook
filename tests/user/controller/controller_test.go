@@ -10,7 +10,7 @@ import (
 
 	"github.com/chumnend/pook/internal/domain"
 	"github.com/chumnend/pook/internal/user/controller"
-	"github.com/chumnend/pook/tests/user/service"
+	"github.com/chumnend/pook/internal/user/service"
 	"github.com/stretchr/testify/mock"
 )
 

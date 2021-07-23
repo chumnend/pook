@@ -8,8 +8,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/chumnend/pook/internal/domain"
+	"github.com/chumnend/pook/internal/user/repository"
 	"github.com/chumnend/pook/internal/user/service"
-	"github.com/chumnend/pook/tests/user/repository"
 	"github.com/stretchr/testify/assert"
 )
 

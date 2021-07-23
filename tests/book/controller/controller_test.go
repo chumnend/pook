@@ -10,8 +10,8 @@ import (
 	"time"
 
 	"github.com/chumnend/pook/internal/book/controller"
+	"github.com/chumnend/pook/internal/book/service"
 	"github.com/chumnend/pook/internal/domain"
-	"github.com/chumnend/pook/tests/book/service"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"

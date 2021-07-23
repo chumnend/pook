@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/chumnend/pook/internal/book/repository"
 	"github.com/chumnend/pook/internal/book/service"
 	"github.com/chumnend/pook/internal/domain"
-	"github.com/chumnend/pook/tests/book/repository"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
