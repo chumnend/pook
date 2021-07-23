@@ -32,8 +32,13 @@ func (repo *pageRepo) FindByID(id uint) (*domain.Page, error) {
 	return &page, nil
 }
 
-func (repo *pageRepo) Save(page *domain.Page) error {
+func (repo *pageRepo) Create(page *domain.Page) error {
 	result := repo.db.Create(page)
+	return result.Error
+}
+
+func (repo *pageRepo) Update(page *domain.Page) error {
+	result := repo.db.Save(page)
 	return result.Error
 }
 

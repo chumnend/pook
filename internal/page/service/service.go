@@ -31,8 +31,12 @@ func (srv *pageSrv) FindByID(id uint) (*domain.Page, error) {
 	return page, nil
 }
 
-func (srv *pageSrv) Save(page *domain.Page) error {
-	return srv.repo.Save(page)
+func (srv *pageSrv) Create(page *domain.Page) error {
+	return srv.repo.Create(page)
+}
+
+func (srv *pageSrv) Update(page *domain.Page) error {
+	return srv.repo.Update(page)
 }
 
 func (srv *pageSrv) Delete(page *domain.Page) error {
