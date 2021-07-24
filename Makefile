@@ -32,13 +32,13 @@ test: test-react test-go
 # Executes tests for React app
 .PHONY: test-react
 test-react:
-	@echo ">>> Running React tests...\n"
+	@echo "==== Running Go tests... ========================="
 	@cd web && npm test -- --watchAll=false
 
 # Executes tests for Go packages
 .PHONY: test-go
 test-go:
-	@echo ">>> Running Go tests... "
+	@echo "==== Running Go tests... ========================="
 	@if [ ! -d "web/build" ]; then \
   	cd web && npm run build; \
 	fi
@@ -47,7 +47,7 @@ test-go:
 # Executes only unit tests for Go packages
 .PHONY: test-gounit
 test-gounit:
-	@echo ">>> Running Go tests... "
+	@echo "==== Running Go tests... ========================="
 	@if [ ! -d "web/build" ]; then \
   	cd web && npm run build; \
 	fi
