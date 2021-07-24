@@ -12,7 +12,7 @@ type Page struct {
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 
-	BookID uint `gorm:"not null" json:"book_id"`
+	BookID uint `gorm:"not null" json:"bookID"`
 }
 
 // PageRepository is the contract between DB to application

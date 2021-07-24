@@ -55,25 +55,24 @@ func (ctl *bookCtl) CreateBook(w http.ResponseWriter, r *http.Request) {
 	log.Println("POST - create book")
 
 	// create new book struct
-	type DummyBook struct {
+	type requestBody struct {
 		Title  string `json:"title"`
 		UserID string `json:"userID"`
 	}
-	var dummyBook DummyBook
-	if err := json.NewDecoder(r.Body).Decode(&dummyBook); err != nil {
+	var request requestBody
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		respondWithError(w, http.StatusBadRequest, "something went wrong")
 		return
 	}
 	defer r.Body.Close()
 
 	var book domain.Book
-	book.Title = dummyBook.Title
-	userID, _ := strconv.Atoi(dummyBook.UserID)
+	book.Title = request.Title
+	userID, _ := strconv.Atoi(request.UserID)
 	book.UserID = uint(userID)
 
 	// validate the new book struct
-	validateErr := ctl.srv.Validate(&book)
-	if validateErr != nil {
+	if err := ctl.srv.Validate(&book); err != nil {
 		respondWithError(w, http.StatusBadRequest, "missing and/or invalid information")
 		return
 	}
@@ -83,8 +82,6 @@ func (ctl *bookCtl) CreateBook(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusInternalServerError, "something went wrong")
 		return
 	}
-
-	// return success
 	respondWithJSON(w, http.StatusOK, map[string]interface{}{"result": book})
 }
 
@@ -121,12 +118,12 @@ func (ctl *bookCtl) UpdateBook(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// get updated book
-	type DummyBook struct {
+	type requestBody struct {
 		Title  string `json:"title"`
 		UserID string `json:"userID"`
 	}
-	var dummyBook DummyBook
-	if err := json.NewDecoder(r.Body).Decode(&dummyBook); err != nil {
+	var request requestBody
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		respondWithError(w, http.StatusBadRequest, "something went wrong")
 		return
 	}
@@ -134,8 +131,8 @@ func (ctl *bookCtl) UpdateBook(w http.ResponseWriter, r *http.Request) {
 
 	var book domain.Book
 	book.ID = uint(id)
-	book.Title = dummyBook.Title
-	userID, _ := strconv.Atoi(dummyBook.UserID)
+	book.Title = request.Title
+	userID, _ := strconv.Atoi(request.UserID)
 	book.UserID = uint(userID)
 
 	// save book
@@ -143,8 +140,6 @@ func (ctl *bookCtl) UpdateBook(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusInternalServerError, "something went wrong")
 		return
 	}
-
-	// return success
 	respondWithJSON(w, http.StatusOK, map[string]interface{}{"result": book})
 }
 
@@ -171,6 +166,5 @@ func (ctl *bookCtl) DeleteBook(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusInternalServerError, "something went wrong")
 		return
 	}
-
 	respondWithJSON(w, http.StatusOK, map[string]interface{}{"result": "book delete successfully"})
 }
