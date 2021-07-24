@@ -12,15 +12,16 @@ type Page struct {
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 
-	BookID uint `gorm:"not null" json:"book_id"`
+	BookID uint `gorm:"not null" json:"bookID"`
 }
 
 // PageRepository is the contract between DB to application
 type PageRepository interface {
-	FindAllByBookID(uint) ([]Page, error)
-	FindByID(uint) (*Page, error)
-	Save(*Page) error
-	Delete(*Page) error
+	FindAllByBookID(id uint) ([]Page, error)
+	FindByID(id uint) (*Page, error)
+	Create(page *Page) error
+	Update(page *Page) error
+	Delete(page *Page) error
 	Migrate() error
 }
 
@@ -28,7 +29,8 @@ type PageRepository interface {
 type PageService interface {
 	FindAllByBookID(uint) ([]Page, error)
 	FindByID(uint) (*Page, error)
-	Save(*Page) error
+	Create(page *Page) error
+	Update(page *Page) error
 	Delete(*Page) error
 	Validate(*Page) error
 }
