@@ -7,7 +7,7 @@ import {
   useState,
 } from 'react';
 
-import * as apiHelpers from '../../services/api';
+import apiHelpers from '../../services/api';
 import Loader from '../Loader';
 
 export const AuthContext = createContext();
