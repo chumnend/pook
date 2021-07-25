@@ -253,13 +253,21 @@ func TestCtl_GetPage(t *testing.T) {
 
 func TestCtl_UpdatePage(t *testing.T) {
 	mockSrv := new(service.MockPageService)
+	mockPage := domain.Page{
+		ID:        1,
+		Content:   "page content",
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		BookID:    1,
+	}
 
 	t.Run("success", func(t *testing.T) {
 		// setup
+		mockSrv.On("FindByID", mock.AnythingOfType("uint")).Return(&mockPage, nil).Once()
 		mockSrv.On("Update", mock.Anything).Return(nil).Once()
 		ctl := controller.NewController(mockSrv)
 		w := httptest.NewRecorder()
-		var jsonStr = []byte(`{"content":"test", "bookID": "1"}`)
+		var jsonStr = []byte(`{"content":"test"}`)
 		r, _ := http.NewRequest("PUT", "/v1/pages/1", bytes.NewBuffer(jsonStr))
 		vars := map[string]string{"id": "1"}
 		r = mux.SetURLVars(r, vars)
@@ -287,10 +295,11 @@ func TestCtl_UpdatePage(t *testing.T) {
 
 	t.Run("fail - save error", func(t *testing.T) {
 		// setup
+		mockSrv.On("FindByID", mock.AnythingOfType("uint")).Return(&mockPage, nil).Once()
 		mockSrv.On("Update", mock.Anything).Return(errors.New("unexpected error")).Once()
 		ctl := controller.NewController(mockSrv)
 		w := httptest.NewRecorder()
-		var jsonStr = []byte(`{"title":"test", "userID": "1"}`)
+		var jsonStr = []byte(`{"title":"test"}`)
 		r, _ := http.NewRequest("PUT", "/v1/book/1", bytes.NewBuffer(jsonStr))
 		vars := map[string]string{"id": "1"}
 		r = mux.SetURLVars(r, vars)

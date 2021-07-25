@@ -11,8 +11,12 @@ if (process.env.NODE_ENV === 'development') {
 /** user api routes */
 export const API_BOOK_ROUTE = 'v1/books';
 
-export const listBooks = () => {};
-export const createBook = () => {};
-export const getBook = () => {};
-export const updateBook = () => {};
-export const deleteBook = () => {};
+export const listBooks = (userId) => {};
+
+export const createBook = (title, userId) => {};
+
+export const getBook = (id) => {};
+
+export const updateBook = (id, updatedTitle) => {};
+
+export const deleteBook = (id) => {};

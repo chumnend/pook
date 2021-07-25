@@ -108,10 +108,9 @@ func (ctl *pageCtl) UpdatePage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// create new page struct
+	// get page info to be updated
 	type requestBody struct {
 		Content string `json:"content"`
-		BookID  string `json:"bookID"`
 	}
 	var request requestBody
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
@@ -120,14 +119,18 @@ func (ctl *pageCtl) UpdatePage(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	var page domain.Page
-	page.ID = uint(id)
+	// retrieve page to be updated
+	page, err := ctl.srv.FindByID(uint(id))
+	if err != nil {
+		respondWithError(w, http.StatusNotFound, "page not found")
+		return
+	}
+
+	// modify page fields
 	page.Content = request.Content
-	bookID, _ := strconv.Atoi(request.BookID)
-	page.BookID = uint(bookID)
 
 	// update page
-	if err := ctl.srv.Update(&page); err != nil {
+	if err := ctl.srv.Update(page); err != nil {
 		respondWithError(w, http.StatusInternalServerError, "something went wrong")
 		return
 	}

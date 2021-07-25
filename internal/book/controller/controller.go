@@ -117,10 +117,9 @@ func (ctl *bookCtl) UpdateBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// get updated book
+	// get book updated book info
 	type requestBody struct {
-		Title  string `json:"title"`
-		UserID string `json:"userID"`
+		Title string `json:"title"`
 	}
 	var request requestBody
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
@@ -129,14 +128,18 @@ func (ctl *bookCtl) UpdateBook(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	var book domain.Book
-	book.ID = uint(id)
+	// load the book to be modified
+	book, err := ctl.srv.FindByID(uint(id))
+	if err != nil {
+		respondWithError(w, http.StatusNotFound, "book not found")
+		return
+	}
+
+	// modify book fields
 	book.Title = request.Title
-	userID, _ := strconv.Atoi(request.UserID)
-	book.UserID = uint(userID)
 
 	// save book
-	if err := ctl.srv.Save(&book); err != nil {
+	if err := ctl.srv.Save(book); err != nil {
 		respondWithError(w, http.StatusInternalServerError, "something went wrong")
 		return
 	}
