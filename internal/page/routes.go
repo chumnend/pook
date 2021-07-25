@@ -21,7 +21,7 @@ func Attach(router *mux.Router, db *gorm.DB) {
 
 	router.HandleFunc("/pages", pageCtl.ListPages).Methods("GET")
 	router.HandleFunc("/pages", pageCtl.CreatePage).Methods("POST", "OPTIONS")
-	router.HandleFunc("/page/{id:[0-9]+}", pageCtl.GetPage).Methods("GET")
-	router.HandleFunc("/page/{id:[0-9]+}", pageCtl.UpdatePage).Methods("PUT")
-	router.HandleFunc("/page/{id:[0-9]+}", pageCtl.DeletePage).Methods("DELETE")
+	router.HandleFunc("/pages/{id:[0-9]+}", pageCtl.GetPage).Methods("GET")
+	router.HandleFunc("/pages/{id:[0-9]+}", pageCtl.UpdatePage).Methods("PUT")
+	router.HandleFunc("/pages/{id:[0-9]+}", pageCtl.DeletePage).Methods("DELETE")
 }

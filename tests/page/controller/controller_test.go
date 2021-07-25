@@ -185,7 +185,7 @@ func TestCtl_GetPage(t *testing.T) {
 		mockSrv.On("FindByID", mock.AnythingOfType("uint")).Return(&mockPage, nil).Once()
 		ctl := controller.NewController(mockSrv)
 		w := httptest.NewRecorder()
-		r, _ := http.NewRequest("GET", "/v1/page/1", nil)
+		r, _ := http.NewRequest("GET", "/v1/pages/1", nil)
 		vars := map[string]string{"id": "1"}
 		r = mux.SetURLVars(r, vars)
 
@@ -211,7 +211,7 @@ func TestCtl_GetPage(t *testing.T) {
 		// setup
 		ctl := controller.NewController(mockSrv)
 		w := httptest.NewRecorder()
-		r, _ := http.NewRequest("GET", "/v1/page/abc", nil)
+		r, _ := http.NewRequest("GET", "/v1/pages/abc", nil)
 		vars := map[string]string{"id": "abc"}
 		r = mux.SetURLVars(r, vars)
 
@@ -233,7 +233,7 @@ func TestCtl_GetPage(t *testing.T) {
 		mockSrv.On("FindByID", mock.AnythingOfType("uint")).Return(&domain.Page{}, errors.New("unexpected error")).Once()
 		ctl := controller.NewController(mockSrv)
 		w := httptest.NewRecorder()
-		r, _ := http.NewRequest("GET", "/v1/page/1", nil)
+		r, _ := http.NewRequest("GET", "/v1/pages/1", nil)
 		vars := map[string]string{"id": "1"}
 		r = mux.SetURLVars(r, vars)
 
@@ -260,7 +260,7 @@ func TestCtl_UpdatePage(t *testing.T) {
 		ctl := controller.NewController(mockSrv)
 		w := httptest.NewRecorder()
 		var jsonStr = []byte(`{"content":"test", "bookID": "1"}`)
-		r, _ := http.NewRequest("PUT", "/v1/page/1", bytes.NewBuffer(jsonStr))
+		r, _ := http.NewRequest("PUT", "/v1/pages/1", bytes.NewBuffer(jsonStr))
 		vars := map[string]string{"id": "1"}
 		r = mux.SetURLVars(r, vars)
 
@@ -320,7 +320,7 @@ func TestCtl_DeletePage(t *testing.T) {
 		mockSrv.On("Delete", mock.Anything).Return(nil).Once()
 		ctl := controller.NewController(mockSrv)
 		w := httptest.NewRecorder()
-		r, _ := http.NewRequest("DELETE", "/v1/page/1", nil)
+		r, _ := http.NewRequest("DELETE", "/v1/pages/1", nil)
 		vars := map[string]string{"id": "1"}
 		r = mux.SetURLVars(r, vars)
 
@@ -338,7 +338,7 @@ func TestCtl_DeletePage(t *testing.T) {
 		mockSrv.On("Delete", mock.Anything).Return(errors.New("unexpected error")).Once()
 		ctl := controller.NewController(mockSrv)
 		w := httptest.NewRecorder()
-		r, _ := http.NewRequest("DELETE", "/v1/page/1", nil)
+		r, _ := http.NewRequest("DELETE", "/v1/pages/1", nil)
 		vars := map[string]string{"id": "1"}
 		r = mux.SetURLVars(r, vars)
 

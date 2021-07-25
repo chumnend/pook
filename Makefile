@@ -32,7 +32,7 @@ test: test-react test-go
 # Executes tests for React app
 .PHONY: test-react
 test-react:
-	@echo "==== Running Go tests... ========================="
+	@echo "==== Running React tests... ========================="
 	@cd web && npm test -- --watchAll=false
 
 # Executes tests for Go packages

@@ -230,7 +230,7 @@ func TestCtl_GetBook(t *testing.T) {
 		mockSrv.On("FindByID", mock.AnythingOfType("uint")).Return(&mockBook, nil).Once()
 		ctl := controller.NewController(mockSrv)
 		w := httptest.NewRecorder()
-		r, _ := http.NewRequest("GET", "/v1/book/1", nil)
+		r, _ := http.NewRequest("GET", "/v1/books/1", nil)
 		vars := map[string]string{"id": "1"}
 		r = mux.SetURLVars(r, vars)
 
@@ -256,7 +256,7 @@ func TestCtl_GetBook(t *testing.T) {
 		// setup
 		ctl := controller.NewController(mockSrv)
 		w := httptest.NewRecorder()
-		r, _ := http.NewRequest("GET", "/v1/book/abc", nil)
+		r, _ := http.NewRequest("GET", "/v1/books/abc", nil)
 		vars := map[string]string{"id": "abc"}
 		r = mux.SetURLVars(r, vars)
 
@@ -278,7 +278,7 @@ func TestCtl_GetBook(t *testing.T) {
 		mockSrv.On("FindByID", mock.AnythingOfType("uint")).Return(&domain.Book{}, errors.New("unexpected error")).Once()
 		ctl := controller.NewController(mockSrv)
 		w := httptest.NewRecorder()
-		r, _ := http.NewRequest("GET", "/v1/book/1", nil)
+		r, _ := http.NewRequest("GET", "/v1/books/1", nil)
 		vars := map[string]string{"id": "1"}
 		r = mux.SetURLVars(r, vars)
 
@@ -305,7 +305,7 @@ func TestCtl_UpdateBook(t *testing.T) {
 		ctl := controller.NewController(mockSrv)
 		w := httptest.NewRecorder()
 		var jsonStr = []byte(`{"title":"test", "userID": "1"}`)
-		r, _ := http.NewRequest("PUT", "/v1/book/1", bytes.NewBuffer(jsonStr))
+		r, _ := http.NewRequest("PUT", "/v1/books/1", bytes.NewBuffer(jsonStr))
 		vars := map[string]string{"id": "1"}
 		r = mux.SetURLVars(r, vars)
 
@@ -336,7 +336,7 @@ func TestCtl_UpdateBook(t *testing.T) {
 		ctl := controller.NewController(mockSrv)
 		w := httptest.NewRecorder()
 		var jsonStr = []byte(`{"title":"test", "userID": "1"}`)
-		r, _ := http.NewRequest("PUT", "/v1/book/1", bytes.NewBuffer(jsonStr))
+		r, _ := http.NewRequest("PUT", "/v1/books/1", bytes.NewBuffer(jsonStr))
 		vars := map[string]string{"id": "1"}
 		r = mux.SetURLVars(r, vars)
 
@@ -365,7 +365,7 @@ func TestCtl_DeleteBook(t *testing.T) {
 		mockSrv.On("Delete", mock.Anything).Return(nil).Once()
 		ctl := controller.NewController(mockSrv)
 		w := httptest.NewRecorder()
-		r, _ := http.NewRequest("DELETE", "/v1/book/1", nil)
+		r, _ := http.NewRequest("DELETE", "/v1/books/1", nil)
 		vars := map[string]string{"id": "1"}
 		r = mux.SetURLVars(r, vars)
 
@@ -383,7 +383,7 @@ func TestCtl_DeleteBook(t *testing.T) {
 		mockSrv.On("Delete", mock.Anything).Return(errors.New("unexpected error")).Once()
 		ctl := controller.NewController(mockSrv)
 		w := httptest.NewRecorder()
-		r, _ := http.NewRequest("DELETE", "/v1/book/1", nil)
+		r, _ := http.NewRequest("DELETE", "/v1/books/1", nil)
 		vars := map[string]string{"id": "1"}
 		r = mux.SetURLVars(r, vars)
 
