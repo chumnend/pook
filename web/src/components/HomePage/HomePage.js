@@ -22,7 +22,8 @@ const HomePage = () => {
     <div className={classes.root}>
       <Header isAuth />
       <Container>
-        <h1>CONTENT</h1>
+        <h1>My Books</h1>
+        <h1>Discover</h1>
       </Container>
     </div>
   );
