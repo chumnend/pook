@@ -154,11 +154,11 @@ func TestCtl_CreateBook(t *testing.T) {
 		checkResponseCode(t, http.StatusOK, w.Code)
 		var m map[string]interface{}
 		json.Unmarshal(w.Body.Bytes(), &m)
-		if _, ok := m["result"]; !ok {
+		if _, ok := m["book"]; !ok {
 			t.Errorf("Expected `result` to exist. Got '%v'", m)
 			return
 		}
-		result := m["result"].(map[string]interface{})
+		result := m["book"].(map[string]interface{})
 		if result["title"] != "test" {
 			t.Errorf("Expected 'title' to be 'test'. Got '%v'", m["title"])
 		}
@@ -240,11 +240,11 @@ func TestCtl_GetBook(t *testing.T) {
 		checkResponseCode(t, http.StatusOK, w.Code)
 		var m map[string]interface{}
 		json.Unmarshal(w.Body.Bytes(), &m)
-		if _, ok := m["result"]; !ok {
+		if _, ok := m["book"]; !ok {
 			t.Errorf("Expected `result` to exist. Got '%v'", m)
 			return
 		}
-		result := m["result"].(map[string]interface{})
+		result := m["book"].(map[string]interface{})
 		assert.Equal(t, float64(mockBook.ID), result["id"]) // FixMe: Hacky comparison of uint
 		assert.Equal(t, mockBook.Title, result["title"])
 		assert.Equal(t, float64(mockBook.UserID), result["userID"]) // FixMe: Hacky comparison of uint
@@ -323,11 +323,11 @@ func TestCtl_UpdateBook(t *testing.T) {
 		checkResponseCode(t, http.StatusOK, w.Code)
 		var m map[string]interface{}
 		json.Unmarshal(w.Body.Bytes(), &m)
-		if _, ok := m["result"]; !ok {
+		if _, ok := m["book"]; !ok {
 			t.Errorf("Expected `result` to exist. Got '%v'", m)
 			return
 		}
-		result := m["result"].(map[string]interface{})
+		result := m["book"].(map[string]interface{})
 		if result["title"] != "test" {
 			t.Errorf("Expected 'title' to be 'test'. Got '%v'", m["title"])
 		}

@@ -79,7 +79,8 @@ func (ctl *bookCtl) CreateBook(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusInternalServerError, "something went wrong")
 		return
 	}
-	respondWithJSON(w, http.StatusOK, map[string]interface{}{"result": book})
+
+	respondWithJSON(w, http.StatusOK, map[string]interface{}{"book": book})
 }
 
 func (ctl *bookCtl) GetBook(w http.ResponseWriter, r *http.Request) {
@@ -100,7 +101,7 @@ func (ctl *bookCtl) GetBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	respondWithJSON(w, http.StatusOK, map[string]interface{}{"result": book})
+	respondWithJSON(w, http.StatusOK, map[string]interface{}{"book": book})
 }
 
 func (ctl *bookCtl) UpdateBook(w http.ResponseWriter, r *http.Request) {
@@ -140,7 +141,7 @@ func (ctl *bookCtl) UpdateBook(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusInternalServerError, "something went wrong")
 		return
 	}
-	respondWithJSON(w, http.StatusOK, map[string]interface{}{"result": book})
+	respondWithJSON(w, http.StatusOK, map[string]interface{}{"book": book})
 }
 
 func (ctl *bookCtl) DeleteBook(w http.ResponseWriter, r *http.Request) {
