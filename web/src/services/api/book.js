@@ -9,14 +9,24 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 /** user api routes */
-export const API_BOOK_ROUTE = 'v1/books';
+export const API_BOOK = apiPrefix + 'v1/books';
+export const API_BOOK_ID = (id) => apiPrefix + `v1/books/${id}`;
 
-export const listBooks = (userId) => {};
+export const listBooks = async (userId) => {
+  try {
+    const res = await axios.get(API_BOOK + `?userId=${userId}`);
+    const { books } = res.data;
 
-export const createBook = (title, userId) => {};
+    return books;
+  } catch (error) {
+    throw error;
+  }
+};
 
-export const getBook = (id) => {};
+export const createBook = async (title, userId) => {};
 
-export const updateBook = (id, updatedTitle) => {};
+export const getBook = async (id) => {};
 
-export const deleteBook = (id) => {};
+export const updateBook = async (id, updatedTitle) => {};
+
+export const deleteBook = async (id) => {};

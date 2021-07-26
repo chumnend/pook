@@ -1,12 +1,42 @@
 import axios from "axios";
 
-import {} from '../book';
+import {
+  listBooks,
+  createBook,
+  getBook,
+  updateBook,
+  deleteBook,
+} from '../book';
 
 jest.mock('axios');
 
 describe('list books', () => {
-  it.skip('gets list of books', () => {});
-  it.skip('fails to get books', () => {});
+  it('gets list of books', async () => {
+    // setup
+    const mockBook = {
+      "id": 1,
+      "title": "test",
+      "createdAt":  Date.now(),
+      "updatedAt": Date.now(),
+      "userID": 1,
+    }
+
+    axios.get.mockResolvedValue({data: { books: [ mockBook ] }});
+
+    // run
+    const books = await listBooks(1);
+
+    // check
+    expect(books.length).toBe(1);
+  });
+
+  it('fails to get books', async () => {
+    axios.get.mockImplementation(() => {
+      return new Error();
+    });
+
+    await expect(listBooks(1)).rejects.toThrow();
+  });
 });
 
 describe('create book', () => {

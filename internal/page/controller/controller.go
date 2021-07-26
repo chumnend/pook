@@ -22,23 +22,22 @@ func NewController(srv domain.PageService) domain.PageController {
 func (ctl *pageCtl) ListPages(w http.ResponseWriter, r *http.Request) {
 	log.Println("GET - list pages")
 
-	// get book ID from request body
-	type requestBody struct {
-		ID uint `json:"bookID"`
-	}
-	var request requestBody
-	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
-		respondWithError(w, http.StatusBadRequest, "something went wrong")
+	// check for bookId in query
+	query := r.URL.Query()
+	bookID := query.Get("bookId")
+	if bookID == "" {
+		respondWithError(w, http.StatusBadRequest, "invalid bookId query")
 		return
 	}
-	defer r.Body.Close()
 
-	// retrive pages of requested book
-	pages, err := ctl.srv.FindAllByBookID(request.ID)
+	// retrieve pages from db
+	bookID64, _ := strconv.ParseUint(bookID, 10, 64)
+	pages, err := ctl.srv.FindAllByBookID(uint(bookID64))
 	if err != nil {
-		respondWithError(w, http.StatusBadRequest, "something went wrong")
+		respondWithError(w, http.StatusInternalServerError, "something went wrong")
 		return
 	}
+
 	respondWithJSON(w, http.StatusOK, map[string][]domain.Page{"pages": pages})
 }
 

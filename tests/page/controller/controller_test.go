@@ -47,8 +47,7 @@ func TestCtl_ListPages(t *testing.T) {
 		mockSrv.On("FindAllByBookID", mock.AnythingOfType("uint")).Return(mockPages, nil).Once()
 		ctl := controller.NewController(mockSrv)
 		w := httptest.NewRecorder()
-		var jsonStr = []byte(`{"bookID": 1}`)
-		r, _ := http.NewRequest("GET", "/pages", bytes.NewBuffer(jsonStr))
+		r, _ := http.NewRequest("GET", "/pages?bookId=1", nil)
 
 		// run
 		ctl.ListPages(w, r)
@@ -73,15 +72,14 @@ func TestCtl_ListPages(t *testing.T) {
 		mockSrv.On("FindAllByBookID", mock.AnythingOfType("uint")).Return([]domain.Page{}, errors.New("unable to access db")).Once()
 		ctl := controller.NewController(mockSrv)
 		w := httptest.NewRecorder()
-		var jsonStr = []byte(`{"bookID": 1}`)
-		r, _ := http.NewRequest("GET", "/pages", bytes.NewBuffer(jsonStr))
+		r, _ := http.NewRequest("GET", "/pages?bookId=1", nil)
 
 		// run
 		ctl.ListPages(w, r)
 
 		// check
 		mockSrv.AssertExpectations(t)
-		checkResponseCode(t, http.StatusBadRequest, w.Code)
+		checkResponseCode(t, http.StatusInternalServerError, w.Code)
 		var m map[string]interface{}
 		json.Unmarshal(w.Body.Bytes(), &m)
 		if m["error"] != "something went wrong" {

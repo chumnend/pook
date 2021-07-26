@@ -79,7 +79,7 @@ func TestCtl_ListBooks(t *testing.T) {
 
 		// check
 		mockSrv.AssertExpectations(t)
-		checkResponseCode(t, http.StatusBadRequest, w.Code)
+		checkResponseCode(t, http.StatusInternalServerError, w.Code)
 		var m map[string]interface{}
 		json.Unmarshal(w.Body.Bytes(), &m)
 		if m["error"] != "something went wrong" {
@@ -92,8 +92,7 @@ func TestCtl_ListBooks(t *testing.T) {
 		mockSrv.On("FindAllByUserID", mock.AnythingOfType("uint")).Return(mockBooks, nil).Once()
 		ctl := controller.NewController(mockSrv)
 		w := httptest.NewRecorder()
-		var jsonStr = []byte(`{"userID": 1}`)
-		r, _ := http.NewRequest("GET", "/books", bytes.NewBuffer(jsonStr))
+		r, _ := http.NewRequest("GET", "/books?userId=1", nil)
 
 		// run
 		ctl.ListBooks(w, r)
@@ -118,15 +117,14 @@ func TestCtl_ListBooks(t *testing.T) {
 		mockSrv.On("FindAllByUserID", mock.AnythingOfType("uint")).Return([]domain.Book{}, errors.New("unable to access db")).Once()
 		ctl := controller.NewController(mockSrv)
 		w := httptest.NewRecorder()
-		var jsonStr = []byte(`{"userID": 1}`)
-		r, _ := http.NewRequest("GET", "/books", bytes.NewBuffer(jsonStr))
+		r, _ := http.NewRequest("GET", "/books?userId=1", nil)
 
 		// run
 		ctl.ListBooks(w, r)
 
 		// check
 		mockSrv.AssertExpectations(t)
-		checkResponseCode(t, http.StatusBadRequest, w.Code)
+		checkResponseCode(t, http.StatusInternalServerError, w.Code)
 		var m map[string]interface{}
 		json.Unmarshal(w.Body.Bytes(), &m)
 		if m["error"] != "something went wrong" {

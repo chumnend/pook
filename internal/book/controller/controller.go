@@ -27,27 +27,24 @@ func (ctl *bookCtl) ListBooks(w http.ResponseWriter, r *http.Request) {
 		err   error
 	)
 
-	// get a user's books if request body passed
-	if r.Body != nil {
-		type requestBody struct {
-			ID uint `json:"userID"`
-		}
-		var request requestBody
-		if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
-			respondWithError(w, http.StatusBadRequest, "something went wrong")
+	// check for uid in query
+	query := r.URL.Query()
+	uid := query.Get("userId")
+	if uid != "" {
+		uid64, _ := strconv.ParseUint(uid, 10, 64)
+		books, err = ctl.srv.FindAllByUserID(uint(uid64))
+		if err != nil {
+			respondWithError(w, http.StatusInternalServerError, "something went wrong")
 			return
 		}
-		defer r.Body.Close()
-
-		books, err = ctl.srv.FindAllByUserID(request.ID)
 	} else {
 		books, err = ctl.srv.FindAll()
+		if err != nil {
+			respondWithError(w, http.StatusInternalServerError, "something went wrong")
+			return
+		}
 	}
 
-	if err != nil {
-		respondWithError(w, http.StatusBadRequest, "something went wrong")
-		return
-	}
 	respondWithJSON(w, http.StatusOK, map[string][]domain.Book{"books": books})
 }
 
