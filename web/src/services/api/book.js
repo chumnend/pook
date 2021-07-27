@@ -21,7 +21,6 @@ export const listBooks = async (userId) => {
   try {
     const res = await axios.get(API_BOOK + `?userId=${userId}`);
     const { books } = res.data;
-
     return books;
   } catch (error) {
     throw error;
@@ -42,7 +41,6 @@ export const createBook = async (title, userId) => {
     };
     const res = await axios.post(API_BOOK, payload);
     const { book } = res.data;
-
     return book;
   } catch (error) {
     throw error;
@@ -58,7 +56,6 @@ export const getBook = async (id) => {
   try {
     const res = await axios.get(API_BOOK_ID(id));
     const { book } = res.data;
-
     return book;
   } catch (error) {
     throw error;
@@ -78,7 +75,6 @@ export const updateBook = async (id, updatedTitle) => {
     };
     const res = await axios.put(API_BOOK_ID(id), payload);
     const { book } = res.data;
-
     return book;
   } catch (error) {
     throw error;
@@ -91,7 +87,13 @@ export const updateBook = async (id, updatedTitle) => {
  */
 export const deleteBook = async (id) => {
   try {
-    await axios.delete(API_BOOK_ID(id));
+    const res = await axios.delete(API_BOOK_ID(id));
+    // $FixMe: For some reason axios is not rejecting on its own
+    if (res.data === undefined) {
+      throw new Error('failed to delete');
+    }
+
+    return true;
   } catch (error) {
     throw error;
   }
