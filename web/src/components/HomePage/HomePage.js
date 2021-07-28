@@ -26,14 +26,12 @@ const HomePage = () => {
 
   useEffect(() => {
     const fetchMyBooks = async () => {
-      const { id } = authRef.current.user;
-
       try {
+        const { id } = authRef.current.user;
         const books = await apiHelpers.listBooks(id);
         setMyBooks(books);
       } catch (error) {
-        console.log(error);
-
+        // FixMe: Need to handle errors if unable to fetch books
         // FOR TESTING ========================
         setMyBooks([{ title: 'book 1' }]);
         // ====================================
