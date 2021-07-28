@@ -9,8 +9,8 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 /** user api routes */
-export const API_BOOK = apiPrefix + 'v1/books';
-export const API_BOOK_ID = (id) => apiPrefix + `v1/books/${id}`;
+export const API_BOOK = apiPrefix + '/v1/books';
+export const API_BOOK_ID = (id) => apiPrefix + `/v1/books/${id}`;
 
 /**
  * Return list of books for a given user
