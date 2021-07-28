@@ -21,7 +21,7 @@ func Attach(router *mux.Router, db *gorm.DB) {
 
 	router.HandleFunc("/books", bookCtl.ListBooks).Methods("GET")
 	router.HandleFunc("/books", bookCtl.CreateBook).Methods("POST", "OPTIONS")
-	router.HandleFunc("/book/{id:[0-9]+}", bookCtl.GetBook).Methods("GET")
-	router.HandleFunc("/book/{id:[0-9]+}", bookCtl.UpdateBook).Methods("PUT")
-	router.HandleFunc("/book/{id:[0-9]+}", bookCtl.DeleteBook).Methods("DELETE")
+	router.HandleFunc("/books/{id:[0-9]+}", bookCtl.GetBook).Methods("GET")
+	router.HandleFunc("/books/{id:[0-9]+}", bookCtl.UpdateBook).Methods("PUT")
+	router.HandleFunc("/books/{id:[0-9]+}", bookCtl.DeleteBook).Methods("DELETE")
 }

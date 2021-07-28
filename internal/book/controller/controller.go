@@ -27,27 +27,24 @@ func (ctl *bookCtl) ListBooks(w http.ResponseWriter, r *http.Request) {
 		err   error
 	)
 
-	// get a user's books if request body passed
-	if r.Body != nil {
-		type requestBody struct {
-			ID uint `json:"userID"`
-		}
-		var request requestBody
-		if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
-			respondWithError(w, http.StatusBadRequest, "something went wrong")
+	// check for uid in query
+	query := r.URL.Query()
+	uid := query.Get("userId")
+	if uid != "" {
+		uid64, _ := strconv.ParseUint(uid, 10, 64)
+		books, err = ctl.srv.FindAllByUserID(uint(uid64))
+		if err != nil {
+			respondWithError(w, http.StatusInternalServerError, "something went wrong")
 			return
 		}
-		defer r.Body.Close()
-
-		books, err = ctl.srv.FindAllByUserID(request.ID)
 	} else {
 		books, err = ctl.srv.FindAll()
+		if err != nil {
+			respondWithError(w, http.StatusInternalServerError, "something went wrong")
+			return
+		}
 	}
 
-	if err != nil {
-		respondWithError(w, http.StatusBadRequest, "something went wrong")
-		return
-	}
 	respondWithJSON(w, http.StatusOK, map[string][]domain.Book{"books": books})
 }
 
@@ -82,7 +79,8 @@ func (ctl *bookCtl) CreateBook(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusInternalServerError, "something went wrong")
 		return
 	}
-	respondWithJSON(w, http.StatusOK, map[string]interface{}{"result": book})
+
+	respondWithJSON(w, http.StatusOK, map[string]interface{}{"book": book})
 }
 
 func (ctl *bookCtl) GetBook(w http.ResponseWriter, r *http.Request) {
@@ -103,7 +101,7 @@ func (ctl *bookCtl) GetBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	respondWithJSON(w, http.StatusOK, map[string]interface{}{"result": book})
+	respondWithJSON(w, http.StatusOK, map[string]interface{}{"book": book})
 }
 
 func (ctl *bookCtl) UpdateBook(w http.ResponseWriter, r *http.Request) {
@@ -117,10 +115,9 @@ func (ctl *bookCtl) UpdateBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// get updated book
+	// get book updated book info
 	type requestBody struct {
-		Title  string `json:"title"`
-		UserID string `json:"userID"`
+		Title string `json:"title"`
 	}
 	var request requestBody
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
@@ -129,18 +126,22 @@ func (ctl *bookCtl) UpdateBook(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	var book domain.Book
-	book.ID = uint(id)
+	// load the book to be modified
+	book, err := ctl.srv.FindByID(uint(id))
+	if err != nil {
+		respondWithError(w, http.StatusNotFound, "book not found")
+		return
+	}
+
+	// modify book fields
 	book.Title = request.Title
-	userID, _ := strconv.Atoi(request.UserID)
-	book.UserID = uint(userID)
 
 	// save book
-	if err := ctl.srv.Save(&book); err != nil {
+	if err := ctl.srv.Save(book); err != nil {
 		respondWithError(w, http.StatusInternalServerError, "something went wrong")
 		return
 	}
-	respondWithJSON(w, http.StatusOK, map[string]interface{}{"result": book})
+	respondWithJSON(w, http.StatusOK, map[string]interface{}{"book": book})
 }
 
 func (ctl *bookCtl) DeleteBook(w http.ResponseWriter, r *http.Request) {

@@ -22,23 +22,22 @@ func NewController(srv domain.PageService) domain.PageController {
 func (ctl *pageCtl) ListPages(w http.ResponseWriter, r *http.Request) {
 	log.Println("GET - list pages")
 
-	// get book ID from request body
-	type requestBody struct {
-		ID uint `json:"bookID"`
-	}
-	var request requestBody
-	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
-		respondWithError(w, http.StatusBadRequest, "something went wrong")
+	// check for bookId in query
+	query := r.URL.Query()
+	bookID := query.Get("bookId")
+	if bookID == "" {
+		respondWithError(w, http.StatusBadRequest, "invalid bookId query")
 		return
 	}
-	defer r.Body.Close()
 
-	// retrive pages of requested book
-	pages, err := ctl.srv.FindAllByBookID(request.ID)
+	// retrieve pages from db
+	bookID64, _ := strconv.ParseUint(bookID, 10, 64)
+	pages, err := ctl.srv.FindAllByBookID(uint(bookID64))
 	if err != nil {
-		respondWithError(w, http.StatusBadRequest, "something went wrong")
+		respondWithError(w, http.StatusInternalServerError, "something went wrong")
 		return
 	}
+
 	respondWithJSON(w, http.StatusOK, map[string][]domain.Page{"pages": pages})
 }
 
@@ -108,10 +107,9 @@ func (ctl *pageCtl) UpdatePage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// create new page struct
+	// get page info to be updated
 	type requestBody struct {
 		Content string `json:"content"`
-		BookID  string `json:"bookID"`
 	}
 	var request requestBody
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
@@ -120,14 +118,18 @@ func (ctl *pageCtl) UpdatePage(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	var page domain.Page
-	page.ID = uint(id)
+	// retrieve page to be updated
+	page, err := ctl.srv.FindByID(uint(id))
+	if err != nil {
+		respondWithError(w, http.StatusNotFound, "page not found")
+		return
+	}
+
+	// modify page fields
 	page.Content = request.Content
-	bookID, _ := strconv.Atoi(request.BookID)
-	page.BookID = uint(bookID)
 
 	// update page
-	if err := ctl.srv.Update(&page); err != nil {
+	if err := ctl.srv.Update(page); err != nil {
 		respondWithError(w, http.StatusInternalServerError, "something went wrong")
 		return
 	}
