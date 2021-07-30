@@ -1,4 +1,4 @@
-module github.com/chumnend/pook/server
+module github.com/chumnend/pook
 
 go 1.15
 
