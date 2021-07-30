@@ -20,7 +20,7 @@ type Config struct {
 func Load() *Config {
 	var path string
 	if os.Getenv("CIRCLECI") == "true" {
-		path = "/home/circleci/project/"
+		path = "/home/circleci/project/server/"
 	} else {
 		path = os.ExpandEnv("$GOPATH/src/github.com/chumnend/pook/server/")
 	}
