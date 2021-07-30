@@ -18,11 +18,21 @@ type Config struct {
 
 // Load returns the configuation for the application by reading the .env file
 func Load() *Config {
-	var path string
+	var (
+		path        string
+		staticPath  string
+		indexPath   string
+		databaseURL string
+	)
+
 	if os.Getenv("CIRCLECI") == "true" {
-		path = "/home/circleci/project/server/"
+		path = "/home/circleci/project/"
+		staticPath = path + "client/build"
+		indexPath = "index.html"
 	} else {
 		path = os.ExpandEnv("$GOPATH/src/github.com/chumnend/pook/server/")
+		staticPath = path + "../client/build"
+		indexPath = "index.html"
 	}
 
 	err := godotenv.Load(path + ".env")
@@ -30,7 +40,6 @@ func Load() *Config {
 		log.Println(".env file not found")
 	}
 
-	var databaseURL string
 	if os.Getenv("ENV") != "test" {
 		databaseURL = os.Getenv("DATABASE_URL")
 	} else {
@@ -54,7 +63,7 @@ func Load() *Config {
 		DB:         databaseURL,
 		Secret:     secret,
 		Port:       port,
-		StaticPath: path + "../client/build",
-		IndexPath:  path + "index.html",
+		StaticPath: staticPath,
+		IndexPath:  indexPath,
 	}
 }
