@@ -3,14 +3,9 @@ package pook
 import (
 	"log"
 	"net/http"
-	"os"
-	"path/filepath"
 
-	"github.com/chumnend/pook/internal/book"
 	"github.com/chumnend/pook/internal/config"
-	"github.com/chumnend/pook/internal/middleware"
-	"github.com/chumnend/pook/internal/page"
-	"github.com/chumnend/pook/internal/user"
+	"github.com/chumnend/pook/internal/router"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres" // Gorm Postgres Driver
@@ -26,7 +21,7 @@ type App struct {
 // NewApp builds a new app instance
 func NewApp() *App {
 	// load config
-	cfg := config.Load()
+	cfg := config.LoadConfig()
 
 	// connect database
 	db, err := gorm.Open("postgres", cfg.DB)
@@ -35,21 +30,7 @@ func NewApp() *App {
 	}
 
 	// setup router
-	router := mux.NewRouter().StrictSlash(true)
-	router.Use(middleware.Cors)
-
-	// setup api routes
-	api := router.PathPrefix("/v1").Subrouter()
-	user.Attach(api, db)
-	book.Attach(api, db)
-	page.Attach(api, db)
-
-	// serve react files on catchall handler
-	spa := spaHandler{
-		staticPath: cfg.StaticPath,
-		indexPath:  cfg.IndexPath,
-	}
-	router.NotFoundHandler = spa
+	router := router.Build(cfg, db)
 
 	return &App{
 		Config: cfg,
@@ -63,31 +44,4 @@ func (app *App) Run() {
 	addr := ":" + app.Config.Port
 	log.Println("Listening on " + addr)
 	log.Fatal(http.ListenAndServe(addr, app.Router))
-}
-
-type spaHandler struct {
-	staticPath string
-	indexPath  string
-}
-
-func (spa spaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	// get absolute path to prevent directory traversal
-	path, err := filepath.Abs(r.URL.Path)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	// prepend path with path to static directory
-	path = filepath.Join(spa.staticPath, path)
-	if _, err = os.Stat(path); os.IsNotExist(err) {
-		// file does not exist, serve index.html
-		http.ServeFile(w, r, filepath.Join(spa.staticPath, spa.indexPath))
-		return
-	} else if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	http.FileServer(http.Dir(spa.staticPath)).ServeHTTP(w, r)
 }
