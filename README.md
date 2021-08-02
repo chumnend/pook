@@ -16,7 +16,7 @@ TBD
 2) Create a postgresql database locally or online. The database will be connected through using a connection string. It should have the form of 
 `postgresql://<username>:<password>@<address>/<dbname>`
 
-3) `cd /server` and run `cp env.example .env` and then open the `.env` and fill out the following fields,
+3) Run `cp env.example .env` and then open the `.env` and fill out the following fields,
 ```
 PORT= # the port the app will run on
 SECRET_KEY= # string used for hashing
