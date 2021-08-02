@@ -1,4 +1,4 @@
-package router
+package routes
 
 import (
 	"net/http"
@@ -7,15 +7,15 @@ import (
 
 	"github.com/chumnend/pook/internal/config"
 	"github.com/chumnend/pook/internal/middleware"
-	"github.com/chumnend/pook/internal/router/book"
-	"github.com/chumnend/pook/internal/router/page"
-	"github.com/chumnend/pook/internal/router/user"
+	"github.com/chumnend/pook/internal/routes/book"
+	"github.com/chumnend/pook/internal/routes/page"
+	"github.com/chumnend/pook/internal/routes/user"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 )
 
-// Build creates a new router struct to be used by the application
-func Build(cfg *config.Config, db *gorm.DB) *mux.Router {
+// NewRouter creates a new router struct to be used by the application
+func NewRouter(cfg *config.Config, db *gorm.DB) *mux.Router {
 	// create new router struct
 	router := mux.NewRouter().StrictSlash(true)
 	router.Use(middleware.Cors)

@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/chumnend/pook/internal/domain"
-	"github.com/chumnend/pook/internal/router/page/repository"
-	"github.com/chumnend/pook/internal/router/page/service"
+	"github.com/chumnend/pook/internal/routes/page/repository"
+	"github.com/chumnend/pook/internal/routes/page/service"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )

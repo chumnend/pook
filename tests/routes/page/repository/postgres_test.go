@@ -8,7 +8,7 @@ import (
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/chumnend/pook/internal/domain"
-	"github.com/chumnend/pook/internal/router/page/repository"
+	"github.com/chumnend/pook/internal/routes/page/repository"
 	"github.com/jinzhu/gorm"
 	"github.com/stretchr/testify/assert"
 )

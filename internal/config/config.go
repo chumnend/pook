@@ -16,8 +16,8 @@ type Config struct {
 	IndexPath  string
 }
 
-// LoadConfig builds a configuration struct to be used by the application using a .env file
-func LoadConfig() *Config {
+// NewConfig builds a configuration struct to be used by the application using a .env file
+func NewConfig() *Config {
 	var path string
 	if os.Getenv("CIRCLECI") == "true" {
 		path = "/home/circleci/project/"

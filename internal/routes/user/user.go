@@ -4,10 +4,9 @@ import (
 	"log"
 
 	"github.com/chumnend/pook/internal/domain"
-
-	"github.com/chumnend/pook/internal/router/user/controller"
-	"github.com/chumnend/pook/internal/router/user/repository"
-	"github.com/chumnend/pook/internal/router/user/service"
+	"github.com/chumnend/pook/internal/routes/user/controller"
+	"github.com/chumnend/pook/internal/routes/user/repository"
+	"github.com/chumnend/pook/internal/routes/user/service"
 	"github.com/jinzhu/gorm"
 )
 
