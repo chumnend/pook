@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/chumnend/pook/internal/api/book/repository"
 	"github.com/chumnend/pook/internal/domain"
-	"github.com/chumnend/pook/internal/routes/book/repository"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/DATA-DOG/go-sqlmock"

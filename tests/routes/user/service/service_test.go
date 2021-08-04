@@ -7,9 +7,9 @@ import (
 	"github.com/stretchr/testify/mock"
 	"golang.org/x/crypto/bcrypt"
 
+	"github.com/chumnend/pook/internal/api/user/repository"
+	"github.com/chumnend/pook/internal/api/user/service"
 	"github.com/chumnend/pook/internal/domain"
-	"github.com/chumnend/pook/internal/routes/user/repository"
-	"github.com/chumnend/pook/internal/routes/user/service"
 	"github.com/stretchr/testify/assert"
 )
 

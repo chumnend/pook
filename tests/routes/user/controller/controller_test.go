@@ -8,9 +8,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/chumnend/pook/internal/api/user/controller"
+	"github.com/chumnend/pook/internal/api/user/service"
 	"github.com/chumnend/pook/internal/domain"
-	"github.com/chumnend/pook/internal/routes/user/controller"
-	"github.com/chumnend/pook/internal/routes/user/service"
 	"github.com/stretchr/testify/mock"
 )
 

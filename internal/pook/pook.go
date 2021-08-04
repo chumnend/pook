@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/chumnend/pook/internal/api"
 	"github.com/chumnend/pook/internal/config"
-	"github.com/chumnend/pook/internal/routes"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres" // Gorm Postgres Driver
@@ -30,7 +30,7 @@ func NewApp() *App {
 	}
 
 	// setup router
-	router := routes.NewRouter(cfg, db)
+	router := api.NewRouter(cfg, db)
 
 	return &App{
 		Config: cfg,

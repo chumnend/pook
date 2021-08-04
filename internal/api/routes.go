@@ -1,15 +1,15 @@
-package routes
+package api
 
 import (
 	"net/http"
 	"os"
 	"path/filepath"
 
+	"github.com/chumnend/pook/internal/api/book"
+	"github.com/chumnend/pook/internal/api/page"
+	"github.com/chumnend/pook/internal/api/user"
 	"github.com/chumnend/pook/internal/config"
 	"github.com/chumnend/pook/internal/middleware"
-	"github.com/chumnend/pook/internal/routes/book"
-	"github.com/chumnend/pook/internal/routes/page"
-	"github.com/chumnend/pook/internal/routes/user"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 )

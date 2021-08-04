@@ -3,10 +3,10 @@ package page
 import (
 	"log"
 
+	"github.com/chumnend/pook/internal/api/page/controller"
+	"github.com/chumnend/pook/internal/api/page/repository"
+	"github.com/chumnend/pook/internal/api/page/service"
 	"github.com/chumnend/pook/internal/domain"
-	"github.com/chumnend/pook/internal/routes/page/controller"
-	"github.com/chumnend/pook/internal/routes/page/repository"
-	"github.com/chumnend/pook/internal/routes/page/service"
 	"github.com/jinzhu/gorm"
 )
 

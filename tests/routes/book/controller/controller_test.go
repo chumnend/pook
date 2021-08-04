@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/chumnend/pook/internal/api/book/controller"
+	"github.com/chumnend/pook/internal/api/book/service"
 	"github.com/chumnend/pook/internal/domain"
-	"github.com/chumnend/pook/internal/routes/book/controller"
-	"github.com/chumnend/pook/internal/routes/book/service"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"

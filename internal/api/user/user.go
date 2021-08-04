@@ -3,10 +3,10 @@ package user
 import (
 	"log"
 
+	"github.com/chumnend/pook/internal/api/user/controller"
+	"github.com/chumnend/pook/internal/api/user/repository"
+	"github.com/chumnend/pook/internal/api/user/service"
 	"github.com/chumnend/pook/internal/domain"
-	"github.com/chumnend/pook/internal/routes/user/controller"
-	"github.com/chumnend/pook/internal/routes/user/repository"
-	"github.com/chumnend/pook/internal/routes/user/service"
 	"github.com/jinzhu/gorm"
 )
 
