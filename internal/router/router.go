@@ -1,4 +1,4 @@
-package api
+package router
 
 import (
 	"net/http"
@@ -14,8 +14,8 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-// NewRouter creates a new router struct to be used by the application
-func NewRouter(cfg *config.Config, db *gorm.DB) *mux.Router {
+// New creates a new router struct to be used by the application
+func New(cfg *config.Config, db *gorm.DB) *mux.Router {
 	// create new router struct
 	router := mux.NewRouter().StrictSlash(true)
 	router.Use(middleware.Cors)

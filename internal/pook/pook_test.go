@@ -1,4 +1,4 @@
-package pook_test
+package pook
 
 import (
 	"bytes"
@@ -10,11 +10,9 @@ import (
 	"os"
 	"strings"
 	"testing"
-
-	"github.com/chumnend/pook/internal/pook"
 )
 
-var app *pook.App
+var app *App
 
 func TestMain(m *testing.M) {
 	// set test mode
@@ -22,7 +20,7 @@ func TestMain(m *testing.M) {
 	defer os.Unsetenv("ENV")
 
 	// initialize the test application
-	app = pook.NewApp()
+	app = NewApp()
 
 	// start test runner
 	log.SetOutput(ioutil.Discard)

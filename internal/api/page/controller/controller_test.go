@@ -9,7 +9,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/chumnend/pook/internal/api/page/controller"
 	"github.com/chumnend/pook/internal/api/page/service"
 	"github.com/chumnend/pook/internal/domain"
 	"github.com/gorilla/mux"
@@ -45,7 +44,7 @@ func TestCtl_ListPages(t *testing.T) {
 	t.Run("success - find all of a book's pages", func(t *testing.T) {
 		// setup
 		mockSrv.On("FindAllByBookID", mock.AnythingOfType("uint")).Return(mockPages, nil).Once()
-		ctl := controller.NewController(mockSrv)
+		ctl := NewController(mockSrv)
 		w := httptest.NewRecorder()
 		r, _ := http.NewRequest("GET", "/pages?bookId=1", nil)
 
@@ -70,7 +69,7 @@ func TestCtl_ListPages(t *testing.T) {
 	t.Run("fail - failed to to get book's pages", func(t *testing.T) {
 		// setup
 		mockSrv.On("FindAllByBookID", mock.AnythingOfType("uint")).Return([]domain.Page{}, errors.New("unable to access db")).Once()
-		ctl := controller.NewController(mockSrv)
+		ctl := NewController(mockSrv)
 		w := httptest.NewRecorder()
 		r, _ := http.NewRequest("GET", "/pages?bookId=1", nil)
 
@@ -95,7 +94,7 @@ func TestCtl_CreatePage(t *testing.T) {
 		// setup
 		mockSrv.On("Validate", mock.Anything).Return(nil).Once()
 		mockSrv.On("Create", mock.Anything).Return(nil).Once()
-		ctl := controller.NewController(mockSrv)
+		ctl := NewController(mockSrv)
 		w := httptest.NewRecorder()
 		var jsonStr = []byte(`{"content":"test", "bookID": "1"}`)
 		r, _ := http.NewRequest("POST", "/v1/pages", bytes.NewBuffer(jsonStr))
@@ -125,7 +124,7 @@ func TestCtl_CreatePage(t *testing.T) {
 	t.Run("fail - bad page", func(t *testing.T) {
 		// setup
 		mockSrv.On("Validate", mock.Anything).Return(errors.New("unexpected error")).Once()
-		ctl := controller.NewController(mockSrv)
+		ctl := NewController(mockSrv)
 		w := httptest.NewRecorder()
 		var jsonStr = []byte(`{"content":"test"}`)
 		r, _ := http.NewRequest("POST", "/v1/pages", bytes.NewBuffer(jsonStr))
@@ -148,7 +147,7 @@ func TestCtl_CreatePage(t *testing.T) {
 		// setup
 		mockSrv.On("Validate", mock.Anything).Return(nil).Once()
 		mockSrv.On("Create", mock.Anything).Return(errors.New("unexpected error")).Once()
-		ctl := controller.NewController(mockSrv)
+		ctl := NewController(mockSrv)
 		w := httptest.NewRecorder()
 		var jsonStr = []byte(`{"content":"test", "bookID": "1"}`)
 		r, _ := http.NewRequest("POST", "/v1/pages", bytes.NewBuffer(jsonStr))
@@ -181,7 +180,7 @@ func TestCtl_GetPage(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		// setup
 		mockSrv.On("FindByID", mock.AnythingOfType("uint")).Return(&mockPage, nil).Once()
-		ctl := controller.NewController(mockSrv)
+		ctl := NewController(mockSrv)
 		w := httptest.NewRecorder()
 		r, _ := http.NewRequest("GET", "/v1/pages/1", nil)
 		vars := map[string]string{"id": "1"}
@@ -207,7 +206,7 @@ func TestCtl_GetPage(t *testing.T) {
 
 	t.Run("fail - invalid page id", func(t *testing.T) {
 		// setup
-		ctl := controller.NewController(mockSrv)
+		ctl := NewController(mockSrv)
 		w := httptest.NewRecorder()
 		r, _ := http.NewRequest("GET", "/v1/pages/abc", nil)
 		vars := map[string]string{"id": "abc"}
@@ -229,7 +228,7 @@ func TestCtl_GetPage(t *testing.T) {
 	t.Run("fail - page not found", func(t *testing.T) {
 		// setup
 		mockSrv.On("FindByID", mock.AnythingOfType("uint")).Return(&domain.Page{}, errors.New("unexpected error")).Once()
-		ctl := controller.NewController(mockSrv)
+		ctl := NewController(mockSrv)
 		w := httptest.NewRecorder()
 		r, _ := http.NewRequest("GET", "/v1/pages/1", nil)
 		vars := map[string]string{"id": "1"}
@@ -263,7 +262,7 @@ func TestCtl_UpdatePage(t *testing.T) {
 		// setup
 		mockSrv.On("FindByID", mock.AnythingOfType("uint")).Return(&mockPage, nil).Once()
 		mockSrv.On("Update", mock.Anything).Return(nil).Once()
-		ctl := controller.NewController(mockSrv)
+		ctl := NewController(mockSrv)
 		w := httptest.NewRecorder()
 		var jsonStr = []byte(`{"content":"test"}`)
 		r, _ := http.NewRequest("PUT", "/v1/pages/1", bytes.NewBuffer(jsonStr))
@@ -295,7 +294,7 @@ func TestCtl_UpdatePage(t *testing.T) {
 		// setup
 		mockSrv.On("FindByID", mock.AnythingOfType("uint")).Return(&mockPage, nil).Once()
 		mockSrv.On("Update", mock.Anything).Return(errors.New("unexpected error")).Once()
-		ctl := controller.NewController(mockSrv)
+		ctl := NewController(mockSrv)
 		w := httptest.NewRecorder()
 		var jsonStr = []byte(`{"title":"test"}`)
 		r, _ := http.NewRequest("PUT", "/v1/book/1", bytes.NewBuffer(jsonStr))
@@ -325,7 +324,7 @@ func TestCtl_DeletePage(t *testing.T) {
 		// setup
 		mockSrv.On("FindByID", mock.AnythingOfType("uint")).Return(&mockPage, nil).Once()
 		mockSrv.On("Delete", mock.Anything).Return(nil).Once()
-		ctl := controller.NewController(mockSrv)
+		ctl := NewController(mockSrv)
 		w := httptest.NewRecorder()
 		r, _ := http.NewRequest("DELETE", "/v1/pages/1", nil)
 		vars := map[string]string{"id": "1"}
@@ -343,7 +342,7 @@ func TestCtl_DeletePage(t *testing.T) {
 		// setup
 		mockSrv.On("FindByID", mock.AnythingOfType("uint")).Return(&mockPage, nil).Once()
 		mockSrv.On("Delete", mock.Anything).Return(errors.New("unexpected error")).Once()
-		ctl := controller.NewController(mockSrv)
+		ctl := NewController(mockSrv)
 		w := httptest.NewRecorder()
 		r, _ := http.NewRequest("DELETE", "/v1/pages/1", nil)
 		vars := map[string]string{"id": "1"}

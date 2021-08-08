@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/chumnend/pook/internal/api/book/repository"
-	"github.com/chumnend/pook/internal/api/book/service"
 	"github.com/chumnend/pook/internal/domain"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -34,7 +33,7 @@ func TestSrv_FindAll(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		// setup
 		mockRepo.On("FindAll").Return(mockBooks, nil).Once()
-		srv := service.NewService(mockRepo)
+		srv := NewService(mockRepo)
 
 		// run
 		books, err := srv.FindAll()
@@ -48,7 +47,7 @@ func TestSrv_FindAll(t *testing.T) {
 	t.Run("fail", func(t *testing.T) {
 		// setup
 		mockRepo.On("FindAll").Return([]domain.Book{}, errors.New("unexpected error")).Once()
-		srv := service.NewService(mockRepo)
+		srv := NewService(mockRepo)
 
 		// run
 		books, err := srv.FindAll()
@@ -82,7 +81,7 @@ func TestSrv_FindAllByUserID(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		// setup
 		mockRepo.On("FindAllByUserID", mock.AnythingOfType("uint")).Return(mockBooks, nil).Once()
-		srv := service.NewService(mockRepo)
+		srv := NewService(mockRepo)
 
 		// run
 		books, err := srv.FindAllByUserID(1)
@@ -96,7 +95,7 @@ func TestSrv_FindAllByUserID(t *testing.T) {
 	t.Run("fail", func(t *testing.T) {
 		// setup
 		mockRepo.On("FindAllByUserID", mock.AnythingOfType("uint")).Return([]domain.Book{}, errors.New("unexpected error")).Once()
-		srv := service.NewService(mockRepo)
+		srv := NewService(mockRepo)
 
 		// run
 		books, err := srv.FindAllByUserID(1)
@@ -121,7 +120,7 @@ func TestSrv_FindByID(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		// setup
 		mockRepo.On("FindByID", mock.AnythingOfType("uint")).Return(&mockBook, nil).Once()
-		srv := service.NewService(mockRepo)
+		srv := NewService(mockRepo)
 
 		// run
 		book, err := srv.FindByID(1)
@@ -137,7 +136,7 @@ func TestSrv_FindByID(t *testing.T) {
 	t.Run("fail", func(t *testing.T) {
 		// setup
 		mockRepo.On("FindByID", mock.AnythingOfType("uint")).Return(&domain.Book{}, errors.New("unexpected error")).Once()
-		srv := service.NewService(mockRepo)
+		srv := NewService(mockRepo)
 
 		// run
 		book, err := srv.FindByID(1)
@@ -155,7 +154,7 @@ func TestSrv_Create(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		// setup
 		mockRepo.On("Create", mock.Anything).Return(nil).Once()
-		srv := service.NewService(mockRepo)
+		srv := NewService(mockRepo)
 
 		// run
 		err := srv.Create(&domain.Book{})
@@ -168,7 +167,7 @@ func TestSrv_Create(t *testing.T) {
 	t.Run("fail", func(t *testing.T) {
 		// setup
 		mockRepo.On("Create", mock.Anything).Return(errors.New("unexpected error")).Once()
-		srv := service.NewService(mockRepo)
+		srv := NewService(mockRepo)
 
 		// run
 		err := srv.Create(&domain.Book{})
@@ -185,7 +184,7 @@ func TestSrv_Save(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		// setup
 		mockRepo.On("Save", mock.Anything).Return(nil).Once()
-		srv := service.NewService(mockRepo)
+		srv := NewService(mockRepo)
 
 		// run
 		err := srv.Save(&domain.Book{})
@@ -198,7 +197,7 @@ func TestSrv_Save(t *testing.T) {
 	t.Run("fail", func(t *testing.T) {
 		// setup
 		mockRepo.On("Save", mock.Anything).Return(errors.New("unexpected error")).Once()
-		srv := service.NewService(mockRepo)
+		srv := NewService(mockRepo)
 
 		// run
 		err := srv.Save(&domain.Book{})
@@ -215,7 +214,7 @@ func TestSrv_Delete(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		// setup
 		mockRepo.On("Delete", mock.Anything).Return(nil).Once()
-		srv := service.NewService(mockRepo)
+		srv := NewService(mockRepo)
 
 		// run
 		err := srv.Delete(&domain.Book{})
@@ -228,7 +227,7 @@ func TestSrv_Delete(t *testing.T) {
 	t.Run("fail", func(t *testing.T) {
 		// setup
 		mockRepo.On("Delete", mock.Anything).Return(errors.New("unexpected error")).Once()
-		srv := service.NewService(mockRepo)
+		srv := NewService(mockRepo)
 
 		// run
 		err := srv.Delete(&domain.Book{})
@@ -249,7 +248,7 @@ func TestSrv_Validate(t *testing.T) {
 			UpdatedAt: time.Now(),
 			UserID:    1,
 		}
-		srv := service.NewService(nil)
+		srv := NewService(nil)
 
 		// run
 		err := srv.Validate(&mockBook)
@@ -260,7 +259,7 @@ func TestSrv_Validate(t *testing.T) {
 
 	t.Run("fail - empty book", func(t *testing.T) {
 		// setup
-		srv := service.NewService(nil)
+		srv := NewService(nil)
 
 		// run
 		err := srv.Validate(nil)
@@ -279,7 +278,7 @@ func TestSrv_Validate(t *testing.T) {
 			UpdatedAt: time.Now(),
 			UserID:    1,
 		}
-		srv := service.NewService(nil)
+		srv := NewService(nil)
 
 		// run
 		err := srv.Validate(&mockBook)

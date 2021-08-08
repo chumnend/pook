@@ -8,7 +8,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/chumnend/pook/internal/api/user/repository"
-	"github.com/chumnend/pook/internal/api/user/service"
 	"github.com/chumnend/pook/internal/domain"
 	"github.com/stretchr/testify/assert"
 )
@@ -27,7 +26,7 @@ func TestSrv_FindAll(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		// setup
 		mockRepo.On("FindAll").Return(mockUsers, nil).Once()
-		srv := service.NewService(mockRepo)
+		srv := NewService(mockRepo)
 
 		// run
 		result, err := srv.FindAll()
@@ -41,7 +40,7 @@ func TestSrv_FindAll(t *testing.T) {
 	t.Run("fail", func(t *testing.T) {
 		// setup
 		mockRepo.On("FindAll").Return([]domain.User{}, errors.New("unexpected error")).Once()
-		srv := service.NewService(mockRepo)
+		srv := NewService(mockRepo)
 
 		// run
 		users, err := srv.FindAll()
@@ -65,7 +64,7 @@ func TestSrv_FindByEmail(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		// setup
 		mockRepo.On("FindByEmail", mock.AnythingOfType("string")).Return(&mockUser, nil).Once()
-		srv := service.NewService(mockRepo)
+		srv := NewService(mockRepo)
 
 		// run
 		user, err := srv.FindByEmail("tester@pook.com")
@@ -80,7 +79,7 @@ func TestSrv_FindByEmail(t *testing.T) {
 	t.Run("fail", func(t *testing.T) {
 		// setup
 		mockRepo.On("FindByEmail", mock.AnythingOfType("string")).Return(&domain.User{}, errors.New("unexpected error")).Once()
-		srv := service.NewService(mockRepo)
+		srv := NewService(mockRepo)
 
 		// run
 		user, err := srv.FindByEmail("tester@pook.com")
@@ -98,7 +97,7 @@ func TestSrv_Save(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		// setup
 		mockRepo.On("Save", mock.Anything).Return(nil).Once()
-		srv := service.NewService(mockRepo)
+		srv := NewService(mockRepo)
 
 		// run
 		err := srv.Save(&domain.User{})
@@ -111,7 +110,7 @@ func TestSrv_Save(t *testing.T) {
 	t.Run("fail", func(t *testing.T) {
 		// setup
 		mockRepo.On("Save", mock.Anything).Return(errors.New("unexpected error")).Once()
-		srv := service.NewService(mockRepo)
+		srv := NewService(mockRepo)
 
 		// run
 		err := srv.Save(&domain.User{})
@@ -125,7 +124,7 @@ func TestSrv_Save(t *testing.T) {
 func TestSrv_Validate(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		// setup
-		srv := service.NewService(nil)
+		srv := NewService(nil)
 		mockUser := domain.User{
 			Email:     "tester@pook.com",
 			FirstName: "tester",
@@ -142,7 +141,7 @@ func TestSrv_Validate(t *testing.T) {
 
 	t.Run("fail - empty user", func(t *testing.T) {
 		// setup
-		srv := service.NewService(nil)
+		srv := NewService(nil)
 
 		// run
 		err := srv.Validate(nil)
@@ -154,7 +153,7 @@ func TestSrv_Validate(t *testing.T) {
 
 	t.Run("fail - no email", func(t *testing.T) {
 		// setup
-		srv := service.NewService(nil)
+		srv := NewService(nil)
 		mockUser := domain.User{
 			Email:     "",
 			FirstName: "tester",
@@ -172,7 +171,7 @@ func TestSrv_Validate(t *testing.T) {
 
 	t.Run("fail - no password", func(t *testing.T) {
 		// setup
-		srv := service.NewService(nil)
+		srv := NewService(nil)
 		mockUser := domain.User{
 			Email:     "tester@pook.com",
 			FirstName: "tester",
@@ -192,7 +191,7 @@ func TestSrv_Validate(t *testing.T) {
 func TestSrv_GenerateToken(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		// setup
-		srv := service.NewService(nil)
+		srv := NewService(nil)
 		mockUser := domain.User{
 			Email:     "tester@pook.com",
 			FirstName: "tester",
@@ -210,7 +209,7 @@ func TestSrv_GenerateToken(t *testing.T) {
 }
 
 func TestSrv_ComparePassword(t *testing.T) {
-	srv := service.NewService(nil)
+	srv := NewService(nil)
 	password := "123"
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	mockUser := &domain.User{

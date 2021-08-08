@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/chumnend/pook/internal/api/page/repository"
-	"github.com/chumnend/pook/internal/api/page/service"
 	"github.com/chumnend/pook/internal/domain"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -34,7 +33,7 @@ func TestSrv_FindAllByBookID(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		// setup
 		mockRepo.On("FindAllByBookID", mock.AnythingOfType("uint")).Return(mockPages, nil).Once()
-		srv := service.NewService(mockRepo)
+		srv := NewService(mockRepo)
 
 		// run
 		pages, err := srv.FindAllByBookID(1)
@@ -48,7 +47,7 @@ func TestSrv_FindAllByBookID(t *testing.T) {
 	t.Run("fail", func(t *testing.T) {
 		// setup
 		mockRepo.On("FindAllByBookID", mock.AnythingOfType("uint")).Return([]domain.Page{}, errors.New("unexpected error")).Once()
-		srv := service.NewService(mockRepo)
+		srv := NewService(mockRepo)
 
 		// run
 		pages, err := srv.FindAllByBookID(1)
@@ -73,7 +72,7 @@ func TestSrv_FindByID(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		// setup
 		mockRepo.On("FindByID", mock.AnythingOfType("uint")).Return(&mockPage, nil).Once()
-		srv := service.NewService(mockRepo)
+		srv := NewService(mockRepo)
 
 		// run
 		page, err := srv.FindByID(1)
@@ -89,7 +88,7 @@ func TestSrv_FindByID(t *testing.T) {
 	t.Run("fail", func(t *testing.T) {
 		// setup
 		mockRepo.On("FindByID", mock.AnythingOfType("uint")).Return(&domain.Page{}, errors.New("unexpected error")).Once()
-		srv := service.NewService(mockRepo)
+		srv := NewService(mockRepo)
 
 		// run
 		page, err := srv.FindByID(1)
@@ -107,7 +106,7 @@ func TestSrv_Create(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		// setup
 		mockRepo.On("Create", mock.Anything).Return(nil).Once()
-		srv := service.NewService(mockRepo)
+		srv := NewService(mockRepo)
 
 		// run
 		err := srv.Create(&domain.Page{})
@@ -120,7 +119,7 @@ func TestSrv_Create(t *testing.T) {
 	t.Run("fail", func(t *testing.T) {
 		// setup
 		mockRepo.On("Create", mock.Anything).Return(errors.New("unexpected error")).Once()
-		srv := service.NewService(mockRepo)
+		srv := NewService(mockRepo)
 
 		// run
 		err := srv.Create(&domain.Page{})
@@ -137,7 +136,7 @@ func TestSrv_Update(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		// setup
 		mockRepo.On("Update", mock.Anything).Return(nil).Once()
-		srv := service.NewService(mockRepo)
+		srv := NewService(mockRepo)
 
 		// run
 		err := srv.Update(&domain.Page{})
@@ -150,7 +149,7 @@ func TestSrv_Update(t *testing.T) {
 	t.Run("fail", func(t *testing.T) {
 		// setup
 		mockRepo.On("Update", mock.Anything).Return(errors.New("unexpected error")).Once()
-		srv := service.NewService(mockRepo)
+		srv := NewService(mockRepo)
 
 		// run
 		err := srv.Update(&domain.Page{})
@@ -167,7 +166,7 @@ func TestSrv_Delete(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		// setup
 		mockRepo.On("Delete", mock.Anything).Return(nil).Once()
-		srv := service.NewService(mockRepo)
+		srv := NewService(mockRepo)
 
 		// run
 		err := srv.Delete(&domain.Page{})
@@ -180,7 +179,7 @@ func TestSrv_Delete(t *testing.T) {
 	t.Run("fail", func(t *testing.T) {
 		// setup
 		mockRepo.On("Delete", mock.Anything).Return(errors.New("unexpected error")).Once()
-		srv := service.NewService(mockRepo)
+		srv := NewService(mockRepo)
 
 		// run
 		err := srv.Delete(&domain.Page{})
@@ -201,7 +200,7 @@ func TestSrv_Validate(t *testing.T) {
 			UpdatedAt: time.Now(),
 			BookID:    1,
 		}
-		srv := service.NewService(nil)
+		srv := NewService(nil)
 
 		// run
 		err := srv.Validate(&page)
@@ -212,7 +211,7 @@ func TestSrv_Validate(t *testing.T) {
 
 	t.Run("fail - empty page", func(t *testing.T) {
 		// setup
-		srv := service.NewService(nil)
+		srv := NewService(nil)
 
 		// run
 		err := srv.Validate(nil)
@@ -231,7 +230,7 @@ func TestSrv_Validate(t *testing.T) {
 			UpdatedAt: time.Now(),
 			BookID:    1,
 		}
-		srv := service.NewService(nil)
+		srv := NewService(nil)
 
 		// run
 		err := srv.Validate(&mockPage)

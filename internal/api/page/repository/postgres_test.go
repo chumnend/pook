@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/chumnend/pook/internal/api/page/repository"
 	"github.com/chumnend/pook/internal/domain"
 	"github.com/jinzhu/gorm"
 	"github.com/stretchr/testify/assert"
@@ -49,7 +48,7 @@ func TestRepo_FindAllByBookID(t *testing.T) {
 			AddRow(mockPages[1].ID, mockPages[1].Content, mockPages[1].CreatedAt, mockPages[1].UpdatedAt, mockPages[1].BookID)
 		query := regexp.QuoteMeta(`SELECT * FROM "pages" WHERE (book_id = $1)`)
 		mock.ExpectQuery(query).WillReturnRows(rows)
-		repo := repository.NewPostgresRepository(gdb)
+		repo := NewPostgresRepository(gdb)
 
 		// run
 		pages, err := repo.FindAllByBookID(1)
@@ -64,7 +63,7 @@ func TestRepo_FindAllByBookID(t *testing.T) {
 		// setup
 		query := regexp.QuoteMeta(`SELECT * FROM "pages" WHERE (book_id = $1)`)
 		mock.ExpectQuery(query).WillReturnError(errors.New("unexpected error"))
-		repo := repository.NewPostgresRepository(gdb)
+		repo := NewPostgresRepository(gdb)
 
 		// run
 		books, err := repo.FindAllByBookID(1)
@@ -101,7 +100,7 @@ func TestRepo_FindByID(t *testing.T) {
 			AddRow(mockPage.ID, mockPage.Content, mockPage.CreatedAt, mockPage.UpdatedAt, mockPage.BookID)
 		query := regexp.QuoteMeta(`SELECT * FROM "pages" WHERE ("pages"."id" = 1) ORDER BY "pages"."id" ASC LIMIT 1`)
 		mock.ExpectQuery(query).WillReturnRows(rows)
-		repo := repository.NewPostgresRepository(gdb)
+		repo := NewPostgresRepository(gdb)
 
 		// run
 		page, err := repo.FindByID(1)
@@ -118,7 +117,7 @@ func TestRepo_FindByID(t *testing.T) {
 		// setup
 		query := regexp.QuoteMeta(`SELECT * FROM "pages" WHERE ("pages"."id" = 1) ORDER BY "pages"."id" ASC LIMIT 1`)
 		mock.ExpectQuery(query).WillReturnError(errors.New("unexpected error"))
-		repo := repository.NewPostgresRepository(gdb)
+		repo := NewPostgresRepository(gdb)
 
 		// run
 		page, err := repo.FindByID(1)
@@ -160,7 +159,7 @@ func TestRepo_Create(t *testing.T) {
 			WithArgs(page.Content, page.CreatedAt, page.UpdatedAt, page.BookID).
 			WillReturnRows(rows)
 		mock.ExpectCommit() // commit transaction
-		repo := repository.NewPostgresRepository(gdb)
+		repo := NewPostgresRepository(gdb)
 
 		// run
 		err := repo.Create(&page)
@@ -178,7 +177,7 @@ func TestRepo_Create(t *testing.T) {
 			WithArgs(page.Content, page.CreatedAt, page.UpdatedAt, page.BookID).
 			WillReturnError(errors.New("unexpected error"))
 		mock.ExpectCommit() // commit transaction
-		repo := repository.NewPostgresRepository(gdb)
+		repo := NewPostgresRepository(gdb)
 
 		// run
 		err := repo.Create(&page)
@@ -217,7 +216,7 @@ func TestRepo_Update(t *testing.T) {
 			WithArgs(page.Content, page.CreatedAt, page.UpdatedAt, page.BookID).
 			WillReturnRows(rows)
 		mock.ExpectCommit() // commit transaction
-		repo := repository.NewPostgresRepository(gdb)
+		repo := NewPostgresRepository(gdb)
 
 		// run
 		err := repo.Update(&page)
@@ -235,7 +234,7 @@ func TestRepo_Update(t *testing.T) {
 			WithArgs(page.Content, page.CreatedAt, page.UpdatedAt, page.BookID).
 			WillReturnError(errors.New("unexpected error"))
 		mock.ExpectCommit() // commit transaction
-		repo := repository.NewPostgresRepository(gdb)
+		repo := NewPostgresRepository(gdb)
 
 		// run
 		err := repo.Update(&page)
@@ -271,7 +270,7 @@ func TestRepo_Delete(t *testing.T) {
 		mock.ExpectBegin()
 		mock.ExpectExec(query).WithArgs(1).WillReturnResult(sqlmock.NewResult(1, 1))
 		mock.ExpectCommit()
-		repo := repository.NewPostgresRepository(gdb)
+		repo := NewPostgresRepository(gdb)
 
 		// run
 		err := repo.Delete(&page)
@@ -287,7 +286,7 @@ func TestRepo_Delete(t *testing.T) {
 		mock.ExpectBegin()
 		mock.ExpectExec(query).WithArgs(1).WillReturnError(errors.New("unexpected error"))
 		mock.ExpectCommit()
-		repo := repository.NewPostgresRepository(gdb)
+		repo := NewPostgresRepository(gdb)
 
 		// run
 		err := repo.Delete(&page)

@@ -40,7 +40,7 @@ test-go:
 	@if [ ! -d "client/build" ]; then \
   	cd client && npm run build; \
 	fi
-	@go test ./tests/...
+	@go test -cover -covermode=atomic ./internal/...
 
 # Executes only unit tests for Go packages
 .PHONY: unittest

@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/chumnend/pook/internal/api/user/repository"
 	"github.com/chumnend/pook/internal/domain"
 	"github.com/jinzhu/gorm"
 	"github.com/stretchr/testify/assert"
@@ -51,7 +50,7 @@ func TestRepo_FindAll(t *testing.T) {
 			)
 		query := regexp.QuoteMeta(`SELECT * FROM "users"`)
 		mock.ExpectQuery(query).WillReturnRows(rows)
-		repo := repository.NewPostgresRepository(gdb)
+		repo := NewPostgresRepository(gdb)
 
 		// run
 		users, err := repo.FindAll()
@@ -66,7 +65,7 @@ func TestRepo_FindAll(t *testing.T) {
 		// setup
 		query := regexp.QuoteMeta(`SELECT * FROM "users"`)
 		mock.ExpectQuery(query).WillReturnError(errors.New("unexpected error"))
-		repo := repository.NewPostgresRepository(gdb)
+		repo := NewPostgresRepository(gdb)
 
 		// run
 		users, err := repo.FindAll()
@@ -106,7 +105,7 @@ func TestRepo_FindByEmail(t *testing.T) {
 			AddRow(mockUser.ID, mockUser.Email, mockUser.Password, mockUser.FirstName, mockUser.LastName, mockUser.CreatedAt, mockUser.UpdatedAt)
 		query := regexp.QuoteMeta(`SELECT * FROM "users" WHERE (email = $1) ORDER BY "users"."id" ASC LIMIT 1`)
 		mock.ExpectQuery(query).WillReturnRows(rows)
-		repo := repository.NewPostgresRepository(gdb)
+		repo := NewPostgresRepository(gdb)
 
 		// run
 		user, err := repo.FindByEmail("tester@pook.com")
@@ -124,7 +123,7 @@ func TestRepo_FindByEmail(t *testing.T) {
 		// setup
 		query := regexp.QuoteMeta(`SELECT * FROM "users" WHERE (email = $1) ORDER BY "users"."id" ASC LIMIT 1`)
 		mock.ExpectQuery(query).WillReturnError(errors.New("unexpected error"))
-		repo := repository.NewPostgresRepository(gdb)
+		repo := NewPostgresRepository(gdb)
 
 		// run
 		user, err := repo.FindByEmail("tester@pook.com")
@@ -169,7 +168,7 @@ func TestRepo_Save(t *testing.T) {
 			WithArgs(user.Email, user.Password, user.FirstName, user.LastName, user.CreatedAt, user.UpdatedAt).
 			WillReturnRows(rows)
 		mock.ExpectCommit() // commit transaction
-		repo := repository.NewPostgresRepository(gdb)
+		repo := NewPostgresRepository(gdb)
 
 		// run
 		err := repo.Save(&user)
@@ -187,7 +186,7 @@ func TestRepo_Save(t *testing.T) {
 			WithArgs(user.Email, user.Password, user.FirstName, user.LastName, user.CreatedAt, user.UpdatedAt).
 			WillReturnError(errors.New("unexpected error"))
 		mock.ExpectCommit() // commit transaction
-		repo := repository.NewPostgresRepository(gdb)
+		repo := NewPostgresRepository(gdb)
 
 		// run
 		err := repo.Save(&user)
