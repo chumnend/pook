@@ -12,8 +12,12 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { useState } from 'react';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
 
-import { useAuth } from '../AuthProvider';
-import { HOME_ROUTE, NOT_FOUND_ROUTE, REGISTER_ROUTE } from '../Router';
+import {
+  HOME_ROUTE,
+  NOT_FOUND_ROUTE,
+  REGISTER_ROUTE,
+} from '../../components/Router';
+import { useAuth } from '../../providers/AuthProvider';
 
 const useStyles = makeStyles((theme) => ({
   authCard: {

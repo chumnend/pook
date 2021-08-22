@@ -1,9 +1,9 @@
 import { ErrorBoundary } from '@sentry/react';
 import PropTypes from 'prop-types';
 
-import AuthProvider from '../AuthProvider';
+import AuthProvider from '../../providers/AuthProvider';
+import ThemeProvider from '../../providers/ThemeProvider';
 import Router from '../Router';
-import ThemeProvider from '../ThemeProvider';
 
 export const AppProviders = ({ children }) => {
   return (

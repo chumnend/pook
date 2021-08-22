@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { Redirect } from 'react-router-dom';
 
-import { useAuth } from '../AuthProvider';
-import { HOME_ROUTE } from '../Router';
+import { HOME_ROUTE } from '../../components/Router';
+import { useAuth } from '../../providers/AuthProvider';
 
 const Logout = () => {
   const auth = useAuth();

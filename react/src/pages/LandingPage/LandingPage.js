@@ -4,9 +4,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
 
-import { useAuth } from '../AuthProvider';
-import Header from '../Header';
-import { HOME_ROUTE } from '../Router';
+import Header from '../../components/Header';
+import { REGISTER_ROUTE } from '../../components/Router';
+import { useAuth } from '../../providers/AuthProvider';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -15,7 +15,8 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    background: theme.palette.secondary.main,
+    background: theme.palette.primary.main,
+    color: theme.palette.text.light,
   },
   box: {
     padding: '0.5rem',
@@ -24,18 +25,18 @@ const useStyles = makeStyles((theme) => ({
   button: {
     padding: '1rem 1.5rem',
     marginTop: '2rem',
-    background: theme.palette.primary.main,
+    background: theme.palette.secondary.main,
     color: theme.palette.text.light,
     textTransform: 'uppercase',
     fontWeight: '700',
 
     '&:hover': {
-      background: theme.palette.primary.dark,
+      background: theme.palette.secondary.dark,
     },
   },
 }));
 
-const NotFoundPage = () => {
+const LandingPage = () => {
   const auth = useAuth();
   const classes = useStyles();
 
@@ -43,19 +44,21 @@ const NotFoundPage = () => {
     <div className={classes.root}>
       <Header isAuth={auth.isAuth} />
       <Box className={classes.box}>
-        <Typography variant="h1">404</Typography>
-        <Typography variant="h4">Sorry, this page was not found</Typography>
+        <Typography variant="h1">Welcome to Pook!</Typography>
+        <Typography variant="h4">
+          A super simple planning app using React and Go.
+        </Typography>
         <Button
           className={classes.button}
           variant="contained"
           component={Link}
-          to={HOME_ROUTE}
+          to={REGISTER_ROUTE}
         >
-          Back to home
+          Try for Free
         </Button>
       </Box>
     </div>
   );
 };
 
-export default NotFoundPage;
+export default LandingPage;

@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 
-import AuthProvider from '../../AuthProvider';
+import AuthProvider from '../../../providers/AuthProvider';
 import Router from '../Router';
 
 test('renders <Router />', () => {

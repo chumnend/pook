@@ -2,9 +2,9 @@ import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
 import { useEffect, useRef, useState } from 'react';
 
+import Header from '../../components/Header';
+import { useAuth } from '../../providers/AuthProvider';
 import apiHelpers from '../../services/api';
-import { useAuth } from '../AuthProvider';
-import Header from '../Header';
 
 const useStyles = makeStyles((theme) => ({
   root: {

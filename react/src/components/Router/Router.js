@@ -1,16 +1,16 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
-import { useAuth } from '../AuthProvider';
+import { useAuth } from '../../providers/AuthProvider';
 import Loader from '../Loader';
 import ProtectedRoute from '../ProtectedRoute';
 
-const HomePage = React.lazy(() => import('../HomePage'));
-const LandingPage = React.lazy(() => import('../LandingPage'));
-const LogoutPage = React.lazy(() => import('../LogoutPage'));
-const NotFoundPage = React.lazy(() => import('../NotFoundPage'));
-const SignInPage = React.lazy(() => import('../SignInPage'));
-const SignUpPage = React.lazy(() => import('../SignUpPage'));
+const HomePage = React.lazy(() => import('../../pages/HomePage'));
+const LandingPage = React.lazy(() => import('../../pages/LandingPage'));
+const LogoutPage = React.lazy(() => import('../../pages/LogoutPage'));
+const NotFoundPage = React.lazy(() => import('../../pages/NotFoundPage'));
+const SignInPage = React.lazy(() => import('../../pages/SignInPage'));
+const SignUpPage = React.lazy(() => import('../../pages/SignUpPage'));
 
 export const HOME_ROUTE = '/';
 export const REGISTER_ROUTE = '/register';
