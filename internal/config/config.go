@@ -24,7 +24,7 @@ func NewConfig() *Config {
 	} else {
 		path = os.ExpandEnv("$GOPATH/src/github.com/chumnend/pook/")
 	}
-	staticPath := path + "client/build"
+	staticPath := path + "react/build"
 	indexPath := "index.html"
 
 	err := godotenv.Load(path + ".env")

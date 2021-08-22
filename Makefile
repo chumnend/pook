@@ -7,10 +7,10 @@ build: build-react build-go
 # Build React assets in bin folder
 .PHONY: build-react
 build-react:
-	@if [ ! -d "client/node_modules" ]; then \
-  	cd client && npm install; \
+	@if [ ! -d "react/node_modules" ]; then \
+  	cd react && npm install; \
 	fi
-	@cd client && npm run build
+	@cd react && npm run build
 	@echo "React files built."
 
 # Build Go assets in bin folder
@@ -32,26 +32,26 @@ test: test-react test-go
 # Executes tests for React app
 .PHONY: test-react
 test-react:
-	@cd client && npm test -- --watchAll=false
+	@cd react && npm test -- --watchAll=false
 
 # Executes tests for Go packages
 .PHONY: test-go
 test-go:
-	@if [ ! -d "client/build" ]; then \
-  	cd client && npm run build; \
+	@if [ ! -d "react/build" ]; then \
+  	cd react && npm run build; \
 	fi
 	@go test -cover -covermode=atomic ./internal/...
 
 # Executes only unit tests for Go packages
 .PHONY: unittest
 unittest:
-	@if [ ! -d "client/build" ]; then \
-  	cd client && npm run build; \
+	@if [ ! -d "react/build" ]; then \
+  	cd react && npm run build; \
 	fi
 	@go test -short ./tests/...
 
 # Cleans up assets and node_modules
 .PHONY: clean
 clean:
-	@rm -rf bin client/build client/node_modules
+	@rm -rf bin react/build react/node_modules
 	@echo "Clean complete."
