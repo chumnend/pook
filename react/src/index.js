@@ -9,7 +9,7 @@ import App from './components/App';
 import reportWebVitals from './reportWebVitals';
 
 Sentry.init({
-  dsn: 'https://bce71802656045eb800aa5c1154dafb5@o655325.ingest.sentry.io/5762343',
+  dsn: process.env.REACT_APP_SENTRY_DSN || '',
   integrations: [new Integrations.BrowserTracing()],
   tracesSampleRate: 1.0,
 });
