@@ -10,6 +10,8 @@ import (
 	"os"
 	"strings"
 	"testing"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 var app *App
@@ -43,6 +45,11 @@ func checkResponseCode(t *testing.T, expected, actual int) {
 func emptyDB() {
 	app.DB.Exec("DELETE FROM users")
 	app.DB.Exec("ALTER SEQUENCE users_id_seq RESTART WITH 1")
+}
+
+func createUser() {
+	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("123"), bcrypt.DefaultCost)
+	app.DB.Exec("INSERT INTO users(email, password, first_name, last_name) VALUES($1, $2, $3, $4)", "test@example.com", hashedPassword, "test", "test")
 }
 
 func TestSpaHandler(t *testing.T) {
@@ -120,18 +127,12 @@ func TestLogin(t *testing.T) {
 
 	t.Run("success", func(t *testing.T) {
 		emptyDB()
+		createUser()
 
-		var jsonStr = []byte(`{"email":"test@example.com", "password": "123"}`)
-		req, _ := http.NewRequest("POST", "/v1/register", bytes.NewBuffer(jsonStr))
+		jsonStr := []byte(`{"email":"test@example.com", "password": "123"}`)
+		req, _ := http.NewRequest("POST", "/v1/login", bytes.NewBuffer(jsonStr))
 		req.Header.Set("Content-Type", "application/json")
 		res := executeRequest(req)
-
-		checkResponseCode(t, http.StatusOK, res.Code)
-
-		jsonStr = []byte(`{"email":"test@example.com", "password": "123"}`)
-		req, _ = http.NewRequest("POST", "/v1/login", bytes.NewBuffer(jsonStr))
-		req.Header.Set("Content-Type", "application/json")
-		res = executeRequest(req)
 
 		checkResponseCode(t, http.StatusOK, res.Code)
 
@@ -161,18 +162,12 @@ func TestLogin(t *testing.T) {
 
 	t.Run("fail - bad password", func(t *testing.T) {
 		emptyDB()
+		createUser()
 
-		var jsonStr = []byte(`{"email":"test@example.com", "password": "123"}`)
-		req, _ := http.NewRequest("POST", "/v1/register", bytes.NewBuffer(jsonStr))
+		jsonStr := []byte(`{"email":"test@example.com", "password": "567"}`)
+		req, _ := http.NewRequest("POST", "/v1/login", bytes.NewBuffer(jsonStr))
 		req.Header.Set("Content-Type", "application/json")
 		res := executeRequest(req)
-
-		checkResponseCode(t, http.StatusOK, res.Code)
-
-		jsonStr = []byte(`{"email":"test@example.com", "password": "567"}`)
-		req, _ = http.NewRequest("POST", "/v1/login", bytes.NewBuffer(jsonStr))
-		req.Header.Set("Content-Type", "application/json")
-		res = executeRequest(req)
 
 		checkResponseCode(t, http.StatusBadRequest, res.Code)
 
