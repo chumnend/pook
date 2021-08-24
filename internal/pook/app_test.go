@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -42,14 +43,44 @@ func checkResponseCode(t *testing.T, expected, actual int) {
 	}
 }
 
-func emptyDB() {
+func clearTables() {
 	app.DB.Exec("DELETE FROM users")
 	app.DB.Exec("ALTER SEQUENCE users_id_seq RESTART WITH 1")
+
+	app.DB.Exec("DELETE FROM books")
+	app.DB.Exec("ALTER SEQUENCE books_id_seq RESTART WITH 1")
+
+	app.DB.Exec("DELETE FROM pages")
+	app.DB.Exec("ALTER SEQUENCE pages_id_seq RESTART WITH 1")
 }
 
-func createUser() {
+func addUser() {
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("123"), bcrypt.DefaultCost)
 	app.DB.Exec("INSERT INTO users(email, password, first_name, last_name) VALUES($1, $2, $3, $4)", "test@example.com", hashedPassword, "test", "test")
+}
+
+func addBooks(count int) {
+	addUser()
+
+	if count < 1 {
+		count = 1
+	}
+
+	for i := 0; i < count; i++ {
+		app.DB.Exec("INSERT INTO books(title, user_id) VALUES($1, $2)", "Book "+strconv.Itoa(i), strconv.Itoa(1))
+	}
+}
+
+func addPages(count int) {
+	addBooks(1)
+
+	if count < 1 {
+		count = 1
+	}
+
+	for i := 0; i < count; i++ {
+		app.DB.Exec("INSERT INTO pages(content, book_id) VALUES($1, $2)", "Page "+strconv.Itoa(i), strconv.Itoa(1))
+	}
 }
 
 func TestSpaHandler(t *testing.T) {
@@ -69,7 +100,7 @@ func TestRegister(t *testing.T) {
 	}
 
 	t.Run("success", func(t *testing.T) {
-		emptyDB()
+		clearTables()
 
 		var jsonStr = []byte(`{"email":"test@example.com", "password": "test123"}`)
 		req, _ := http.NewRequest("POST", "/v1/register", bytes.NewBuffer(jsonStr))
@@ -86,7 +117,7 @@ func TestRegister(t *testing.T) {
 	})
 
 	t.Run("fail - no email", func(t *testing.T) {
-		emptyDB()
+		clearTables()
 
 		var jsonStr = []byte(`{"password": "test123"}`)
 		req, _ := http.NewRequest("POST", "/v1/register", bytes.NewBuffer(jsonStr))
@@ -103,7 +134,7 @@ func TestRegister(t *testing.T) {
 	})
 
 	t.Run("fail - no password", func(t *testing.T) {
-		emptyDB()
+		clearTables()
 
 		var jsonStr = []byte(`{"email":"test@example.com"}`)
 		req, _ := http.NewRequest("POST", "/v1/register", bytes.NewBuffer(jsonStr))
@@ -126,8 +157,8 @@ func TestLogin(t *testing.T) {
 	}
 
 	t.Run("success", func(t *testing.T) {
-		emptyDB()
-		createUser()
+		clearTables()
+		addUser()
 
 		jsonStr := []byte(`{"email":"test@example.com", "password": "123"}`)
 		req, _ := http.NewRequest("POST", "/v1/login", bytes.NewBuffer(jsonStr))
@@ -144,7 +175,7 @@ func TestLogin(t *testing.T) {
 	})
 
 	t.Run("fail - bad email", func(t *testing.T) {
-		emptyDB()
+		clearTables()
 
 		jsonStr := []byte(`{"email":"test@example.com", "password": "123"}`)
 		req, _ := http.NewRequest("POST", "/v1/login", bytes.NewBuffer(jsonStr))
@@ -161,8 +192,8 @@ func TestLogin(t *testing.T) {
 	})
 
 	t.Run("fail - bad password", func(t *testing.T) {
-		emptyDB()
-		createUser()
+		clearTables()
+		addUser()
 
 		jsonStr := []byte(`{"email":"test@example.com", "password": "567"}`)
 		req, _ := http.NewRequest("POST", "/v1/login", bytes.NewBuffer(jsonStr))
@@ -177,4 +208,71 @@ func TestLogin(t *testing.T) {
 			t.Errorf("Expected the 'error' to be 'invalid email and/or password'. Got '%v'", m["error"])
 		}
 	})
+}
+
+func TestListBooks(t *testing.T) {
+	t.Skip()
+
+	clearTables()
+	addBooks(3)
+}
+
+func TestCreateBook(t *testing.T) {
+	t.Skip()
+
+	clearTables()
+}
+
+func TestGetBook(t *testing.T) {
+	t.Skip()
+
+	clearTables()
+	addBooks(1)
+}
+
+func TestUpdateBook(t *testing.T) {
+	t.Skip()
+
+	clearTables()
+	addBooks(1)
+}
+func TestDeleteBook(t *testing.T) {
+	t.Skip()
+
+	clearTables()
+	addBooks(1)
+}
+
+func TestListPages(t *testing.T) {
+	t.Skip()
+
+	clearTables()
+	addPages(3)
+}
+
+func TestCreatePage(t *testing.T) {
+	t.Skip()
+
+	clearTables()
+}
+
+func TestGetPage(t *testing.T) {
+	t.Skip()
+
+	clearTables()
+	addPages(1)
+}
+
+func TestUpdatePage(t *testing.T) {
+	t.Skip()
+
+	clearTables()
+	addPages(1)
+}
+
+func TestDeletePage(t *testing.T) {
+	t.Skip()
+
+	clearTables()
+	addPages(1)
 }

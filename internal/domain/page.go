@@ -11,8 +11,7 @@ type Page struct {
 	Content   string    `json:"content"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
-
-	BookID uint `gorm:"not null" json:"bookID"`
+	BookID    uint      `gorm:"not null" json:"bookID"`
 }
 
 // PageRepository is the contract between DB to application
