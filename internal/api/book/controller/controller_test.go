@@ -62,7 +62,7 @@ func TestCtl_ListBooks(t *testing.T) {
 		}
 		books := m["books"].([]interface{})
 		if len(books) != 2 {
-			t.Errorf("Expected 'books' to have length of 2. Got %v.", m["books"])
+			t.Errorf("Expected 'books' to have length of 2. Got %v.", len(books))
 		}
 	})
 
@@ -157,16 +157,16 @@ func TestCtl_CreateBook(t *testing.T) {
 			t.Errorf("Expected `result` to exist. Got '%v'", m)
 			return
 		}
-		result := m["book"].(map[string]interface{})
-		if result["title"] != "test" {
-			t.Errorf("Expected 'title' to be 'test'. Got '%v'", m["title"])
+		book := m["book"].(map[string]interface{})
+		if book["title"] != "test" {
+			t.Errorf("Expected 'title' to be 'test'. Got '%v'", book["title"])
 		}
-		if result["userID"] != 1.0 {
-			t.Errorf("Expected `userID` to be '1'. Got '%v'", m["userID"])
+		if book["userID"] != 1.0 {
+			t.Errorf("Expected `userID` to be '1'. Got '%v'", book["userID"])
 		}
 	})
 
-	t.Run("fail - bad book", func(t *testing.T) {
+	t.Run("fail - invalid book", func(t *testing.T) {
 		// setup
 		mockSrv.On("Validate", mock.Anything).Return(errors.New("unexpected error")).Once()
 		ctl := NewController(mockSrv)
@@ -243,10 +243,10 @@ func TestCtl_GetBook(t *testing.T) {
 			t.Errorf("Expected `result` to exist. Got '%v'", m)
 			return
 		}
-		result := m["book"].(map[string]interface{})
-		assert.Equal(t, float64(mockBook.ID), result["id"]) // FixMe: Hacky comparison of uint
-		assert.Equal(t, mockBook.Title, result["title"])
-		assert.Equal(t, float64(mockBook.UserID), result["userID"]) // FixMe: Hacky comparison of uint
+		book := m["book"].(map[string]interface{})
+		assert.Equal(t, float64(mockBook.ID), book["id"]) // FixMe: Hacky comparison of uint
+		assert.Equal(t, mockBook.Title, book["title"])
+		assert.Equal(t, float64(mockBook.UserID), book["userID"]) // FixMe: Hacky comparison of uint
 	})
 
 	t.Run("fail - invalid book id", func(t *testing.T) {
@@ -326,12 +326,12 @@ func TestCtl_UpdateBook(t *testing.T) {
 			t.Errorf("Expected `result` to exist. Got '%v'", m)
 			return
 		}
-		result := m["book"].(map[string]interface{})
-		if result["title"] != "test" {
-			t.Errorf("Expected 'title' to be 'test'. Got '%v'", m["title"])
+		book := m["book"].(map[string]interface{})
+		if book["title"] != "test" {
+			t.Errorf("Expected 'title' to be 'test'. Got '%v'", book["title"])
 		}
-		if result["userID"] != 1.0 {
-			t.Errorf("Expected `id` to be '1'. Got '%v'", m["id"])
+		if book["userID"] != 1.0 {
+			t.Errorf("Expected `id` to be '1'. Got '%v'", book["id"])
 		}
 	})
 

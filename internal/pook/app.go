@@ -4,8 +4,6 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/chumnend/pook/internal/config"
-	"github.com/chumnend/pook/internal/router"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres" // Gorm Postgres Driver
@@ -13,7 +11,7 @@ import (
 
 // App struct declaration
 type App struct {
-	Config *config.Config
+	Config *Config
 	DB     *gorm.DB
 	Router *mux.Router
 }
@@ -21,7 +19,7 @@ type App struct {
 // NewApp builds a new app instance
 func NewApp() *App {
 	// load config
-	cfg := config.NewConfig()
+	cfg := NewConfig()
 
 	// connect database
 	db, err := gorm.Open("postgres", cfg.DB)
@@ -30,7 +28,7 @@ func NewApp() *App {
 	}
 
 	// setup router
-	router := router.New(cfg, db)
+	router := MakeRouter(cfg, db)
 
 	return &App{
 		Config: cfg,

@@ -1,4 +1,4 @@
-package router
+package pook
 
 import (
 	"net/http"
@@ -8,14 +8,13 @@ import (
 	"github.com/chumnend/pook/internal/api/book"
 	"github.com/chumnend/pook/internal/api/page"
 	"github.com/chumnend/pook/internal/api/user"
-	"github.com/chumnend/pook/internal/config"
 	"github.com/chumnend/pook/internal/middleware"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 )
 
-// New creates a new router struct to be used by the application
-func New(cfg *config.Config, db *gorm.DB) *mux.Router {
+// MakeRouter creates a new router struct to be used by the application
+func MakeRouter(cfg *Config, db *gorm.DB) *mux.Router {
 	// create new router struct
 	router := mux.NewRouter().StrictSlash(true)
 	router.Use(middleware.Cors)
@@ -30,17 +29,17 @@ func New(cfg *config.Config, db *gorm.DB) *mux.Router {
 	api.HandleFunc("/register", userCtl.Register).Methods("POST", "OPTIONS")
 	api.HandleFunc("/login", userCtl.Login).Methods("POST", "OPTIONS")
 
-	api.HandleFunc("/pages", pageCtl.ListPages).Methods("GET")
-	api.HandleFunc("/pages", pageCtl.CreatePage).Methods("POST", "OPTIONS")
-	api.HandleFunc("/pages/{id:[0-9]+}", pageCtl.GetPage).Methods("GET")
-	api.HandleFunc("/pages/{id:[0-9]+}", pageCtl.UpdatePage).Methods("PUT")
-	api.HandleFunc("/pages/{id:[0-9]+}", pageCtl.DeletePage).Methods("DELETE")
-
 	api.HandleFunc("/books", bookCtl.ListBooks).Methods("GET")
 	api.HandleFunc("/books", bookCtl.CreateBook).Methods("POST", "OPTIONS")
 	api.HandleFunc("/books/{id:[0-9]+}", bookCtl.GetBook).Methods("GET")
 	api.HandleFunc("/books/{id:[0-9]+}", bookCtl.UpdateBook).Methods("PUT")
 	api.HandleFunc("/books/{id:[0-9]+}", bookCtl.DeleteBook).Methods("DELETE")
+
+	api.HandleFunc("/pages", pageCtl.ListPages).Methods("GET")
+	api.HandleFunc("/pages", pageCtl.CreatePage).Methods("POST", "OPTIONS")
+	api.HandleFunc("/pages/{id:[0-9]+}", pageCtl.GetPage).Methods("GET")
+	api.HandleFunc("/pages/{id:[0-9]+}", pageCtl.UpdatePage).Methods("PUT")
+	api.HandleFunc("/pages/{id:[0-9]+}", pageCtl.DeletePage).Methods("DELETE")
 
 	// serve react files on catchall handler
 	spa := spaHandler{

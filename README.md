@@ -37,5 +37,46 @@ REACT_APP_SENTRY_DSN= # needed for configuration with sentry
 
 5) Now the apps are ready to run. Go back to the root folder and run `make` this will build the React and Go assets and start the app on the given port. You can build assets on thier own using the `make build` command and just serve currently built assets using `make serve`.
 
+## API Documentation
+
+### Authentication Routes
+POST ```/v1/register``` (create new user)
+- TBD
+
+POST ```/v1/login``` (acquire jwt for authentication)
+- TBD
+
+### Book Routes
+GET ```/v1/books``` (get all of a user's books)
+- TBD
+
+POST```/v1/books``` (create a book)
+- TBD
+
+GET ```/v1/books/<BOOK_ID>``` (get a book)
+- TBD
+
+PUT ```/v1/books/<BOOK_ID>``` (update a book)
+- TBD
+
+DELETE ```/v1/books/<BOOK_ID>``` (delete a book)
+- TBD
+
+### Page Routes
+GET ```/v1/pages``` (get all of a book's pages)
+- TBD
+
+POST```/v1/pages``` (create a page)
+- TBD
+
+GET ```/v1/pages/<PAGE_ID>``` (get a book's page)
+- TBD
+
+PUT ```/v1/pages/<PAGE_ID>``` (update a book's page)
+- TBD
+
+DELETE ```/v1/pages/<PAGE_ID>``` (delete a book's page)
+- TBD
+
 ## Deployment
 Not currently deployed.
