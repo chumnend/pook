@@ -215,7 +215,7 @@ func TestListBooks(t *testing.T) {
 		t.Skip("skipping integration test")
 	}
 
-	t.Run("success", func(t *testing.T) {
+	t.Run("success - find all books", func(t *testing.T) {
 		clearTables()
 		addBooks(3)
 
@@ -233,6 +233,27 @@ func TestListBooks(t *testing.T) {
 		books := m["books"].([]interface{})
 		if len(books) != 3 {
 			t.Errorf("Expected 'books' to have length of 3. Got %v.", len(books))
+		}
+	})
+
+	t.Run("success - find all of a user's book", func(t *testing.T) {
+		clearTables()
+		addBooks(3)
+
+		req, _ := http.NewRequest("GET", "/v1/books?userId=1", nil)
+		res := executeRequest(req)
+
+		checkResponseCode(t, http.StatusOK, res.Code)
+
+		var m map[string]interface{}
+		json.Unmarshal(res.Body.Bytes(), &m)
+		if _, ok := m["books"]; !ok {
+			t.Errorf("Expected `books` to exist. Got '%v'", m)
+			return
+		}
+		books := m["books"].([]interface{})
+		if len(books) != 3 {
+			t.Errorf("Expected 'books' to have length of 2. Got %v.", m["books"])
 		}
 	})
 }
@@ -266,6 +287,23 @@ func TestCreateBook(t *testing.T) {
 			t.Errorf("Expected `userID` to be '1'. Got '%v'", book["userID"])
 		}
 	})
+
+	t.Run("fail - invalid book", func(t *testing.T) {
+		clearTables()
+
+		var jsonStr = []byte(`{"title":"test"}`)
+		req, _ := http.NewRequest("POST", "/v1/books", bytes.NewBuffer(jsonStr))
+		req.Header.Set("Content-Type", "application/json")
+		res := executeRequest(req)
+
+		checkResponseCode(t, http.StatusBadRequest, res.Code)
+
+		var m map[string]interface{}
+		json.Unmarshal(res.Body.Bytes(), &m)
+		if m["error"] != "missing and/or invalid information" {
+			t.Errorf("Expected the 'error' to be 'missing and/or invalid information'. Got '%v'", m["error"])
+		}
+	})
 }
 
 func TestGetBook(t *testing.T) {
@@ -294,6 +332,22 @@ func TestGetBook(t *testing.T) {
 		}
 		if book["userID"] != 1.0 {
 			t.Errorf("Expected `userID` to be '1'. Got '%v'", book["userID"])
+		}
+	})
+
+	t.Run("fail - book not found", func(t *testing.T) {
+		clearTables()
+		addBooks(1)
+
+		req, _ := http.NewRequest("GET", "/v1/books/2", nil)
+		res := executeRequest(req)
+
+		checkResponseCode(t, http.StatusNotFound, res.Code)
+
+		var m map[string]interface{}
+		json.Unmarshal(res.Body.Bytes(), &m)
+		if m["error"] != "book not found" {
+			t.Errorf("Expected the 'error' to be 'book not found'. Got '%v'", m["error"])
 		}
 	})
 }
@@ -413,6 +467,22 @@ func TestCreatePage(t *testing.T) {
 			t.Errorf("Expected `bookID` to be '1'. Got '%v'", result["bookID"])
 		}
 	})
+
+	t.Run("fail - invalid page", func(t *testing.T) {
+		clearTables()
+
+		var jsonStr = []byte(`{"content":"test"}`)
+		req, _ := http.NewRequest("POST", "/v1/pages", bytes.NewBuffer(jsonStr))
+		res := executeRequest(req)
+
+		checkResponseCode(t, http.StatusBadRequest, res.Code)
+
+		var m map[string]interface{}
+		json.Unmarshal(res.Body.Bytes(), &m)
+		if m["error"] != "missing and/or invalid information" {
+			t.Errorf("Expected the 'error' to be 'missing and/or invalid information'. Got '%v'", m["error"])
+		}
+	})
 }
 
 func TestGetPage(t *testing.T) {
@@ -441,6 +511,22 @@ func TestGetPage(t *testing.T) {
 		}
 		if result["bookID"] != 1.0 {
 			t.Errorf("Expected `bookID` to be '1'. Got '%v'", result["bookID"])
+		}
+	})
+
+	t.Run("fail - page not found", func(t *testing.T) {
+		clearTables()
+		addPages(1)
+
+		req, _ := http.NewRequest("GET", "/v1/pages/2", nil)
+		res := executeRequest(req)
+
+		checkResponseCode(t, http.StatusNotFound, res.Code)
+
+		var m map[string]interface{}
+		json.Unmarshal(res.Body.Bytes(), &m)
+		if m["error"] != "page not found" {
+			t.Errorf("Expected the 'error' to be 'page not found'. Got '%v'", m["error"])
 		}
 	})
 }

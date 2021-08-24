@@ -166,7 +166,7 @@ func TestCtl_CreateBook(t *testing.T) {
 		}
 	})
 
-	t.Run("fail - bad book", func(t *testing.T) {
+	t.Run("fail - invalid book", func(t *testing.T) {
 		// setup
 		mockSrv.On("Validate", mock.Anything).Return(errors.New("unexpected error")).Once()
 		ctl := NewController(mockSrv)
