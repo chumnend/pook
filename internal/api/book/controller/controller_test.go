@@ -62,7 +62,7 @@ func TestCtl_ListBooks(t *testing.T) {
 		}
 		books := m["books"].([]interface{})
 		if len(books) != 2 {
-			t.Errorf("Expected 'books' to have length of 2. Got %v.", m["books"])
+			t.Errorf("Expected 'books' to have length of 2. Got %v.", len(books))
 		}
 	})
 

@@ -67,7 +67,7 @@ func addBooks(count int) {
 	}
 
 	for i := 0; i < count; i++ {
-		app.DB.Exec("INSERT INTO books(title, user_id) VALUES($1, $2)", "Book "+strconv.Itoa(i), strconv.Itoa(1))
+		app.DB.Exec("INSERT INTO books(title, user_id) VALUES($1, $2)", "Book "+strconv.Itoa(i+1), strconv.Itoa(1))
 	}
 }
 
@@ -79,7 +79,7 @@ func addPages(count int) {
 	}
 
 	for i := 0; i < count; i++ {
-		app.DB.Exec("INSERT INTO pages(content, book_id) VALUES($1, $2)", "Page "+strconv.Itoa(i), strconv.Itoa(1))
+		app.DB.Exec("INSERT INTO pages(content, book_id) VALUES($1, $2)", "Page "+strconv.Itoa(i+1), strconv.Itoa(1))
 	}
 }
 
@@ -211,36 +211,117 @@ func TestLogin(t *testing.T) {
 }
 
 func TestListBooks(t *testing.T) {
-	t.Skip()
+	t.Run("success", func(t *testing.T) {
+		clearTables()
+		addBooks(3)
 
-	clearTables()
-	addBooks(3)
+		req, _ := http.NewRequest("GET", "/v1/books", nil)
+		res := executeRequest(req)
+
+		checkResponseCode(t, http.StatusOK, res.Code)
+
+		var m map[string]interface{}
+		json.Unmarshal(res.Body.Bytes(), &m)
+		if _, ok := m["books"]; !ok {
+			t.Errorf("Expected `books` to exist. Got '%v'", m)
+			return
+		}
+		books := m["books"].([]interface{})
+		if len(books) != 3 {
+			t.Errorf("Expected 'books' to have length of 3. Got %v.", len(books))
+		}
+	})
 }
 
 func TestCreateBook(t *testing.T) {
-	t.Skip()
+	t.Run("success", func(t *testing.T) {
+		clearTables()
 
-	clearTables()
+		var jsonStr = []byte(`{"title":"test", "userID": "1"}`)
+		req, _ := http.NewRequest("POST", "/v1/books", bytes.NewBuffer(jsonStr))
+		req.Header.Set("Content-Type", "application/json")
+		res := executeRequest(req)
+
+		checkResponseCode(t, http.StatusOK, res.Code)
+
+		var m map[string]interface{}
+		json.Unmarshal(res.Body.Bytes(), &m)
+		if _, ok := m["book"]; !ok {
+			t.Errorf("Expected `result` to exist. Got '%v'", m)
+			return
+		}
+		result := m["book"].(map[string]interface{})
+		if result["title"] != "test" {
+			t.Errorf("Expected 'title' to be 'test'. Got '%v'", result["title"])
+		}
+		if result["userID"] != 1.0 {
+			t.Errorf("Expected `userID` to be '1'. Got '%v'", result["userID"])
+		}
+	})
 }
 
 func TestGetBook(t *testing.T) {
-	t.Skip()
+	t.Run("success", func(t *testing.T) {
+		clearTables()
+		addBooks(1)
 
-	clearTables()
-	addBooks(1)
+		req, _ := http.NewRequest("GET", "/v1/books/1", nil)
+		res := executeRequest(req)
+
+		checkResponseCode(t, http.StatusOK, res.Code)
+
+		var m map[string]interface{}
+		json.Unmarshal(res.Body.Bytes(), &m)
+		if _, ok := m["book"]; !ok {
+			t.Errorf("Expected `result` to exist. Got '%v'", m)
+			return
+		}
+		result := m["book"].(map[string]interface{})
+		if result["title"] != "Book 1" {
+			t.Errorf("Expected 'title' to be 'Book 1'. Got '%v'", result["title"])
+		}
+		if result["userID"] != 1.0 {
+			t.Errorf("Expected `userID` to be '1'. Got '%v'", result["userID"])
+		}
+	})
 }
 
 func TestUpdateBook(t *testing.T) {
-	t.Skip()
+	t.Run("success", func(t *testing.T) {
+		clearTables()
+		addBooks(1)
 
-	clearTables()
-	addBooks(1)
+		var jsonStr = []byte(`{"title":"updated title"}`)
+		req, _ := http.NewRequest("PUT", "/v1/books/1", bytes.NewBuffer(jsonStr))
+		res := executeRequest(req)
+
+		checkResponseCode(t, http.StatusOK, res.Code)
+
+		var m map[string]interface{}
+		json.Unmarshal(res.Body.Bytes(), &m)
+		if _, ok := m["book"]; !ok {
+			t.Errorf("Expected `result` to exist. Got '%v'", m)
+			return
+		}
+		result := m["book"].(map[string]interface{})
+		if result["title"] != "updated title" {
+			t.Errorf("Expected 'title' to be 'updated title'. Got '%v'", result["title"])
+		}
+		if result["userID"] != 1.0 {
+			t.Errorf("Expected `id` to be '1'. Got '%v'", result["id"])
+		}
+	})
 }
 func TestDeleteBook(t *testing.T) {
-	t.Skip()
+	t.Run("success", func(t *testing.T) {
+		clearTables()
+		addBooks(1)
 
-	clearTables()
-	addBooks(1)
+		req, _ := http.NewRequest("DELETE", "/v1/books/1", nil)
+		res := executeRequest(req)
+
+		checkResponseCode(t, http.StatusOK, res.Code)
+	})
 }
 
 func TestListPages(t *testing.T) {
