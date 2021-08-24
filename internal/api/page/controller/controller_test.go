@@ -121,7 +121,7 @@ func TestCtl_CreatePage(t *testing.T) {
 		}
 	})
 
-	t.Run("fail - bad page", func(t *testing.T) {
+	t.Run("fail - invalid page", func(t *testing.T) {
 		// setup
 		mockSrv.On("Validate", mock.Anything).Return(errors.New("unexpected error")).Once()
 		ctl := NewController(mockSrv)

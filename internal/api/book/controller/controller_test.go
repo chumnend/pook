@@ -157,12 +157,12 @@ func TestCtl_CreateBook(t *testing.T) {
 			t.Errorf("Expected `result` to exist. Got '%v'", m)
 			return
 		}
-		result := m["book"].(map[string]interface{})
-		if result["title"] != "test" {
-			t.Errorf("Expected 'title' to be 'test'. Got '%v'", m["title"])
+		book := m["book"].(map[string]interface{})
+		if book["title"] != "test" {
+			t.Errorf("Expected 'title' to be 'test'. Got '%v'", book["title"])
 		}
-		if result["userID"] != 1.0 {
-			t.Errorf("Expected `userID` to be '1'. Got '%v'", m["userID"])
+		if book["userID"] != 1.0 {
+			t.Errorf("Expected `userID` to be '1'. Got '%v'", book["userID"])
 		}
 	})
 
@@ -243,10 +243,10 @@ func TestCtl_GetBook(t *testing.T) {
 			t.Errorf("Expected `result` to exist. Got '%v'", m)
 			return
 		}
-		result := m["book"].(map[string]interface{})
-		assert.Equal(t, float64(mockBook.ID), result["id"]) // FixMe: Hacky comparison of uint
-		assert.Equal(t, mockBook.Title, result["title"])
-		assert.Equal(t, float64(mockBook.UserID), result["userID"]) // FixMe: Hacky comparison of uint
+		book := m["book"].(map[string]interface{})
+		assert.Equal(t, float64(mockBook.ID), book["id"]) // FixMe: Hacky comparison of uint
+		assert.Equal(t, mockBook.Title, book["title"])
+		assert.Equal(t, float64(mockBook.UserID), book["userID"]) // FixMe: Hacky comparison of uint
 	})
 
 	t.Run("fail - invalid book id", func(t *testing.T) {
@@ -326,12 +326,12 @@ func TestCtl_UpdateBook(t *testing.T) {
 			t.Errorf("Expected `result` to exist. Got '%v'", m)
 			return
 		}
-		result := m["book"].(map[string]interface{})
-		if result["title"] != "test" {
-			t.Errorf("Expected 'title' to be 'test'. Got '%v'", m["title"])
+		book := m["book"].(map[string]interface{})
+		if book["title"] != "test" {
+			t.Errorf("Expected 'title' to be 'test'. Got '%v'", book["title"])
 		}
-		if result["userID"] != 1.0 {
-			t.Errorf("Expected `id` to be '1'. Got '%v'", m["id"])
+		if book["userID"] != 1.0 {
+			t.Errorf("Expected `id` to be '1'. Got '%v'", book["id"])
 		}
 	})
 
