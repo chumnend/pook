@@ -46,7 +46,7 @@ const LandingPage = () => {
       <Box className={classes.box}>
         <Typography variant="h1">Welcome to Pook!</Typography>
         <Typography variant="h4">
-          A super simple planning app using React and Go.
+          A super creative application for flexing your creative self.
         </Typography>
         <Button
           className={classes.button}
@@ -54,7 +54,7 @@ const LandingPage = () => {
           component={Link}
           to={REGISTER_ROUTE}
         >
-          Try for Free
+          Get Started!
         </Button>
       </Box>
     </div>

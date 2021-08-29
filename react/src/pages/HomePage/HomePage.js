@@ -32,9 +32,7 @@ const HomePage = () => {
         setMyBooks(books);
       } catch (error) {
         // FixMe: Need to handle errors if unable to fetch books
-        // FOR TESTING ========================
-        setMyBooks([{ title: 'book 1' }]);
-        // ====================================
+        console.error('unable to load books');
       }
     };
 
