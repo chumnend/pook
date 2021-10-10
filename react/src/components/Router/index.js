@@ -4,6 +4,7 @@ export {
   LOGOUT_ROUTE,
   REGISTER_ROUTE,
   NOT_FOUND_ROUTE,
+  DISCOVERY_ROUTE,
 } from './Router';
 
 export { default } from './Router';
