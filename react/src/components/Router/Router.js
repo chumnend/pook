@@ -5,6 +5,7 @@ import { useAuth } from '../../providers/AuthProvider';
 import Loader from '../Loader';
 import ProtectedRoute from '../ProtectedRoute';
 
+const DiscoveryPage = React.lazy(() => import('../../pages/DiscoveryPage'));
 const HomePage = React.lazy(() => import('../../pages/HomePage'));
 const LandingPage = React.lazy(() => import('../../pages/LandingPage'));
 const LogoutPage = React.lazy(() => import('../../pages/LogoutPage'));
@@ -17,6 +18,7 @@ export const REGISTER_ROUTE = '/register';
 export const LOGIN_ROUTE = '/login';
 export const LOGOUT_ROUTE = '/logout';
 export const NOT_FOUND_ROUTE = '/not-found';
+export const DISCOVERY_ROUTE = '/discover';
 
 const Router = () => {
   const { isAuth } = useAuth();
@@ -29,6 +31,12 @@ const Router = () => {
           <ProtectedRoute
             path={LOGOUT_ROUTE}
             component={LogoutPage}
+            condition={isAuth}
+            redirect={HOME_ROUTE}
+          />
+          <ProtectedRoute
+            path={DISCOVERY_ROUTE}
+            component={DiscoveryPage}
             condition={isAuth}
             redirect={HOME_ROUTE}
           />

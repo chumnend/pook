@@ -8,7 +8,13 @@ import MenuIcon from '@material-ui/icons/Menu';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
-import { LOGIN_ROUTE, LOGOUT_ROUTE, REGISTER_ROUTE } from '../Router';
+import {
+  DISCOVERY_ROUTE,
+  HOME_ROUTE,
+  LOGIN_ROUTE,
+  LOGOUT_ROUTE,
+  REGISTER_ROUTE,
+} from '../Router';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,6 +48,12 @@ const Header = ({ isAuth }) => {
           </Typography>
           {isAuth ? (
             <>
+              <Button color="inherit" component={Link} to={HOME_ROUTE}>
+                My Books
+              </Button>
+              <Button color="inherit" component={Link} to={DISCOVERY_ROUTE}>
+                Discover
+              </Button>
               <Button color="inherit" component={Link} to={LOGOUT_ROUTE}>
                 Logout
               </Button>
