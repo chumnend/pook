@@ -31,7 +31,7 @@ jobs:
       - run: 
           environment:
             CIRCLECI: "true"
-            DATABASE_TEST_URL: "postgres://circle_user@localhost:5432/circle_db?sslmode=disable"
+            TEST_DATABASE_URL: "postgres://circle_user@localhost:5432/circle_db?sslmode=disable"
             SECRET_KEY: "shhh"
             PORT: "8000" 
           command: make test
