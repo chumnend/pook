@@ -3,6 +3,8 @@ package pook
 import (
 	"log"
 	"os"
+	"path/filepath"
+	"runtime"
 
 	"github.com/joho/godotenv"
 )
@@ -22,24 +24,27 @@ func NewConfig() *Config {
 	if os.Getenv("CIRCLECI") == "true" {
 		path = "/home/circleci/project/"
 	} else {
-		path = os.ExpandEnv("$GOPATH/src/github.com/chumnend/pook/")
+		_, b, _, _ := runtime.Caller(0)
+		root := filepath.Join(filepath.Dir(b), "../..")
+		path = os.ExpandEnv(root)
 	}
-	staticPath := path + "react/build"
+	staticPath := path + "/react/build"
 	indexPath := "index.html"
 
-	err := godotenv.Load(path + ".env")
+	err := godotenv.Load(path + "/.env")
 	if err != nil {
 		log.Println(".env file not found")
+		log.Println(err)
 	}
 
 	var databaseURL string
 	if os.Getenv("ENV") != "test" {
 		databaseURL = os.Getenv("DATABASE_URL")
 	} else {
-		databaseURL = os.Getenv("DATABASE_TEST_URL")
+		databaseURL = os.Getenv("TEST_DATABASE_URL")
 	}
 	if databaseURL == "" {
-		log.Fatal("missing env: DATABASE_URL and/or DATABASE_TEST_URL")
+		log.Fatal("missing env: DATABASE_URL and/or TEST_DATABASE_URL")
 	}
 
 	secret := os.Getenv("SECRET_KEY")
