@@ -25,13 +25,13 @@ func NewConfig() *Config {
 		path = "/home/circleci/project/"
 	} else {
 		_, b, _, _ := runtime.Caller(0)
-		root := filepath.Join(filepath.Dir(b), "../..")
+		root := filepath.Join(filepath.Dir(b), "../../")
 		path = os.ExpandEnv(root)
 	}
-	staticPath := path + "/react/build"
+	staticPath := path + "react/build"
 	indexPath := "index.html"
 
-	err := godotenv.Load(path + "/.env")
+	err := godotenv.Load(path + ".env")
 	if err != nil {
 		log.Println(".env file not found")
 		log.Println(err)
