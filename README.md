@@ -6,9 +6,9 @@ TBD
 
 ## Development Setup
 ### Prerequisites
-- Go v1.15
-- npm
-- Postgresql
+- Node
+- Go
+- PostgreSQL
 
 ### Configuration
 1) Clone this repo using `git clone https://github.com/chumnend/pook.git`
@@ -16,7 +16,7 @@ TBD
 2) Create a postgresql database locally or online. The database will be connected through using a connection string. It should have the form of 
 `postgresql://<username>:<password>@<address>/<dbname>`
 
-3) Run `cp env.example .env` and then open the `.env` and fill out the following fields,
+3) Run `cp .env.example .env` and then open the `.env` and fill out the following fields,
 ```
 PORT= # the port the app will run on
 SECRET_KEY= # string used for hashing
@@ -24,7 +24,7 @@ DATABASE_URL= # database string used to connect to postgresql database
 DATABASE_TEST_URL= # database string to database used for integration tests
 ```
 
-4) This step is only needed if you plan to work on the React app. Go into the react folder ie. `cd react/` and copy run `cp env.example .env` and then open the `.env` and fill out the following fields,
+4) This step is only needed if you plan to work on the React app. Go into the react folder ie. `cd react/` and copy run `cp .env.example .env` and then open the `.env` and fill out the following fields,
 
 ```
 NODE_ENV= # production, dev or test
