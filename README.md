@@ -40,27 +40,215 @@ REACT_APP_SENTRY_DSN= # needed for configuration with sentry
 ## API Documentation
 
 ### Authentication Routes
-POST ```/v1/register``` (create new user)
-- TBD
+
+POST ```/v1/register``` (create a new user)
+
+- Data Payload:
+  ```
+    {
+        "email": <string>,
+        "password": <string>,
+        "firstName": <string>,
+        "lastName": <string>,
+    }
+    ```
+- Success Response 
+    ```
+    {
+        "token": <string>,
+    }
+    ```
+- Error Response
+    ```
+    {
+        "error": <string>,
+    }
+    ```
+
 
 POST ```/v1/login``` (acquire jwt for authentication)
-- TBD
+- Data Payload:
+  ```
+    {
+        "email": <string>,
+        "password": <string>,
+    }
+    ```
+- Success Response 
+    ```
+    {
+        "token": <string>,
+    }
+    ```
+- Error Response
+    ```
+    {
+        "error": <string>,
+    }
+    ```
+
 
 ### Book Routes
-GET ```/v1/books``` (get all of a user's books)
-- TBD
+GET ```/v1/books?userId=<integer>``` (get all of a user's books)
+- Query Params
+
+| Parameter | Type | Notes | Required |
+| --- | --- | --- | --- |
+| userId | integer | Filters books by this user value | No |
+
+- Success Response 
+    ```
+    {
+        "books": [
+            {
+                "id": <integer>,
+                "title": <string>,
+                "createdAt": <time>,
+                "updatedAt": <time>,
+                "userID": <integer>,
+                "pages": [
+                    {
+                    "id": <integer>,
+                    "content": <string>,
+                    "createdAt": <time>,
+                    "updatedAt": <time>,
+                    "bookID": <integer>,
+                    },
+                    (+ more)
+                ],
+            },
+            (+ more)
+        ]
+    }
+    ```
+- Error Response
+    ```
+    {
+        "error": <string>,
+    }
+    ```
+
 
 POST```/v1/books``` (create a book)
-- TBD
+- Data Payload:
+  ```
+    {
+        "title": <string>,
+        "userId": <integer>,
+    }
+    ```
+- Success Response 
+    ```
+    {
+        "book": {
+            {
+                "id": <integer>,
+                "title": <string>,
+                "createdAt": <time>,
+                "updatedAt": <time>,
+                "userID": <integer>,
+                "pages": [
+                    {
+                        "id": <integer>,
+                        "content": <string>,
+                        "createdAt": <time>,
+                        "updatedAt": <time>,
+                        "bookID": <integer>,
+                    },
+                    (+ more)
+                ],
+            }
+        }
+    }
+    ```
+- Error Response
+    ```
+    {
+        "error": <string>,
+    }
+    ```
 
 GET ```/v1/books/<BOOK_ID>``` (get a book)
-- TBD
-
+- Success Response 
+    ```
+    {
+        "book": {
+            {
+                "id": <integer>,
+                "title": <string>,
+                "createdAt": <time>,
+                "updatedAt": <time>,
+                "userID": <integer>,
+                "pages": [
+                    {
+                        "id": <integer>,
+                        "content": <string>,
+                        "createdAt": <time>,
+                        "updatedAt": <time>,
+                        "bookID": <integer>,
+                    },
+                    (+ more)
+                ],
+            }
+        }
+    }
+    ```
+- Error Response
+    ```
+    {
+        "error": <string>,
+    }
+    ```
 PUT ```/v1/books/<BOOK_ID>``` (update a book)
-- TBD
-
+- Data Payload:
+  ```
+    {
+        "title": <string>,
+    }
+    ```
+- Success Response 
+    ```
+    {
+        "book": {
+            {
+                "id": <integer>,
+                "title": <string>,
+                "createdAt": <time>,
+                "updatedAt": <time>,
+                "userID": <integer>,
+                "pages": [
+                    {
+                        "id": <integer>,
+                        "content": <string>,
+                        "createdAt": <time>,
+                        "updatedAt": <time>,
+                        "bookID": <integer>,
+                    },
+                    (+ more)
+                ],
+            }
+        }
+    }
+    ```
+- Error Response
+    ```
+    {
+        "error": <string>,
+    }
+    ```
 DELETE ```/v1/books/<BOOK_ID>``` (delete a book)
-- TBD
+- Success Response 
+    ```
+    {
+        "result": <string>,
+    }
+    ```
+- Error Response
+    ```
+    {
+        "error": <string>,
+    }
+    ```
 
 ### Page Routes
 GET ```/v1/pages``` (get all of a book's pages)
