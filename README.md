@@ -252,19 +252,119 @@ DELETE ```/v1/books/<BOOK_ID>``` (delete a book)
 
 ### Page Routes
 GET ```/v1/pages``` (get all of a book's pages)
-- TBD
+- Query Params
+
+| Parameter | Type | Notes | Required |
+| --- | --- | --- | --- |
+| bookId | integer | the book to get pages of | Yes |
+
+- Success Response 
+    ```
+    {
+        "pages": [
+            {
+                "id": <integer>,
+                "content": <string>,
+                "createdAt": <time>,
+                "updatedAt": <time>,
+                "bookID": <integer>,
+            },
+            (+ more)
+        ]
+    }
+    ```
+- Error Response
+    ```
+    {
+        "error": <string>,
+    }
+    ```
 
 POST```/v1/pages``` (create a page)
-- TBD
+- Data Payload:
+  ```
+    {
+        "content": <string>,
+        "bookId": <integer>,
+    }
+    ```
+- Success Response 
+    ```
+    {
+        "result": {
+            "id": <integer>,
+            "content": <string>,
+            "createdAt": <time>,
+            "updatedAt": <time>,
+            "bookID": <integer>,
+        },
+    }
+    ```
+- Error Response
+    ```
+    {
+        "error": <string>,
+    }
 
 GET ```/v1/pages/<PAGE_ID>``` (get a book's page)
-- TBD
+- Success Response 
+    ```
+    {
+        "result": {
+            "id": <integer>,
+            "content": <string>,
+            "createdAt": <time>,
+            "updatedAt": <time>,
+            "bookID": <integer>,
+        },
+    }
+    ```
+- Error Response
+    ```
+    {
+        "error": <string>,
+    }
+    ```
 
 PUT ```/v1/pages/<PAGE_ID>``` (update a book's page)
-- TBD
+- Data Payload:
+  ```
+    {
+        "content": <string>,
+    }
+    ```
+- Success Response 
+    ```
+    {
+        "result": {
+            "id": <integer>,
+            "content": <string>,
+            "createdAt": <time>,
+            "updatedAt": <time>,
+            "bookID": <integer>,
+        },
+    }
+    ```
+- Error Response
+    ```
+    {
+        "error": <string>,
+    }
+    ```
 
 DELETE ```/v1/pages/<PAGE_ID>``` (delete a book's page)
-- TBD
+- Success Response 
+    ```
+    {
+        "result": <string>,
+    }
+    ```
+- Error Response
+    ```
+    {
+        "error": <string>,
+    }
+    ```
 
 ## Deployment
 Not currently deployed.
