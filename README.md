@@ -4,7 +4,7 @@ Pook is a storybook creator application using React and Go. The idea if this app
 ## Demo
 TBD
 
-## Development Setup
+## Getting Started
 ### Prerequisites
 - Node
 - Go
@@ -366,5 +366,8 @@ DELETE ```/v1/pages/<PAGE_ID>``` (delete a book's page)
     }
     ```
 
-## Deployment
-Not currently deployed.
+## Contact
+Nicholas Chumney - [nicholas.chumney@outlook.com](nicholas.chumney@outlook.com) 
+
+## Acknowledgments
+- [Building and Testing a REST API in GO](https://semaphoreci.com/community/tutorials/building-and-testing-a-rest-api-in-go-with-gorilla-mux-and-postgresql)
