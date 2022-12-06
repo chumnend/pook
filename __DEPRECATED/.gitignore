@@ -1,0 +1,9 @@
+# environment files
+.env
+
+# binaries
+*.exe
+/bin
+
+# production
+/build
