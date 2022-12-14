@@ -13,7 +13,7 @@ func main() {
 	router.Use(static.Serve("/", static.LocalFile("./web/pook-react/build", true)))
 
 	// Setup route group for the API
-	api := router.Group("/api")
+	api := router.Group("/ping")
 	{
 		api.GET("/", func(c *gin.Context) {
 			c.JSON(http.StatusOK, gin.H{

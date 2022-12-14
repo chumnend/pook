@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/chumnend/pook/app/pook-api/routes/album"
+	"github.com/chumnend/pook/app/pook-api/routes/ping"
 )
 
 type Server struct {
@@ -14,6 +15,9 @@ type Server struct {
 func New() (*Server, error) {
 	// setup router
 	router := gin.Default()
+
+	router.GET("/ping", ping.Pong)
+
 	router.GET("/albums", album.GetAll)
 	router.GET("/albums/:id", album.GetByID)
 	router.POST("/albums", album.Post)
