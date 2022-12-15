@@ -10,7 +10,7 @@ import (
 func main() {
 	srv, err := webserver.New()
 	if err != nil {
-		fmt.Printf("Unable to create server instance: %s\n", err)
+		fmt.Printf("ERROR %s\n", err)
 		os.Exit(1)
 	}
 
