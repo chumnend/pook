@@ -1,8 +1,8 @@
 package webserver
 
 import (
-	"github.com/chumnend/pook/app/pook-api/routes/album"
-	"github.com/chumnend/pook/app/pook-api/routes/ping"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 )
@@ -12,12 +12,17 @@ func MakeRouter(cfg *Config, db *gorm.DB) *gin.Engine {
 
 	api := router.Group("/v1")
 	{
-		api.GET("/ping", ping.Pong)
-	}
+		api.GET("/ping", func(c *gin.Context) {
+			c.JSON(http.StatusOK, gin.H{"message": "pong"})
+		})
 
-	router.GET("/albums", album.GetAll)
-	router.GET("/albums/:id", album.GetByID)
-	router.POST("/albums", album.Post)
+		api.POST("/register", func(c *gin.Context) {
+			c.JSON(http.StatusOK, gin.H{"data": "this is the register endpoint"})
+		})
+		api.POST("/login", func(c *gin.Context) {
+			c.JSON(http.StatusOK, gin.H{"data": "this is the login endpoint"})
+		})
+	}
 
 	return router
 }
