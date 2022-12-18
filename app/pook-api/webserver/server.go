@@ -2,6 +2,8 @@ package webserver
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres" // Gorm Postgres Driver
 )
 
 type Server struct {
@@ -17,8 +19,14 @@ func New() (*Server, error) {
 		return nil, err
 	}
 
+	// connect database
+	db, err := gorm.Open("postgres", cfg.DB)
+	if err != nil {
+		return nil, err
+	}
+
 	// setup router
-	router := MakeRouter()
+	router := MakeRouter(cfg, db)
 
 	s := &Server{
 		Name:   "Pook",
