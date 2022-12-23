@@ -1,6 +1,8 @@
 package webserver
 
 import (
+	"github.com/chumnend/pook/app/pook-api/models"
+	"github.com/chumnend/pook/app/pook-api/routes"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres" // Gorm Postgres Driver
@@ -8,9 +10,12 @@ import (
 
 type Server struct {
 	Name   string
+	DB     *gorm.DB
 	Router *gin.Engine
 	Config *Config
 }
+
+var Pook *Server
 
 func New() (*Server, error) {
 	// load config
@@ -20,21 +25,19 @@ func New() (*Server, error) {
 	}
 
 	// connect database
-	db, err := gorm.Open("postgres", cfg.DB)
-	if err != nil {
-		return nil, err
-	}
+	db, err := models.Connect(cfg.DB)
 
 	// setup router
-	router := MakeRouter(cfg, db)
+	router := routes.MakeRouter()
 
-	s := &Server{
+	Pook = &Server{
 		Name:   "Pook",
+		DB:     db,
 		Router: router,
 		Config: cfg,
 	}
 
-	return s, nil
+	return Pook, nil
 }
 
 func (s *Server) Start() {
