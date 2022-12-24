@@ -15,7 +15,7 @@ type Config struct {
 }
 
 // NewConfig builds a configuration struct to be used by the application using a .env file
-func NewConfig() (*Config, error) {
+func New() (*Config, error) {
 	err := godotenv.Load(".env")
 	if err != nil {
 		return nil, err
@@ -30,8 +30,10 @@ func NewConfig() (*Config, error) {
 		}
 	} else {
 		databaseURL = os.Getenv("TEST_PG_URL")
-		err := errors.New("missing env: TEST_PG_URL")
-		return nil, err
+		if databaseURL == "" {
+			err := errors.New("missing env: TEST_PG_URL")
+			return nil, err
+		}
 	}
 
 	secret := os.Getenv("SECRET_KEY")

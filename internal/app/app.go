@@ -10,7 +10,13 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres" // Gorm Postgres Driver
 )
 
-func Run(cfg *config.Config) {
+type App struct {
+	Cfg    *config.Config
+	Db     *gorm.DB
+	Router *gin.Engine
+}
+
+func New(cfg *config.Config) *App {
 	router := gin.Default()
 
 	// connect to database
@@ -26,5 +32,13 @@ func Run(cfg *config.Config) {
 		c.JSON(http.StatusOK, gin.H{"message": "pong"})
 	})
 
-	router.Run(":" + cfg.Port)
+	return &App{
+		Cfg:    cfg,
+		Db:     pg,
+		Router: router,
+	}
+}
+
+func (app *App) Run() {
+	app.Router.Run(":" + app.Cfg.Port)
 }

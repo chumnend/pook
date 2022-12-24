@@ -9,11 +9,12 @@ import (
 
 func main() {
 	// Configuration
-	cfg, err := config.NewConfig()
+	cfg, err := config.New()
 	if err != nil {
 		log.Fatalf("Config error: %s", err)
 	}
 
 	// Run
-	app.Run(cfg)
+	app := app.New(cfg)
+	app.Run()
 }
