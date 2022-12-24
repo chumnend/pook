@@ -1,7 +1,3 @@
-.PHONY: start-client
-start-client:
-	go run app/pook-client/main.go
-
-.PHONY: start-api
-start-api:
-	go run app/pook-api/main.go
+.PHONY: run
+run:
+	go mod tidy && go mod download && go run ./cmd/app

@@ -15,7 +15,7 @@ TBD
 
 1) Clone this repository, `git clone https://github.com/chumnend/pook.git`
 
-2) A development sever can be spun up by using `make start-dev`
+2) Start the server by typing the command `make run`
 
 ## Deployment 
 TBD
