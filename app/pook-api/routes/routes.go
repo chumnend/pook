@@ -8,6 +8,7 @@ import (
 
 func MakeRouter() *gin.Engine {
 	router := gin.Default()
+	router.Use(middlewares.Cors())
 
 	v1 := router.Group("/v1")
 
