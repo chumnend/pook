@@ -26,7 +26,7 @@ func New(cfg *config.Config) *App {
 
 	// setup routes
 	router := gin.Default()
-	v1.AttachRouter(router)
+	v1.AttachRouter(router, pg)
 
 	return &App{
 		Cfg:    cfg,

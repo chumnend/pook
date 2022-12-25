@@ -1,15 +1,32 @@
 package v1
 
 import (
+	"log"
 	"net/http"
 
+	"github.com/chumnend/pook/internal/repository"
+	"github.com/chumnend/pook/internal/service"
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 )
 
 // AttachRouter creates a new gin router
-func AttachRouter(h *gin.Engine) {
+func AttachRouter(h *gin.Engine, db *gorm.DB) {
 	v1 := h.Group("/v1")
+
+	// health check
 	v1.GET("/ping", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"message": "pong"})
 	})
+
+	// user endpoint
+	userRepo := repository.NewPostgresRepository(db)
+	if err := userRepo.Migrate(); err != nil {
+		log.Fatal(err)
+	}
+	userSrv := service.NewService(userRepo)
+	userCtl := NewController(userSrv)
+
+	v1.POST("/register", userCtl.Register)
+	v1.POST("/login", userCtl.Login)
 }
