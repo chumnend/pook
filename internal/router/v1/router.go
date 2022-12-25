@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/chumnend/pook/internal/controller"
 	"github.com/chumnend/pook/internal/repository"
 	"github.com/chumnend/pook/internal/service"
 	"github.com/gin-gonic/gin"
@@ -25,7 +26,7 @@ func AttachRouter(h *gin.Engine, db *gorm.DB) {
 		log.Fatal(err)
 	}
 	userSrv := service.NewService(userRepo)
-	userCtl := NewController(userSrv)
+	userCtl := controller.NewController(userSrv)
 
 	v1.POST("/register", userCtl.Register)
 	v1.POST("/login", userCtl.Login)

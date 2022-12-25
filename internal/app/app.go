@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/chumnend/pook/config"
-	v1 "github.com/chumnend/pook/internal/controller/v1"
+	v1 "github.com/chumnend/pook/internal/router/v1"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres" // Gorm Postgres Driver
