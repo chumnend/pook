@@ -16,23 +16,39 @@ func NewPostgresRepository(conn *gorm.DB) entity.UserRepository {
 
 func (u *userRepository) FindAll() ([]entity.User, error) {
 	var users []entity.User
+
+	result := u.conn.Find(&users)
+	if result.Error != nil {
+		return users, result.Error
+	}
 	return users, nil
 }
 
-func (u *userRepository) FindByUsername(email string) (*entity.User, error) {
+func (u *userRepository) FindByUsername(username string) (*entity.User, error) {
 	var user entity.User
+
+	result := u.conn.Where("username = ?", username).First(&u)
+	if result.Error != nil {
+		return &user, result.Error
+	}
 	return &user, nil
 }
 
 func (u *userRepository) FindByEmail(email string) (*entity.User, error) {
 	var user entity.User
+
+	result := u.conn.Where("email = ?", email).First(&u)
+	if result.Error != nil {
+		return &user, result.Error
+	}
 	return &user, nil
 }
 
 func (u *userRepository) Save(user *entity.User) error {
-	return nil
+	result := u.conn.Create(user)
+	return result.Error
 }
 
 func (u *userRepository) Migrate() error {
-	return nil
+	return u.conn.AutoMigrate(&entity.User{}).Error
 }

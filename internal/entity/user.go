@@ -33,7 +33,6 @@ type UserService interface {
 	FindByUsername(string) (*User, error)
 	FindByEmail(string) (*User, error)
 	Save(*User) error
-	Validate(*User) error
 	GenerateToken(*User) (string, error)
 	ComparePassword(*User, string) error
 }

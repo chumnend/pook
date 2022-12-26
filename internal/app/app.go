@@ -22,7 +22,6 @@ func New(cfg *config.Config) *App {
 	if err != nil {
 		log.Fatalf("postgres connect error: %s", err)
 	}
-	defer pg.Close()
 
 	// setup routes
 	router := gin.Default()
