@@ -61,18 +61,21 @@ func (u *userController) Login(c *gin.Context) {
 	// check if user exists
 	user, err := u.srv.FindByUsername(input.Username)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": "invalid username and/or password"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid username and/or password"})
+		return
 	}
 
 	// check password
 	if err := u.srv.ComparePassword(user, input.Password); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": "invalid username and/or password"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid username and/or password"})
+		return
 	}
 
 	// generate token
 	token, err := u.srv.GenerateToken(user)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "something went wrong, please try again later"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "something went wrong, please try again later"})
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"token": token})
