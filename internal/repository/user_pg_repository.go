@@ -27,7 +27,7 @@ func (u *userRepository) FindAll() ([]entity.User, error) {
 func (u *userRepository) FindByUsername(username string) (*entity.User, error) {
 	var user entity.User
 
-	result := u.conn.Where("username = ?", username).First(&u)
+	result := u.conn.Where("username = ?", username).First(&user)
 	if result.Error != nil {
 		return &user, result.Error
 	}
@@ -37,7 +37,7 @@ func (u *userRepository) FindByUsername(username string) (*entity.User, error) {
 func (u *userRepository) FindByEmail(email string) (*entity.User, error) {
 	var user entity.User
 
-	result := u.conn.Where("email = ?", email).First(&u)
+	result := u.conn.Where("email = ?", email).First(&user)
 	if result.Error != nil {
 		return &user, result.Error
 	}
@@ -50,5 +50,5 @@ func (u *userRepository) Save(user *entity.User) error {
 }
 
 func (u *userRepository) Migrate() error {
-	return u.conn.AutoMigrate(&entity.User{}).Error
+	return u.conn.AutoMigrate(&entity.User{}).Error // TODO: missing tests
 }

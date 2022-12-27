@@ -46,7 +46,7 @@ func (u *userService) Save(user *entity.User) error {
 	// hash the password
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
-		return err
+		return err // TODO: missing test
 	}
 	user.Password = string(hashedPassword)
 	return u.repo.Save(user)
@@ -59,7 +59,7 @@ func (u *userService) GenerateToken(user *entity.User) (string, error) {
 	})
 	tokenStr, err := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
 	if err != nil {
-		return "", err
+		return "", err // TODO: missing test
 	}
 	return tokenStr, nil
 }
