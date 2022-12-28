@@ -25,7 +25,7 @@ func TestSrv_FindAll(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		// setup
 		mockRepo.On("FindAll").Return(mockUsers, nil).Once()
-		srv := NewService(mockRepo)
+		srv := NewUserService(mockRepo)
 
 		// run
 		result, err := srv.FindAll()
@@ -39,7 +39,7 @@ func TestSrv_FindAll(t *testing.T) {
 	t.Run("fail", func(t *testing.T) {
 		// setup
 		mockRepo.On("FindAll").Return([]entity.User{}, errors.New("unexpected error")).Once()
-		srv := NewService(mockRepo)
+		srv := NewUserService(mockRepo)
 
 		// run
 		users, err := srv.FindAll()
@@ -64,7 +64,7 @@ func TestSrv_FindByUsername(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		// setup
 		mockRepo.On("FindByUsername", mock.AnythingOfType("string")).Return(&mockUser, nil).Once()
-		srv := NewService(mockRepo)
+		srv := NewUserService(mockRepo)
 
 		// run
 		user, err := srv.FindByUsername("tester")
@@ -80,7 +80,7 @@ func TestSrv_FindByUsername(t *testing.T) {
 	t.Run("fail", func(t *testing.T) {
 		// setup
 		mockRepo.On("FindByUsername", mock.AnythingOfType("string")).Return(&entity.User{}, errors.New("unexpected error")).Once()
-		srv := NewService(mockRepo)
+		srv := NewUserService(mockRepo)
 
 		// run
 		user, err := srv.FindByUsername("tester")
@@ -105,7 +105,7 @@ func TestSrv_FindByEmail(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		// setup
 		mockRepo.On("FindByEmail", mock.AnythingOfType("string")).Return(&mockUser, nil).Once()
-		srv := NewService(mockRepo)
+		srv := NewUserService(mockRepo)
 
 		// run
 		user, err := srv.FindByEmail("tester@pook.com")
@@ -120,7 +120,7 @@ func TestSrv_FindByEmail(t *testing.T) {
 	t.Run("fail", func(t *testing.T) {
 		// setup
 		mockRepo.On("FindByEmail", mock.AnythingOfType("string")).Return(&entity.User{}, errors.New("unexpected error")).Once()
-		srv := NewService(mockRepo)
+		srv := NewUserService(mockRepo)
 
 		// run
 		user, err := srv.FindByEmail("tester@pook.com")
@@ -138,7 +138,7 @@ func TestSrv_Save(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		// setup
 		mockRepo.On("Save", mock.Anything).Return(nil).Once()
-		srv := NewService(mockRepo)
+		srv := NewUserService(mockRepo)
 
 		// run
 		err := srv.Save(&entity.User{})
@@ -151,7 +151,7 @@ func TestSrv_Save(t *testing.T) {
 	t.Run("fail", func(t *testing.T) {
 		// setup
 		mockRepo.On("Save", mock.Anything).Return(errors.New("unexpected error")).Once()
-		srv := NewService(mockRepo)
+		srv := NewUserService(mockRepo)
 
 		// run
 		err := srv.Save(&entity.User{})
@@ -165,7 +165,7 @@ func TestSrv_Save(t *testing.T) {
 func TestSrv_GenerateToken(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		// setup
-		srv := NewService(nil)
+		srv := NewUserService(nil)
 		mockUser := entity.User{
 			Email:     "tester@pook.com",
 			FirstName: "tester",
@@ -183,7 +183,7 @@ func TestSrv_GenerateToken(t *testing.T) {
 }
 
 func TestSrv_ComparePassword(t *testing.T) {
-	srv := NewService(nil)
+	srv := NewUserService(nil)
 	password := "123"
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	mockUser := &entity.User{

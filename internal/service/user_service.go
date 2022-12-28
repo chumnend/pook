@@ -13,8 +13,8 @@ type userService struct {
 	repo entity.UserRepository
 }
 
-// NewService returns a UserService utilizing provided UserRepository
-func NewService(repo entity.UserRepository) entity.UserService {
+// NewUserService returns a UserService utilizing provided UserRepository
+func NewUserService(repo entity.UserRepository) entity.UserService {
 	return &userService{repo: repo}
 }
 

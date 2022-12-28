@@ -21,12 +21,12 @@ func AttachRouter(h *gin.Engine, db *gorm.DB) {
 	})
 
 	// user endpoint
-	userRepo := repository.NewPostgresRepository(db)
+	userRepo := repository.NewUserPostgresRepository(db)
 	if err := userRepo.Migrate(); err != nil {
 		log.Fatal(err)
 	}
-	userSrv := service.NewService(userRepo)
-	userCtl := controller.NewController(userSrv)
+	userSrv := service.NewUserService(userRepo)
+	userCtl := controller.NewUserController(userSrv)
 
 	v1.POST("/register", userCtl.Register)
 	v1.POST("/login", userCtl.Login)

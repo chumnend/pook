@@ -12,7 +12,7 @@ type userController struct {
 }
 
 // NewController creates a UserController with given UserService
-func NewController(srv entity.UserService) entity.UserController {
+func NewUserController(srv entity.UserService) entity.UserController {
 	return &userController{srv: srv}
 }
 

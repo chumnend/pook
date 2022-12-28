@@ -9,8 +9,8 @@ type userRepository struct {
 	conn *gorm.DB
 }
 
-// NewPostgresRepository returns a UserRepository struct utilizing PostgreSQL
-func NewPostgresRepository(conn *gorm.DB) entity.UserRepository {
+// NewUserPostgresRepository returns a UserRepository struct utilizing PostgreSQL
+func NewUserPostgresRepository(conn *gorm.DB) entity.UserRepository {
 	return &userRepository{conn: conn}
 }
 

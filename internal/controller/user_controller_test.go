@@ -26,7 +26,7 @@ func TestCtl_Register(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		// setup
 		mockSrv.On("Save", mock.Anything).Return(nil).Once()
-		ctl := NewController(mockSrv)
+		ctl := NewUserController(mockSrv)
 		var jsonStr = []byte(`{"username": "test", "email":"test@example.com", "password": "test123"}`)
 		r, _ := http.NewRequest("POST", "/v1/register", bytes.NewBuffer(jsonStr))
 		r.Header.Set("Content-Type", "application/json")
@@ -53,7 +53,7 @@ func TestCtl_Register(t *testing.T) {
 
 	t.Run("fail - no username", func(t *testing.T) {
 		// setup
-		ctl := NewController(mockSrv)
+		ctl := NewUserController(mockSrv)
 		var jsonStr = []byte(`{"email": "test@example.com", ""password": "test123"}`)
 		r, _ := http.NewRequest("POST", "/v1/register", bytes.NewBuffer(jsonStr))
 		r.Header.Set("Content-Type", "application/json")
@@ -80,7 +80,7 @@ func TestCtl_Register(t *testing.T) {
 
 	t.Run("fail - no email", func(t *testing.T) {
 		// setup
-		ctl := NewController(mockSrv)
+		ctl := NewUserController(mockSrv)
 		var jsonStr = []byte(`{"username": "test", "password": "test123"}`)
 		r, _ := http.NewRequest("POST", "/v1/register", bytes.NewBuffer(jsonStr))
 		r.Header.Set("Content-Type", "application/json")
@@ -107,7 +107,7 @@ func TestCtl_Register(t *testing.T) {
 
 	t.Run("fail - no password", func(t *testing.T) {
 		// setup
-		ctl := NewController(mockSrv)
+		ctl := NewUserController(mockSrv)
 		var jsonStr = []byte(`{"username": "test", "email":"test@example.com"}`)
 		r, _ := http.NewRequest("POST", "/v1/register", bytes.NewBuffer(jsonStr))
 		r.Header.Set("Content-Type", "application/json")
@@ -135,7 +135,7 @@ func TestCtl_Register(t *testing.T) {
 	t.Run("fail - save error", func(t *testing.T) {
 		// setup
 		mockSrv.On("Save", mock.Anything).Return(errors.New("save error")).Once()
-		ctl := NewController(mockSrv)
+		ctl := NewUserController(mockSrv)
 		var jsonStr = []byte(`{"username": "test", "email":"test@example.com", "password": "test123"}`)
 		r, _ := http.NewRequest("POST", "/v1/register", bytes.NewBuffer(jsonStr))
 		r.Header.Set("Content-Type", "application/json")
@@ -169,7 +169,7 @@ func TestCtl_Login(t *testing.T) {
 		mockSrv.On("FindByUsername", mock.AnythingOfType("string")).Return(&entity.User{}, nil).Once()
 		mockSrv.On("ComparePassword", mock.Anything, mock.AnythingOfType("string")).Return(nil).Once()
 		mockSrv.On("GenerateToken", mock.Anything).Return("token", nil).Once()
-		ctl := NewController(mockSrv)
+		ctl := NewUserController(mockSrv)
 		var jsonStr = []byte(`{"username": "test", "password": "test123"}`)
 		r, _ := http.NewRequest("POST", "/v1/login", bytes.NewBuffer(jsonStr))
 		r.Header.Set("Content-Type", "application/json")
@@ -196,7 +196,7 @@ func TestCtl_Login(t *testing.T) {
 
 	t.Run("fail - bad input", func(t *testing.T) {
 		// setup
-		ctl := NewController(mockSrv)
+		ctl := NewUserController(mockSrv)
 		var jsonStr = []byte(`{"username": "test"}`)
 		r, _ := http.NewRequest("POST", "/v1/login", bytes.NewBuffer(jsonStr))
 		r.Header.Set("Content-Type", "application/json")
@@ -224,7 +224,7 @@ func TestCtl_Login(t *testing.T) {
 	t.Run("fail - bad username", func(t *testing.T) {
 		// setup
 		mockSrv.On("FindByUsername", mock.AnythingOfType("string")).Return(&entity.User{}, errors.New("invalid email and/or password")).Once()
-		ctl := NewController(mockSrv)
+		ctl := NewUserController(mockSrv)
 		var jsonStr = []byte(`{"username": "test", "password": "test123"}`)
 		r, _ := http.NewRequest("POST", "/v1/login", bytes.NewBuffer(jsonStr))
 		r.Header.Set("Content-Type", "application/json")
@@ -253,7 +253,7 @@ func TestCtl_Login(t *testing.T) {
 		// setup
 		mockSrv.On("FindByUsername", mock.AnythingOfType("string")).Return(&entity.User{}, nil).Once()
 		mockSrv.On("ComparePassword", mock.Anything, mock.AnythingOfType("string")).Return(errors.New("invalid email and/or password")).Once()
-		ctl := NewController(mockSrv)
+		ctl := NewUserController(mockSrv)
 		var jsonStr = []byte(`{"username": "test", "password": "test123"}`)
 		r, _ := http.NewRequest("POST", "/v1/login", bytes.NewBuffer(jsonStr))
 		r.Header.Set("Content-Type", "application/json")
@@ -283,7 +283,7 @@ func TestCtl_Login(t *testing.T) {
 		mockSrv.On("FindByUsername", mock.AnythingOfType("string")).Return(&entity.User{}, nil).Once()
 		mockSrv.On("ComparePassword", mock.Anything, mock.AnythingOfType("string")).Return(nil).Once()
 		mockSrv.On("GenerateToken", mock.Anything).Return("", errors.New("token error")).Once()
-		ctl := NewController(mockSrv)
+		ctl := NewUserController(mockSrv)
 		var jsonStr = []byte(`{"username": "test", "password": "test123"}`)
 		r, _ := http.NewRequest("POST", "/v1/login", bytes.NewBuffer(jsonStr))
 		r.Header.Set("Content-Type", "application/json")
