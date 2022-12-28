@@ -30,4 +30,18 @@ func AttachRouter(h *gin.Engine, db *gorm.DB) {
 
 	v1.POST("/register", userCtl.Register)
 	v1.POST("/login", userCtl.Login)
+
+	// book endpoint
+	bookRepo := repository.NewBookPostgresRepository(db)
+	if err := bookRepo.Migrate(); err != nil {
+		log.Fatal(err)
+	}
+	bookSrv := service.NewBookService(bookRepo)
+	bookCtl := controller.NewBookController(bookSrv)
+
+	v1.GET("/books", bookCtl.ListBooks)
+	v1.POST("/books", bookCtl.CreateBook)
+	v1.GET("/books/{id:[0-9]+}", bookCtl.GetBook)
+	v1.PUT("/books/{id:[0-9]+}", bookCtl.UpdateBook)
+	v1.DELETE("/books/{id:[0-9]+}", bookCtl.DeleteBook)
 }

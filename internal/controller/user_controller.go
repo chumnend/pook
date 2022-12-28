@@ -11,7 +11,7 @@ type userController struct {
 	srv entity.UserService
 }
 
-// NewController creates a UserController with given UserService
+// NewUserController creates a UserController with given UserService
 func NewUserController(srv entity.UserService) entity.UserController {
 	return &userController{srv: srv}
 }
