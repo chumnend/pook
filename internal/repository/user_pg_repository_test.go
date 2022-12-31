@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestRepo_FindAll(t *testing.T) {
+func TestUserRepository_FindAll(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		t.Fatal("an error occured when opening stub database", err)
@@ -79,7 +79,7 @@ func TestRepo_FindAll(t *testing.T) {
 	})
 }
 
-func TestRepo_FindByUsername(t *testing.T) {
+func TestUserRepository_FindByUsername(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		t.Fatal("an error occured when opening stub database", err)
@@ -150,7 +150,7 @@ func TestRepo_FindByUsername(t *testing.T) {
 	})
 }
 
-func TestRepo_FindByEmail(t *testing.T) {
+func TestUserRepository_FindByEmail(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		t.Fatal("an error occured when opening stub database", err)
@@ -221,7 +221,7 @@ func TestRepo_FindByEmail(t *testing.T) {
 	})
 }
 
-func TestRepo_Save(t *testing.T) {
+func TestUserRepository_Save(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		t.Fatal("an error occured when opening stub database", err)

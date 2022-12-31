@@ -16,30 +16,48 @@ func NewBookService(repo entity.BookRepository) entity.BookService {
 }
 
 func (b *bookService) FindAll() ([]entity.Book, error) {
-	return []entity.Book{}, errors.New("not yet implemented")
+	books, err := b.repo.FindAll()
+	if err != nil {
+		return books, err
+	}
+	return books, nil
 }
 
-func (b *bookService) FindAllByUserID(uint) ([]entity.Book, error) {
-	return []entity.Book{}, errors.New("not yet implemented")
-
+func (b *bookService) FindAllByUserID(id uint) ([]entity.Book, error) {
+	books, err := b.repo.FindAllByUserID(id)
+	if err != nil {
+		return books, err
+	}
+	return books, nil
 }
 
-func (b *bookService) FindByID(uint) (*entity.Book, error) {
-	return &entity.Book{}, errors.New("not yet implemented")
+func (b *bookService) FindByID(id uint) (*entity.Book, error) {
+	book, err := b.repo.FindByID(id)
+	if err != nil {
+		return book, err
+	}
+	return book, nil
 }
 
-func (b *bookService) Create(*entity.Book) error {
-	return errors.New("not yet implemented")
+func (b *bookService) Create(book *entity.Book) error {
+	return b.repo.Create(book)
 }
 
-func (b *bookService) Save(*entity.Book) error {
-	return errors.New("not yet implemented")
+func (b *bookService) Save(book *entity.Book) error {
+	return b.repo.Save(book)
 }
 
-func (b *bookService) Delete(*entity.Book) error {
-	return errors.New("not yet implemented")
+func (b *bookService) Delete(book *entity.Book) error {
+	return b.repo.Delete(book)
 }
 
-func (b *bookService) Validate(*entity.Book) error {
-	return errors.New("not yet implemented")
+func (b *bookService) Validate(book *entity.Book) error {
+	if book == nil {
+		return errors.New("book is empty")
+	}
+
+	if book.Title == "" || book.UserID == 0 {
+		return errors.New("invalid book")
+	}
+	return nil
 }

@@ -11,7 +11,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func TestSrv_FindAll(t *testing.T) {
+func TestUserService_FindAll(t *testing.T) {
 	mockRepo := new(pook_mock.MockUserRepository)
 	mockUsers := []entity.User{
 		{
@@ -51,7 +51,7 @@ func TestSrv_FindAll(t *testing.T) {
 	})
 }
 
-func TestSrv_FindByUsername(t *testing.T) {
+func TestUserService_FindByUsername(t *testing.T) {
 	mockRepo := new(pook_mock.MockUserRepository)
 	mockUser := entity.User{
 		Username:  "tester",
@@ -92,7 +92,7 @@ func TestSrv_FindByUsername(t *testing.T) {
 	})
 }
 
-func TestSrv_FindByEmail(t *testing.T) {
+func TestUserService_FindByEmail(t *testing.T) {
 	mockRepo := new(pook_mock.MockUserRepository)
 	mockUser := entity.User{
 		Username:  "tester",
@@ -132,7 +132,7 @@ func TestSrv_FindByEmail(t *testing.T) {
 	})
 }
 
-func TestSrv_Save(t *testing.T) {
+func TestUserService_Save(t *testing.T) {
 	mockRepo := new(pook_mock.MockUserRepository)
 
 	t.Run("success", func(t *testing.T) {
@@ -162,7 +162,7 @@ func TestSrv_Save(t *testing.T) {
 	})
 }
 
-func TestSrv_GenerateToken(t *testing.T) {
+func TestUserService_GenerateToken(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		// setup
 		srv := NewUserService(nil)
@@ -182,7 +182,7 @@ func TestSrv_GenerateToken(t *testing.T) {
 	})
 }
 
-func TestSrv_ComparePassword(t *testing.T) {
+func TestUserService_ComparePassword(t *testing.T) {
 	srv := NewUserService(nil)
 	password := "123"
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)

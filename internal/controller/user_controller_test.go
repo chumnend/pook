@@ -14,13 +14,9 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-func checkResponseCode(t *testing.T, expected, actual int) {
-	if expected != actual {
-		t.Errorf("Expected response code %d. Got %d\n.", expected, actual)
-	}
-}
-
 func TestCtl_Register(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+
 	mockSrv := new(pook_mock.MockUserService)
 
 	t.Run("success", func(t *testing.T) {
@@ -162,6 +158,8 @@ func TestCtl_Register(t *testing.T) {
 }
 
 func TestCtl_Login(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+
 	mockSrv := new(pook_mock.MockUserService)
 
 	t.Run("success", func(t *testing.T) {
