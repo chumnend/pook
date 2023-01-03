@@ -139,7 +139,7 @@ func TestBookRepository_FindAllByUserID(t *testing.T) {
 	})
 }
 
-func TestRepo_FindByID(t *testing.T) {
+func TestBookRepository_FindByID(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		t.Fatal("an error occured when opening stub database", err)
@@ -196,7 +196,7 @@ func TestRepo_FindByID(t *testing.T) {
 	})
 }
 
-func TestRepo_Create(t *testing.T) {
+func TestBookRepository_Create(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		t.Fatal("an error occured when opening stub database", err)
@@ -253,7 +253,7 @@ func TestRepo_Create(t *testing.T) {
 	})
 }
 
-func TestRepo_Save(t *testing.T) {
+func TestBookRepository_Save(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		t.Fatal("an error occured when opening stub database", err)
@@ -310,7 +310,7 @@ func TestRepo_Save(t *testing.T) {
 	})
 }
 
-func TestRepo_Delete(t *testing.T) {
+func TestBookRepository_Delete(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		t.Fatal("an error occured when opening stub database", err)

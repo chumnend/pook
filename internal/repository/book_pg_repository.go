@@ -14,48 +14,48 @@ func NewBookPostgresRepository(conn *gorm.DB) entity.BookRepository {
 	return &bookRepository{conn: conn}
 }
 
-func (b *bookRepository) FindAll() ([]entity.Book, error) {
+func (repo *bookRepository) FindAll() ([]entity.Book, error) {
 	var books []entity.Book
-	result := b.conn.Find(&books)
+	result := repo.conn.Find(&books)
 	if result.Error != nil {
 		return books, result.Error
 	}
 	return books, nil
 }
 
-func (b *bookRepository) FindAllByUserID(id uint) ([]entity.Book, error) {
+func (repo *bookRepository) FindAllByUserID(id uint) ([]entity.Book, error) {
 	var books []entity.Book
-	result := b.conn.Where("user_id = ?", id).Find(&books)
+	result := repo.conn.Where("user_id = ?", id).Find(&books)
 	if result.Error != nil {
 		return books, result.Error
 	}
 	return books, nil
 }
 
-func (b *bookRepository) FindByID(id uint) (*entity.Book, error) {
+func (repo *bookRepository) FindByID(id uint) (*entity.Book, error) {
 	var book entity.Book
-	result := b.conn.First(&book, id)
+	result := repo.conn.First(&book, id)
 	if result.Error != nil {
 		return &book, result.Error
 	}
 	return &book, nil
 }
 
-func (b *bookRepository) Create(book *entity.Book) error {
-	result := b.conn.Create(book)
+func (repo *bookRepository) Create(book *entity.Book) error {
+	result := repo.conn.Create(book)
 	return result.Error
 }
 
-func (b *bookRepository) Save(book *entity.Book) error {
-	result := b.conn.Save(book)
+func (repo *bookRepository) Save(book *entity.Book) error {
+	result := repo.conn.Save(book)
 	return result.Error
 }
 
-func (b *bookRepository) Delete(book *entity.Book) error {
-	result := b.conn.Delete(book)
+func (repo *bookRepository) Delete(book *entity.Book) error {
+	result := repo.conn.Delete(book)
 	return result.Error
 }
 
-func (b *bookRepository) Migrate() error {
-	return b.conn.AutoMigrate(&entity.Book{}).Error // TODO: missing tests
+func (repo *bookRepository) Migrate() error {
+	return repo.conn.AutoMigrate(&entity.Book{}).Error // TODO: missing tests
 }

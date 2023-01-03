@@ -14,41 +14,41 @@ func NewUserPostgresRepository(conn *gorm.DB) entity.UserRepository {
 	return &userRepository{conn: conn}
 }
 
-func (u *userRepository) FindAll() ([]entity.User, error) {
+func (repo *userRepository) FindAll() ([]entity.User, error) {
 	var users []entity.User
 
-	result := u.conn.Find(&users)
+	result := repo.conn.Find(&users)
 	if result.Error != nil {
 		return users, result.Error
 	}
 	return users, nil
 }
 
-func (u *userRepository) FindByUsername(username string) (*entity.User, error) {
+func (repo *userRepository) FindByUsername(username string) (*entity.User, error) {
 	var user entity.User
 
-	result := u.conn.Where("username = ?", username).First(&user)
+	result := repo.conn.Where("username = ?", username).First(&user)
 	if result.Error != nil {
 		return &user, result.Error
 	}
 	return &user, nil
 }
 
-func (u *userRepository) FindByEmail(email string) (*entity.User, error) {
+func (repo *userRepository) FindByEmail(email string) (*entity.User, error) {
 	var user entity.User
 
-	result := u.conn.Where("email = ?", email).First(&user)
+	result := repo.conn.Where("email = ?", email).First(&user)
 	if result.Error != nil {
 		return &user, result.Error
 	}
 	return &user, nil
 }
 
-func (u *userRepository) Save(user *entity.User) error {
-	result := u.conn.Create(user)
+func (repo *userRepository) Save(user *entity.User) error {
+	result := repo.conn.Create(user)
 	return result.Error
 }
 
-func (u *userRepository) Migrate() error {
-	return u.conn.AutoMigrate(&entity.User{}).Error // TODO: missing tests
+func (repo *userRepository) Migrate() error {
+	return repo.conn.AutoMigrate(&entity.User{}).Error // TODO: missing tests
 }
