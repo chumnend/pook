@@ -107,11 +107,6 @@ func (b *bookController) UpdateBook(c *gin.Context) {
 		return
 	}
 
-	// get book updated book info
-	type requestBody struct {
-		Title string `json:"title"`
-	}
-
 	// validate input
 	var input UpdateBookInput
 	if err := c.ShouldBindJSON(&input); err != nil {

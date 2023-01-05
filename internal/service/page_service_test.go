@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-func TestSrv_FindAllByBookID(t *testing.T) {
+func TestPageService_FindAllByBookID(t *testing.T) {
 	mockRepo := new(pook_mock.MockPageRepository)
 	mockPages := []entity.Page{
 		{
@@ -59,7 +59,7 @@ func TestSrv_FindAllByBookID(t *testing.T) {
 	})
 }
 
-func TestSrv_FindByID(t *testing.T) {
+func TestPageService_FindByID(t *testing.T) {
 	mockRepo := new(pook_mock.MockPageRepository)
 	mockPage := entity.Page{
 		ID:        1,
@@ -100,7 +100,7 @@ func TestSrv_FindByID(t *testing.T) {
 	})
 }
 
-func TestSrv_Create(t *testing.T) {
+func TestPageService_Create(t *testing.T) {
 	mockRepo := new(pook_mock.MockPageRepository)
 
 	t.Run("success", func(t *testing.T) {
@@ -130,7 +130,7 @@ func TestSrv_Create(t *testing.T) {
 	})
 }
 
-func TestSrv_Update(t *testing.T) {
+func TestPageService_Update(t *testing.T) {
 	mockRepo := new(pook_mock.MockPageRepository)
 
 	t.Run("success", func(t *testing.T) {
@@ -160,7 +160,7 @@ func TestSrv_Update(t *testing.T) {
 	})
 }
 
-func TestSrv_Delete(t *testing.T) {
+func TestPageService_Delete(t *testing.T) {
 	mockRepo := new(pook_mock.MockPageRepository)
 
 	t.Run("success", func(t *testing.T) {
@@ -190,7 +190,7 @@ func TestSrv_Delete(t *testing.T) {
 	})
 }
 
-func TestSrv_Validate(t *testing.T) {
+func TestPageService_Validate(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		// setup
 		page := entity.Page{

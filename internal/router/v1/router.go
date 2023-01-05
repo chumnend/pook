@@ -44,4 +44,18 @@ func AttachRouter(h *gin.Engine, db *gorm.DB) {
 	v1.GET("/books/{id:[0-9]+}", bookCtl.GetBook)
 	v1.PUT("/books/{id:[0-9]+}", bookCtl.UpdateBook)
 	v1.DELETE("/books/{id:[0-9]+}", bookCtl.DeleteBook)
+
+	// page endpoint
+	pageRepo := repository.NewPagePostgresRepository(db)
+	if err := pageRepo.Migrate(); err != nil {
+		log.Fatal(err)
+	}
+	pageSrv := service.NewPageService(pageRepo)
+	pageCtl := controller.NewPageController(pageSrv)
+
+	v1.GET("/pages", pageCtl.ListPages)
+	v1.POST("/pages", pageCtl.CreatePage)
+	v1.GET("/pages/{id:[0-9]+}", pageCtl.GetPage)
+	v1.PUT("/pages/{id:[0-9]+}", pageCtl.UpdatePage)
+	v1.DELETE("/pages/{id:[0-9]+}", pageCtl.DeletePage)
 }

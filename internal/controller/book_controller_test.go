@@ -157,7 +157,7 @@ func TestBookController_CreateBook(t *testing.T) {
 		mockSrv.On("Create", mock.Anything).Return(nil).Once()
 		ctl := NewBookController(mockSrv)
 		w := httptest.NewRecorder()
-		var jsonStr = []byte(`{"title":"test", "userID": "1"}`)
+		var jsonStr = []byte(`{"title": "test", "userID": "1"}`)
 		r, _ := http.NewRequest("POST", "/v1/books", bytes.NewBuffer(jsonStr))
 		r.Header.Set("Content-Type", "application/json")
 		c, _ := gin.CreateTestContext(w)
