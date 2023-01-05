@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/chumnend/pook/internal/controller"
+	"github.com/chumnend/pook/internal/middleware"
 	"github.com/chumnend/pook/internal/repository"
 	"github.com/chumnend/pook/internal/service"
 	"github.com/gin-gonic/gin"
@@ -14,6 +15,7 @@ import (
 // AttachRouter creates a new gin router
 func AttachRouter(h *gin.Engine, db *gorm.DB) {
 	v1 := h.Group("/v1")
+	v1.Use(middleware.Cors())
 
 	// health check
 	v1.GET("/ping", func(c *gin.Context) {
