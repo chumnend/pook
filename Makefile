@@ -1,57 +1,26 @@
-all: build serve
+.PHONY: install-all
+install-all: install-go install-react
 
-# Build React and Go assets in bin folder
-.PHONY: build
-build: build-react build-go
+.PHONY: install-go
+install-go:
+	@go mod tidy && go mod download
 
-# Build React assets in bin folder
-.PHONY: build-react
-build-react:
-	@if [ ! -d "react/node_modules" ]; then \
-  	cd react && npm install; \
-	fi
-	@cd react && npm run build
-	@echo "React files built."
+.PHONY: start-server
+start-server:
+	@go run ./cmd/app
 
-# Build Go assets in bin folder
-.PHONY: build-go
-build-go:
-	@mkdir -p bin/
-	@cd bin/ && go build ../cmd/pook/main.go
-	@echo "Go files built."
-
-# Starts the app on port provided in .env file
-.PHONY: serve
-serve:
-	@./bin/main
-
-# Executes tests for Go packages and React app
-.PHONY: test
-test: test-react test-go
-
-# Executes tests for React app
-.PHONY: test-react
-test-react:
-	@cd react && npm test -- --watchAll=false
-
-# Executes tests for Go packages
-.PHONY: test-go
-test-go:
-	@if [ ! -d "react/build" ]; then \
-  	cd react && npm run build; \
-	fi
+.PHONY: test-server
+test-server: 
 	@go test -cover -covermode=atomic ./internal/...
 
-# Executes only unit tests for Go packages
-.PHONY: unittest
-unittest:
-	@if [ ! -d "react/build" ]; then \
-  	cd react && npm run build; \
-	fi
-	@go test -short ./tests/...
+.PHONY: install-react
+install-react:
+	@cd web/pook-react && npm install
 
-# Cleans up assets and node_modules
-.PHONY: clean
-clean:
-	@rm -rf bin react/build react/node_modules
-	@echo "Clean complete."
+.PHONY: build-client
+build-client:
+	@cd web/pook-react/ && npm run build
+
+.PHONY: start-client
+start-client:
+	@go run ./cmd/web

@@ -1,41 +1,27 @@
 # Pook: An app for creating storybooks
-Pook is a storybook creator application using React and Go. The idea if this app is to allow users to create fun novels in thier browser and share them with others.
 
-## Demo
+## About this project
 TBD
 
+### Demo
+TBD
+
+### Built With
+- Go (Golang) 1.18
+- Gin Web Framework
+
 ## Getting Started
-### Prerequisites
-- Node
-- Go
-- PostgreSQL
+TBD
 
-### Configuration
-1) Clone this repo using `git clone https://github.com/chumnend/pook.git`
+1) Clone this repository, `git clone https://github.com/chumnend/pook.git`
 
-2) Create a postgresql database locally or online. The database will be connected through using a connection string. It should have the form of 
-`postgresql://<username>:<password>@<address>/<dbname>`
+2) Create a copy of the .env.example file and rename it to .env, `cp .env.example .env`
 
-3) Run `cp .env.example .env` and then open the `.env` and fill out the following fields,
-```
-PORT= # the port the app will run on
-SECRET_KEY= # string used for hashing
-DATABASE_URL= # database string used to connect to postgresql database
-DATABASE_TEST_URL= # database string to database used for integration tests
-```
+3) Open the .env file and fill in the required fields
 
-4) This step is only needed if you plan to work on the React app. Go into the react folder ie. `cd react/` and copy run `cp .env.example .env` and then open the `.env` and fill out the following fields,
+4) Start the server by typing the command `make run`
 
-```
-NODE_ENV= # production, dev or test
-PORT= # the port the React app can run on, should be different than the previous step
-BROWSER=none # by default stops the browser from opening when running thr React app
-
-REACT_APP_API_PREFIX= # this should point to the address the Go app runs on
-REACT_APP_SENTRY_DSN= # needed for configuration with sentry
-```
-
-5) Now the apps are ready to run. Go back to the root folder and run `make` this will build the React and Go assets and start the app on the given port. You can build assets on thier own using the `make build` command and just serve currently built assets using `make serve`.
+5) Tests can be ran by typing the command `make test`
 
 ## API Documentation
 
@@ -366,8 +352,13 @@ DELETE ```/v1/pages/<PAGE_ID>``` (delete a book's page)
     }
     ```
 
+## Deployment 
+TBD
+
 ## Contact
 Nicholas Chumney - [nicholas.chumney@outlook.com](nicholas.chumney@outlook.com) 
 
 ## Acknowledgments
 - [Building and Testing a REST API in GO](https://semaphoreci.com/community/tutorials/building-and-testing-a-rest-api-in-go-with-gorilla-mux-and-postgresql)
+- [Go-clean-template: Clean Architectur](https://evrone.com/go-clean-template)
+- [Create your first Go REST API with JWT Authentication in Gin Framework](https://seefnasrul.medium.com/create-your-first-go-rest-api-with-jwt-authentication-in-gin-framework-dbe5bda72817)
