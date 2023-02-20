@@ -1,18 +1,16 @@
-# Pook: An app for creating storybooks
+# Pook: An app for creating storybooks (ABANDONED)
 
 ## About this project
-TBD
+Pook is a web platform to allow users to create picture books and share them with others.
 
 ### Demo
-TBD
+N/A
 
 ### Built With
 - Go (Golang) 1.18
 - Gin Web Framework
 
 ## Getting Started
-TBD
-
 1) Clone this repository, `git clone https://github.com/chumnend/pook.git`
 
 2) Create a copy of the .env.example file and rename it to .env, `cp .env.example .env`
