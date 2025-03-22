@@ -1,26 +1,24 @@
-.PHONY: install-all
-install-all: install-go install-react
+all: build
 
-.PHONY: install-go
-install-go:
-	@go mod tidy && go mod download
+.PHONY: build
+build:
+	@echo "Building..."
+	@mkdir -p bin/
+	@cd ./bin && go build ../cmd/main.go
+	@echo "Build complete."
 
-.PHONY: start-server
-start-server:
-	@go run ./cmd/app
+.PHONY: start
+start:
+	@echo "Executing..."
+	@./bin/main
 
-.PHONY: test-server
-test-server: 
-	@go test -cover -covermode=atomic ./internal/...
+.PHONY: test
+test:
+	@echo "Running tests..."
+	@go test ./internal/...
 
-.PHONY: install-react
-install-react:
-	@cd web/pook-react && npm install
-
-.PHONY: build-client
-build-client:
-	@cd web/pook-react/ && npm run build
-
-.PHONY: start-client
-start-client:
-	@go run ./cmd/web
+.PHONY: clean 
+clean:
+	@echo "Cleaning binaries..."
+	@rm -rf bin
+	@echo "Clean complete."
