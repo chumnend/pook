@@ -1,3 +1,20 @@
 # TODO
 
-TBD
+Here are the list of items to complete this project,
+
+- [] Setup PostgreSQL database and tables
+- [] Create models
+- [] Setup router with non implemented routes
+- [] Setup User controllers
+- [] Implement authentication
+- [] Setup Book controllers
+- [] Setup Page controllers
+- [] Setup Comment controllers
+- [] Setup Ratings controllers
+- [] Setup frontend architecture
+- [] Build Auth pages
+- [] Build Landing Page
+- [] Build User Library page
+- [] Build Book Creation page
+- [] Build Book viewing page
+- [] Build User profile page
