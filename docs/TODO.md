@@ -2,7 +2,7 @@
 
 Here are the list of items to complete this project,
 
-- [] Setup PostgreSQL database and tables
+- [X] Setup PostgreSQL database and tables
 - [] Create models
 - [] Setup router with non implemented routes
 - [] Setup User controllers

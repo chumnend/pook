@@ -45,7 +45,7 @@ CREATE TABLE Books (
     book_id UUID PRIMARY KEY,
     user_id INT REFERENCES Users(user_id),
     title VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP
 );
 
@@ -56,7 +56,7 @@ CREATE TABLE Pages (
     image_url VARCHAR(255) NOT NULL,
     caption TEXT,
     page_order INT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP
 );
 

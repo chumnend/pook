@@ -14,24 +14,45 @@ To get started with the application, follow these steps:
 
 1. **Clone the repository:**
 
-   ```bash
+   ```sh
    git clone git@github.com:chumnend/pook.git
    cd pook
    ```
 
 2. **Install dependencies:**
 
-   ```bash
+   ```sh
    go mod tidy
    ```
 
-3. **Run the application:**
+3. **Setup .env file.**
 
-   ```bash
+   ```sh
+   cp .env.example .env
+   vi .env
+   ```
+
+4. Install `golang-migrate`. This is for Linux, if using Mac or Windows please look up installation guide.
+
+   ```sh
+   curl -L https://github.com/golang-migrate/migrate/releases/download/v4.16.2/migrate.linux-amd64.tar.gz | tar xvz
+   sudo mv migrate /usr/local/bin/
+   ```
+
+5. **Run database migrations**
+
+   ```sh
+   make migrate
+   ```
+
+6. **Run the application:**
+
+   ```sh
    go run cmd/main.go
    ```
 
-4. **Access the application:**
+7. **Access the application:**
+
    Open your web browser and navigate to `http://localhost:8080` to see the application in action.
 
 ## Contributing

@@ -1,3 +1,5 @@
+include .env
+
 all: build
 
 .PHONY: build
@@ -22,3 +24,11 @@ clean:
 	@echo "Cleaning binaries..."
 	@rm -rf bin
 	@echo "Clean complete."
+
+.PHONY: migrate
+migrate:
+	migrate -database "${PG_URL}?sslmode=disable" -path db/migrations up
+
+.PHONY: rollback
+rollback:
+	migrate -database "${PG_URL}?sslmode=disable" -path db/migrations down
