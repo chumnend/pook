@@ -33,7 +33,7 @@ pook
 ```sh
 -- Users table to store user information
 CREATE TABLE Users (
-    user_id UUID PRIMARY KEY,
+    id UUID PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE Users (
 
 -- Books table to store book information
 CREATE TABLE Books (
-    book_id UUID PRIMARY KEY,
+    id UUID PRIMARY KEY,
     user_id INT REFERENCES Users(user_id),
     title VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -51,7 +51,7 @@ CREATE TABLE Books (
 
 -- Pages table to store pages of a book
 CREATE TABLE Pages (
-    page_id UUID PRIMARY KEY,
+    id UUID PRIMARY KEY,
     book_id INT REFERENCES Books(book_id),
     image_url VARCHAR(255) NOT NULL,
     caption TEXT,
@@ -62,7 +62,7 @@ CREATE TABLE Pages (
 
 -- Comments table to store comments on books
 CREATE TABLE Comments (
-    comment_id UUID PRIMARY KEY,
+    id UUID PRIMARY KEY,
     book_id INT REFERENCES Books(book_id),
     user_id INT REFERENCES Users(user_id),
     comment TEXT NOT NULL,
@@ -71,7 +71,7 @@ CREATE TABLE Comments (
 
 -- Ratings table to store ratings for books
 CREATE TABLE Ratings (
-    rating_id UUID PRIMARY KEY,
+    id UUID PRIMARY KEY,
     book_id INT REFERENCES Books(book_id),
     user_id INT REFERENCES Users(user_id),
     rating INT CHECK (rating >= 1 AND rating <= 5),
