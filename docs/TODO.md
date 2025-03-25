@@ -3,7 +3,8 @@
 Here are the list of items to complete this project,
 
 - [X] Setup PostgreSQL database and tables
-- [] Create models
+- [X] Create models
+- [] Install gorm ORM
 - [] Setup router with non implemented routes
 - [] Setup User controllers
 - [] Implement authentication
