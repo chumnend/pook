@@ -1,10 +1,16 @@
 package handlers
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 )
 
 func Pong(w http.ResponseWriter, req *http.Request) {
-	fmt.Fprintf(w, "Pong\n")
+	log.Printf("handling /ping at %s\n", req.URL.Path)
+
+	w.Write([]byte("pong"))
+}
+
+func NotImplemented(w http.ResponseWriter, req *http.Request) {
+	http.Error(w, "Not yet implemented", http.StatusNotImplemented)
 }
