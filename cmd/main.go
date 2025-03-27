@@ -5,6 +5,12 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/chumnend/pook/internal/auth"
+	"github.com/chumnend/pook/internal/books"
+	"github.com/chumnend/pook/internal/comments"
+	"github.com/chumnend/pook/internal/pages"
+	"github.com/chumnend/pook/internal/ratings"
+	"github.com/chumnend/pook/internal/users"
 	"github.com/chumnend/pook/internal/utils"
 )
 
@@ -13,33 +19,12 @@ func main() {
 
 	mux.HandleFunc("GET /ping", utils.Pong)
 
-	mux.HandleFunc("POST /v1/register", utils.NotImplemented)
-	mux.HandleFunc("POST /v1/login", utils.NotImplemented)
-	mux.HandleFunc("GET /v1/users/{user_id}", utils.NotImplemented)
-
-	mux.HandleFunc("POST /v1/books", utils.NotImplemented)
-	mux.HandleFunc("GET /v1/books", utils.NotImplemented)
-	mux.HandleFunc("GET /v1/books/{book_id}", utils.NotImplemented)
-	mux.HandleFunc("PUT /v1/books/{book_id}", utils.NotImplemented)
-	mux.HandleFunc("DELETE /v1/books/{book_id}", utils.NotImplemented)
-
-	mux.HandleFunc("POST /v1/books/{book_id}/pages", utils.NotImplemented)
-	mux.HandleFunc("GET /v1/books/{book_id}/pages", utils.NotImplemented)
-	mux.HandleFunc("GET /v1/books/{book_id}/pages/{page_id}", utils.NotImplemented)
-	mux.HandleFunc("PUT /v1/books/{book_id}/pages/{page_id}", utils.NotImplemented)
-	mux.HandleFunc("DELETE /v1/books/{book_id}/pages/{page_id}", utils.NotImplemented)
-
-	mux.HandleFunc("POST /v1/books/{book_id}/comments", utils.NotImplemented)
-	mux.HandleFunc("GET /v1/books/{book_id}/comments", utils.NotImplemented)
-	mux.HandleFunc("GET /v1/books/{book_id}/comments/{comment_id}", utils.NotImplemented)
-	mux.HandleFunc("PUT /v1/books/{book_id}/comments/{comment_id}", utils.NotImplemented)
-	mux.HandleFunc("DELETE /v1/books/{book_id}/comments/{comment_id}", utils.NotImplemented)
-
-	mux.HandleFunc("POST /v1/books/{book_id}/ratings/", utils.NotImplemented)
-	mux.HandleFunc("GET /v1/books/{book_id}/ratings/", utils.NotImplemented)
-	mux.HandleFunc("GET /v1/books/{book_id}/ratings/{rating_id}", utils.NotImplemented)
-	mux.HandleFunc("PUT /v1/books/{book_id}/ratings/{rating_id}", utils.NotImplemented)
-	mux.HandleFunc("DELETE /v1/books/{book_id}/ratings/{rating_id}", utils.NotImplemented)
+	auth.RegisterRoutes(mux)
+	users.RegisterRoutes(mux)
+	books.RegisterRoutes(mux)
+	pages.RegisterRoutes(mux)
+	comments.RegisterRoutes(mux)
+	ratings.RegisterRoutes(mux)
 
 	port := os.Getenv("PORT")
 	if port == "" {
