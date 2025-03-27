@@ -27,8 +27,8 @@ clean:
 
 .PHONY: migrate
 migrate:
-	migrate -database "${PG_URL}?sslmode=disable" -path db/migrations up
+	migrate -database "${PG_URL}?sslmode=disable" -path migrations up
 
 .PHONY: rollback
 rollback:
-	migrate -database "${PG_URL}?sslmode=disable" -path db/migrations down
+	migrate -database "${PG_URL}?sslmode=disable" -path migrations down
