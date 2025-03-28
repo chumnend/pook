@@ -18,7 +18,6 @@ func main() {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("GET /ping", utils.Pong)
-
 	auth.RegisterRoutes(mux)
 	users.RegisterRoutes(mux)
 	books.RegisterRoutes(mux)
