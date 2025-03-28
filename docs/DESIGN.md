@@ -122,7 +122,7 @@ These pages cover the main functionalities described in the design document.
 
 Based on the current design, here are the CRUD routes that might need to be created:
 
-### User Routes
+### Auth / User Routes
 
 - POST /register - Register a new user
 - POST /login - Login a user
