@@ -8,9 +8,9 @@ import (
 
 // Comment represents a comment in the Comments table
 type Comment struct {
-	Id        uuid.UUID `json:"id"`
-	BookId    uuid.UUID `json:"bookId"`
-	UserId    uuid.UUID `json:"userId"`
-	Comment   string    `json:"comment"`
-	CreatedAt time.Time `json:"createdAt"`
+	Id        uuid.UUID `db:"id" json:"id"`
+	BookId    uuid.UUID `db:"book_id" json:"bookId"`
+	UserId    uuid.UUID `db:"user_id" json:"userId"`
+	Comment   string    `db:"comment" json:"comment"`
+	CreatedAt time.Time `db:"created_at" json:"createdAt"`
 }

@@ -8,9 +8,9 @@ import (
 
 // User represents a user in the User table
 type User struct {
-	Id           uuid.UUID `json:"id"`
-	Username     string    `json:"username"`
-	Email        string    `json:"email"`
-	PasswordHash string    `json:"-"`
-	CreatedAt    time.Time `json:"createdAt"`
+	Id           uuid.UUID `db:"id" json:"id"`
+	Username     string    `db:"username" json:"username"`
+	Email        string    `db:"email" json:"email"`
+	PasswordHash string    `db:"password_hash" json:"-"`
+	CreatedAt    time.Time `db:"created_at" json:"createdAt"`
 }

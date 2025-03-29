@@ -8,9 +8,9 @@ import (
 
 // Rating represents a rating in the Ratings table
 type Rating struct {
-	Id        uuid.UUID `json:"id"`
-	BookId    uuid.UUID `json:"bookId"`
-	UserId    uuid.UUID `json:"userId"`
-	Rating    int       `json:"rating"`
-	CreatedAt time.Time `json:"createdAt"`
+	Id        uuid.UUID `db:"id" json:"id"`
+	BookId    uuid.UUID `db:"book_id" json:"bookId"`
+	UserId    uuid.UUID `db:"user_id" json:"userId"`
+	Rating    int       `db:"rating" json:"rating"`
+	CreatedAt time.Time `db:"created_at" json:"createdAt"`
 }

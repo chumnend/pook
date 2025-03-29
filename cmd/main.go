@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/chumnend/pook/internal/auth"
 	"github.com/chumnend/pook/internal/books"
 	"github.com/chumnend/pook/internal/comments"
 	"github.com/chumnend/pook/internal/pages"
@@ -18,7 +17,6 @@ func main() {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("GET /ping", utils.Pong)
-	auth.RegisterRoutes(mux)
 	users.RegisterRoutes(mux)
 	books.RegisterRoutes(mux)
 	pages.RegisterRoutes(mux)
