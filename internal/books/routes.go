@@ -1,12 +1,15 @@
 package books
 
 import (
+	"database/sql"
 	"net/http"
 
 	"github.com/chumnend/pook/internal/utils"
 )
 
-func RegisterRoutes(mux *http.ServeMux) {
+func RegisterRoutes(mux *http.ServeMux, db *sql.DB) {
+	// bookRepository := NewBookRepository(db)
+
 	mux.HandleFunc("POST /v1/books", utils.NotImplemented)
 	mux.HandleFunc("GET /v1/books", utils.NotImplemented)
 	mux.HandleFunc("GET /v1/books/{book_id}", utils.NotImplemented)

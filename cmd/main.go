@@ -37,7 +37,7 @@ func main() {
 
 	mux.HandleFunc("GET /ping", utils.Pong)
 	users.RegisterRoutes(mux)
-	books.RegisterRoutes(mux)
+	books.RegisterRoutes(mux, db)
 	pages.RegisterRoutes(mux)
 	comments.RegisterRoutes(mux)
 	ratings.RegisterRoutes(mux)
