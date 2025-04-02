@@ -1,7 +1,9 @@
-CREATE TABLE Books (
-    id UUID PRIMARY KEY,
-    user_id UUID REFERENCES Users(id),
+CREATE TABLE books (
+    id UUID NOT NULL UNIQUE,
+    user_id UUID NOT NULL,
     title VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
