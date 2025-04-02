@@ -8,9 +8,6 @@ import (
 )
 
 func RegisterRoutes(mux *http.ServeMux, db *sql.DB) {
-	// bookRepository := NewBookRepository(db)
-	// bookService := NewBookService(bookRepository)
-
 	mux.HandleFunc("POST /v1/books", utils.NotImplemented)
 	mux.HandleFunc("GET /v1/books", utils.NotImplemented)
 	mux.HandleFunc("GET /v1/books/{book_id}", utils.NotImplemented)
