@@ -6,7 +6,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// User represents a user in the User table
 type User struct {
 	ID           uuid.UUID `db:"id" json:"id"`
 	Username     string    `db:"username" json:"username"`
@@ -15,7 +14,6 @@ type User struct {
 	CreatedAt    time.Time `db:"created_at" json:"createdAt"`
 }
 
-// UserRepository is an interface for accessing the users table is PostgreSQL
 type IUserRepository interface {
 	Create(*User) error
 	FindAll() ([]User, error)
