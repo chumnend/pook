@@ -1,6 +1,7 @@
 package users
 
 import (
+	"net/http"
 	"time"
 
 	"github.com/google/uuid"
@@ -21,4 +22,20 @@ type IUserRepository interface {
 	FindByUsername(string) (*User, error)
 	FindByEmail(string) (*User, error)
 	Update(*User) error
+}
+
+type IUserService interface {
+	Create(*User) error
+	FindAll() ([]User, error)
+	FindByUsername(string) (*User, error)
+	FindByEmail(string) (*User, error)
+	Update(*User) error
+	GenerateToken(*User) (string, error)
+	ComparePassword(*User, string) error
+}
+
+type IUserController interface {
+	Register(http.ResponseWriter, *http.Request)
+	Login(http.ResponseWriter, *http.Request)
+	GetUser(http.ResponseWriter, *http.Request)
 }
