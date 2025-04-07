@@ -22,6 +22,14 @@ func main() {
 		log.Fatalf("Failed to load environment variables: %v", err)
 	}
 
+	if os.Getenv("PG_URL") == "" {
+		panic("PG_URL environment variable is not set")
+	}
+
+	if os.Getenv("SECRET_KEY") == "" {
+		panic("SECRET_KEY environment variable is not set")
+	}
+
 	db, err := sql.Open("postgres", os.Getenv("PG_URL"))
 	if err != nil {
 		log.Fatalf("Failed to connect to the database: %v", err)
