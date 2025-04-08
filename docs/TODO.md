@@ -3,14 +3,18 @@
 Here are the list of items to complete this project,
 
 - [X] Setup PostgreSQL database and tables
-- [X] Create models
 - [X] Setup router with non-implemented routes
 - [X] Connect app with PostgeSQL
-- [] Setup Book module
-- [] Setup Page module
-- [] Setup Comment module
-- [] Setup Ratings module
-- [] Setup User / Auth module
+- [] Create User model
+- [] Create User handler
+- [] Create Book model
+- [] Create Book handler
+- [] Create Page model
+- [] Create Page handler
+- [] Create Comment model
+- [] Create Comment handler
+- [] Create Rating model
+- [] Create Rating handler
 - [] Create authentication middleware
 - [] Add any missing unit tests
 - [] Generate API spec using Swagger
