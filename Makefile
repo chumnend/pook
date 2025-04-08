@@ -1,6 +1,6 @@
 include .env
 
-all: build
+all: build start
 
 .PHONY: build
 build:
