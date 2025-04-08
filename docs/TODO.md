@@ -5,7 +5,7 @@ Here are the list of items to complete this project,
 - [X] Setup PostgreSQL database and tables
 - [X] Setup router with non-implemented routes
 - [X] Connect app with PostgeSQL
-- [] Create User model
+- [X] Create User model
 - [] Create User handler
 - [] Create Book model
 - [] Create Book handler
