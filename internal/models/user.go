@@ -12,11 +12,11 @@ import (
 )
 
 type User struct {
-	ID        uuid.UUID `json:"id"`
-	Username  string    `json:"username"`
-	Email     string    `json:"email"`
-	Password  string    `json:"-"`
-	CreatedAt time.Time `json:"createdAt"`
+	ID        uuid.UUID `json:"id" db:"id"`
+	Username  string    `json:"username" db:"username"`
+	Email     string    `json:"email" db:"email"`
+	Password  string    `json:"-" db:"password_hash"`
+	CreatedAt time.Time `json:"createdAt" db:"created_at"`
 }
 
 func CreateUser(username string, email string, password string) error {
@@ -27,7 +27,7 @@ func CreateUser(username string, email string, password string) error {
 		return err
 	}
 
-	_, err = db.DB.Exec("INSERT INTO users (id, username, email, password) VALUES ($1, $2, $3, $4)", uuid, username, email, hashedPassword)
+	_, err = db.DB.Exec("INSERT INTO users (id, username, email, password_hash) VALUES ($1, $2, $3, $4)", uuid, username, email, hashedPassword)
 	if err != nil {
 		return err
 	}
@@ -35,9 +35,9 @@ func CreateUser(username string, email string, password string) error {
 	return nil
 }
 
-func GetUserByID(id uuid.UUID) (*User, error) {
+func GetUserByUUID(id uuid.UUID) (*User, error) {
 	var user User
-	err := db.DB.QueryRow("SELECT id, username, email, password, created_at FROM users WHERE id = $1", id).
+	err := db.DB.QueryRow("SELECT id, username, email, password_hash, created_at FROM users WHERE id = $1", id).
 		Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.CreatedAt)
 	if err != nil {
 		return nil, err
@@ -47,7 +47,7 @@ func GetUserByID(id uuid.UUID) (*User, error) {
 
 func GetUserByUsername(username string) (*User, error) {
 	var user User
-	err := db.DB.QueryRow("SELECT id, username, email, password, created_at FROM users WHERE username = $1", username).
+	err := db.DB.QueryRow("SELECT id, username, email, password_hash, created_at FROM users WHERE username = $1", username).
 		Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.CreatedAt)
 	if err != nil {
 		return nil, err
@@ -57,7 +57,7 @@ func GetUserByUsername(username string) (*User, error) {
 
 func GetUserByEmail(email string) (*User, error) {
 	var user User
-	err := db.DB.QueryRow("SELECT id, username, email, password, created_at FROM users WHERE email = $1", email).
+	err := db.DB.QueryRow("SELECT id, username, email, password_hash, created_at FROM users WHERE email = $1", email).
 		Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.CreatedAt)
 	if err != nil {
 		return nil, err

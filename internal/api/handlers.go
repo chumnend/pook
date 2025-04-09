@@ -3,10 +3,105 @@ package api
 import (
 	"log"
 	"net/http"
+
+	"github.com/chumnend/pook/internal/models"
+	"github.com/chumnend/pook/internal/utils"
+	"github.com/google/uuid"
 )
 
-func Pong(w http.ResponseWriter, req *http.Request) {
+func pong(w http.ResponseWriter, req *http.Request) {
 	log.Printf("handling %s\n", req.URL.Path)
+	w.Write([]byte("pong\n"))
+}
 
-	w.Write([]byte("Pong\n"))
+// ------------- User Routes
+
+func register(w http.ResponseWriter, req *http.Request) {
+	type registerInput struct {
+		Email    string `json:"email"`
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
+
+	var input registerInput
+
+	if err := utils.ParseJSON(req, &input); err != nil {
+		http.Error(w, "invalid input", http.StatusBadRequest)
+		return
+	}
+
+	if input.Email == "" || input.Username == "" || input.Password == "" {
+		http.Error(w, "all fields (email, username, password) are required", http.StatusBadRequest)
+		return
+	}
+
+	if err := models.CreateUser(input.Username, input.Email, input.Password); err != nil {
+		http.Error(w, "unable to create user", http.StatusBadRequest)
+		log.Printf("Error creating user: %v", err)
+		return
+	}
+
+	response := map[string]string{
+		"message": "registration successful",
+	}
+	utils.SendJSON(w, response, http.StatusOK)
+}
+
+func login(w http.ResponseWriter, req *http.Request) {
+	type loginInput struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
+
+	var input loginInput
+
+	if err := utils.ParseJSON(req, &input); err != nil {
+		http.Error(w, "invalid input", http.StatusBadRequest)
+		return
+	}
+
+	if input.Username == "" || input.Password == "" {
+		http.Error(w, "all fields (username, password) are required", http.StatusBadRequest)
+		return
+	}
+
+	user, err := models.GetUserByUsername(input.Username)
+	if err != nil {
+		http.Error(w, "invalid username and/or password", http.StatusBadRequest)
+		return
+	}
+
+	if err := models.ComparePassword(user, input.Password); err != nil {
+		http.Error(w, "all fields (username, password) are required", http.StatusBadRequest)
+		return
+	}
+
+	token, err := models.GenerateUserToken(user)
+	if err != nil {
+		http.Error(w, "something went wrong", http.StatusInternalServerError)
+		return
+	}
+
+	response := map[string]string{
+		"token": token,
+	}
+
+	utils.SendJSON(w, response, http.StatusOK)
+}
+
+func getUser(w http.ResponseWriter, req *http.Request) {
+	user_id := req.PathValue("user_id")
+
+	parsed_uuid, err := uuid.Parse(user_id)
+	if err != nil {
+		http.Error(w, "invalid user id", http.StatusBadRequest)
+		return
+	}
+
+	user, err := models.GetUserByUUID(parsed_uuid)
+	if err != nil {
+		http.Error(w, "user not found", http.StatusBadRequest)
+	}
+
+	utils.SendJSON(w, user, http.StatusFound)
 }

@@ -6,7 +6,7 @@ Here are the list of items to complete this project,
 - [X] Setup router with non-implemented routes
 - [X] Connect app with PostgeSQL
 - [X] Create User model
-- [] Create User handler
+- [X] Create User handler
 - [] Create Book model
 - [] Create Book handler
 - [] Create Page model
