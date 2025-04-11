@@ -1,4 +1,4 @@
-package api
+package handlers
 
 import (
 	"log"
@@ -9,14 +9,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func pong(w http.ResponseWriter, req *http.Request) {
-	log.Printf("handling %s\n", req.URL.Path)
-	w.Write([]byte("pong\n"))
-}
-
-// ------------- User Routes
-
-func register(w http.ResponseWriter, req *http.Request) {
+func Register(w http.ResponseWriter, req *http.Request) {
 	type registerInput struct {
 		Email    string `json:"email"`
 		Username string `json:"username"`
@@ -47,7 +40,7 @@ func register(w http.ResponseWriter, req *http.Request) {
 	utils.SendJSON(w, response, http.StatusOK)
 }
 
-func login(w http.ResponseWriter, req *http.Request) {
+func Login(w http.ResponseWriter, req *http.Request) {
 	type loginInput struct {
 		Username string `json:"username"`
 		Password string `json:"password"`
@@ -89,7 +82,7 @@ func login(w http.ResponseWriter, req *http.Request) {
 	utils.SendJSON(w, response, http.StatusOK)
 }
 
-func getUser(w http.ResponseWriter, req *http.Request) {
+func GetUser(w http.ResponseWriter, req *http.Request) {
 	user_id := req.PathValue("user_id")
 
 	parsed_uuid, err := uuid.Parse(user_id)

@@ -7,9 +7,9 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/chumnend/pook/internal/api"
 	"github.com/chumnend/pook/internal/config"
 	"github.com/chumnend/pook/internal/db"
+	"github.com/chumnend/pook/internal/routes"
 )
 
 func main() {
@@ -29,7 +29,7 @@ func main() {
 	}()
 
 	mux := http.NewServeMux()
-	api.RegisterRoutes(mux)
+	routes.RegisterRoutes(mux)
 
 	log.Println("Starting server on port", config.Env.PORT)
 	log.Fatal(http.ListenAndServe(":"+config.Env.PORT, mux))
