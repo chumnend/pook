@@ -7,7 +7,7 @@ Here are the list of items to complete this project,
 - [X] Connect app with PostgeSQL
 - [X] Create User model
 - [X] Create User handler
-- [] Create Book model
+- [X] Create Book model
 - [] Create Book handler
 - [] Create Page model
 - [] Create Page handler
