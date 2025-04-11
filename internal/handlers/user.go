@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/chumnend/pook/internal/models"
@@ -10,14 +9,13 @@ import (
 )
 
 func Register(w http.ResponseWriter, req *http.Request) {
-	type registerInput struct {
+	type requestInput struct {
 		Email    string `json:"email"`
 		Username string `json:"username"`
 		Password string `json:"password"`
 	}
 
-	var input registerInput
-
+	var input requestInput
 	if err := utils.ParseJSON(req, &input); err != nil {
 		http.Error(w, "invalid input", http.StatusBadRequest)
 		return
@@ -30,7 +28,6 @@ func Register(w http.ResponseWriter, req *http.Request) {
 
 	if err := models.CreateUser(input.Username, input.Email, input.Password); err != nil {
 		http.Error(w, "unable to create user", http.StatusBadRequest)
-		log.Printf("Error creating user: %v", err)
 		return
 	}
 
@@ -41,13 +38,12 @@ func Register(w http.ResponseWriter, req *http.Request) {
 }
 
 func Login(w http.ResponseWriter, req *http.Request) {
-	type loginInput struct {
+	type requestInput struct {
 		Username string `json:"username"`
 		Password string `json:"password"`
 	}
 
-	var input loginInput
-
+	var input requestInput
 	if err := utils.ParseJSON(req, &input); err != nil {
 		http.Error(w, "invalid input", http.StatusBadRequest)
 		return
