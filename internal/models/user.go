@@ -35,7 +35,7 @@ func CreateUser(username string, email string, password string) error {
 	return nil
 }
 
-func GetUserByUUID(id uuid.UUID) (*User, error) {
+func GetUserByID(id uuid.UUID) (*User, error) {
 	var user User
 	err := db.DB.QueryRow("SELECT id, username, email, password_hash, created_at FROM users WHERE id = $1", id).
 		Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.CreatedAt)
@@ -66,10 +66,12 @@ func GetUserByEmail(email string) (*User, error) {
 }
 
 func GenerateUserToken(user *User) (string, error) {
-	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), jwt.MapClaims{
+	claims := jwt.MapClaims{
 		"id":    user.ID,
 		"email": user.Email,
-	})
+		"exp":   time.Now().Add(24 * time.Hour).Unix(),
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenStr, err := token.SignedString([]byte(config.Env.SECRET_KEY))
 	if err != nil {
 		return "", err

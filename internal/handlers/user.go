@@ -26,6 +26,11 @@ func Register(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	if !utils.IsValidEmail(input.Email) {
+		http.Error(w, "invalid email format", http.StatusBadRequest)
+		return
+	}
+
 	if err := models.CreateUser(input.Username, input.Email, input.Password); err != nil {
 		http.Error(w, "unable to create user", http.StatusBadRequest)
 		return
@@ -61,7 +66,7 @@ func Login(w http.ResponseWriter, req *http.Request) {
 	}
 
 	if err := models.ComparePassword(user, input.Password); err != nil {
-		http.Error(w, "all fields (username, password) are required", http.StatusBadRequest)
+		http.Error(w, "invalid username and/or password", http.StatusBadRequest)
 		return
 	}
 
@@ -87,9 +92,10 @@ func GetUser(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	user, err := models.GetUserByUUID(parsed_uuid)
+	user, err := models.GetUserByID(parsed_uuid)
 	if err != nil {
 		http.Error(w, "user not found", http.StatusBadRequest)
+		return
 	}
 
 	utils.SendJSON(w, user, http.StatusFound)
