@@ -43,7 +43,7 @@ CREATE TABLE Users (
 -- Books table to store book information
 CREATE TABLE Books (
     id UUID PRIMARY KEY,
-    user_id INT REFERENCES Users(user_id),
+    user_id UUID REFERENCES Users(user_id),
     title VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP
@@ -52,7 +52,7 @@ CREATE TABLE Books (
 -- Pages table to store pages of a book
 CREATE TABLE Pages (
     id UUID PRIMARY KEY,
-    book_id INT REFERENCES Books(book_id),
+    book_id UUID REFERENCES Books(book_id),
     image_url VARCHAR(255) NOT NULL,
     caption TEXT,
     page_order INT NOT NULL,
@@ -63,8 +63,8 @@ CREATE TABLE Pages (
 -- Comments table to store comments on books
 CREATE TABLE Comments (
     id UUID PRIMARY KEY,
-    book_id INT REFERENCES Books(book_id),
-    user_id INT REFERENCES Users(user_id),
+    book_id UUID REFERENCES Books(book_id),
+    user_id UUID REFERENCES Users(user_id),
     comment TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -72,8 +72,8 @@ CREATE TABLE Comments (
 -- Ratings table to store ratings for books
 CREATE TABLE Ratings (
     id UUID PRIMARY KEY,
-    book_id INT REFERENCES Books(book_id),
-    user_id INT REFERENCES Users(user_id),
+    book_id UUID REFERENCES Books(book_id),
+    user_id UUID REFERENCES Users(user_id),
     rating INT CHECK (rating >= 1 AND rating <= 5),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
