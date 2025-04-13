@@ -1,0 +1,81 @@
+# Testing
+
+Here are some curl commands to test the currently implemented routes in your project:
+
+## User Routes
+
+### Register a New User
+
+```sh
+curl -X POST http://localhost:8080/v1/register \
+-H "Content-Type: application/json" \
+-d '{
+  "email": "test@example.com",
+  "username": "testuser",
+  "password": "password123"
+}'
+```
+
+### Login a User
+
+```sh
+curl -X POST http://localhost:8080/v1/login \
+-H "Content-Type: application/json" \
+-d '{
+  "username": "testuser",
+  "password": "password123"
+}'
+```
+
+### Get User Details
+
+```sh
+curl -X GET http://localhost:8080/v1/users/{user_id}
+```
+
+## Book Routes
+
+### Create a New Book
+
+```sh
+curl -X POST http://localhost:8080/v1/books \
+-H "Content-Type: application/json" \
+-d '{
+  "title": "My First Book",
+  "userId": "user-uuid-here"
+}'
+```
+
+### Get All Books
+
+```sh
+curl -X GET http://localhost:8080/v1/books
+```
+
+### Get Books By User ID
+
+```sh
+curl -X GET "http://localhost:8080/v1/books?user_id=user-uuid-here"
+```
+
+### Get a Specific Book
+
+```sh
+curl -X GET http://localhost:8080/v1/books/{book_id}
+```
+
+### Update a Book
+
+```sh
+curl -X PUT http://localhost:8080/v1/books/{book_id} \
+-H "Content-Type: application/json" \
+-d '{
+  "title": "Updated Book Title"
+}'
+```
+
+### Delete a Book
+
+```sh
+curl -X DELETE http://localhost:8080/v1/books/{book_id}
+```
