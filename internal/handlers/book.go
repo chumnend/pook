@@ -10,8 +10,8 @@ import (
 
 func CreateBook(w http.ResponseWriter, req *http.Request) {
 	type requestInput struct {
-		Title  string `json:"title"`
 		UserID string `json:"userId"`
+		Title  string `json:"title"`
 	}
 
 	var input requestInput
@@ -20,18 +20,18 @@ func CreateBook(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if input.Title == "" {
+	if input.Title == "" || input.UserID == "" {
 		http.Error(w, "all fields (title, userId) are required", http.StatusBadRequest)
 		return
 	}
 
-	parsed_uuid, err := uuid.Parse(input.UserID)
+	parsedUUID, err := uuid.Parse(input.UserID)
 	if err != nil {
 		http.Error(w, "invalid user id", http.StatusBadRequest)
 		return
 	}
 
-	if err := models.CreateBook(parsed_uuid, input.Title); err != nil {
+	if err := models.CreateBook(parsedUUID, input.Title); err != nil {
 		http.Error(w, "unable to create book", http.StatusBadRequest)
 		return
 	}
@@ -44,15 +44,15 @@ func CreateBook(w http.ResponseWriter, req *http.Request) {
 }
 
 func GetAllBooks(w http.ResponseWriter, req *http.Request) {
-	user_id := req.URL.Query().Get("user_id")
-	if user_id != "" {
-		parsed_uuid, err := uuid.Parse(user_id)
+	userID := req.URL.Query().Get("user_id")
+	if userID != "" {
+		parsedUUID, err := uuid.Parse(userID)
 		if err != nil {
 			http.Error(w, "invalid user id", http.StatusBadRequest)
 			return
 		}
 
-		books, err := models.GetBooksByUserID(parsed_uuid)
+		books, err := models.GetBooksByUserID(parsedUUID)
 		if err != nil {
 			http.Error(w, "unable to get user's books", http.StatusInternalServerError)
 			return
@@ -63,7 +63,6 @@ func GetAllBooks(w http.ResponseWriter, req *http.Request) {
 		}
 
 		utils.SendJSON(w, response, http.StatusOK)
-		return
 	}
 
 	books, err := models.GetAllBooks()
@@ -80,15 +79,15 @@ func GetAllBooks(w http.ResponseWriter, req *http.Request) {
 }
 
 func GetBook(w http.ResponseWriter, req *http.Request) {
-	book_id := req.PathValue("book_id")
+	bookID := req.PathValue("book_id")
 
-	parsed_id, err := uuid.Parse(book_id)
+	parsedUUID, err := uuid.Parse(bookID)
 	if err != nil {
 		http.Error(w, "invalid book_id", http.StatusBadRequest)
 		return
 	}
 
-	book, err := models.GetBookByID(parsed_id)
+	book, err := models.GetBookByID(parsedUUID)
 	if err != nil {
 		http.Error(w, "book not found", http.StatusNotFound)
 		return
@@ -102,9 +101,9 @@ func GetBook(w http.ResponseWriter, req *http.Request) {
 }
 
 func UpdateBook(w http.ResponseWriter, req *http.Request) {
-	book_id := req.PathValue("book_id")
+	bookID := req.PathValue("book_id")
 
-	parsed_id, err := uuid.Parse(book_id)
+	parsedUUID, err := uuid.Parse(bookID)
 	if err != nil {
 		http.Error(w, "invalid book_id", http.StatusBadRequest)
 		return
@@ -125,7 +124,7 @@ func UpdateBook(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if err := models.UpdateBookByID(parsed_id, input.Title); err != nil {
+	if err := models.UpdateBookByID(parsedUUID, input.Title); err != nil {
 		http.Error(w, "unable to update book", http.StatusInternalServerError)
 		return
 	}
@@ -138,15 +137,15 @@ func UpdateBook(w http.ResponseWriter, req *http.Request) {
 }
 
 func DeleteBook(w http.ResponseWriter, req *http.Request) {
-	book_id := req.PathValue("book_id")
+	bookID := req.PathValue("book_id")
 
-	parsed_id, err := uuid.Parse(book_id)
+	parsedUUID, err := uuid.Parse(bookID)
 	if err != nil {
 		http.Error(w, "invalid book_id", http.StatusBadRequest)
 		return
 	}
 
-	if err := models.DeleteBookByID(parsed_id); err != nil {
+	if err := models.DeleteBookByID(parsedUUID); err != nil {
 		http.Error(w, "unable to delete book", http.StatusInternalServerError)
 		return
 	}

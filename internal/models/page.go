@@ -60,11 +60,11 @@ func GetPagesByBookID(bookId uuid.UUID) (*[]Page, error) {
 	return &pages, nil
 }
 
-func GetPageByBookID(bookId uuid.UUID, pageOrder int) (*Page, error) {
+func GetPageByID(id uuid.UUID) (*Page, error) {
 	var page Page
 	err := db.DB.QueryRow(
-		"SELECT id, book_id, image_url, caption, page_order, created_at, updated_at FROM pages WHERE book_id = $1 AND page_order = $2",
-		bookId, pageOrder,
+		"SELECT id, book_id, image_url, caption, page_order, created_at, updated_at FROM pages WHERE id = $1",
+		id,
 	).Scan(
 		&page.ID,
 		&page.BookID,

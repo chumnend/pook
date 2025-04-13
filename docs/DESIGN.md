@@ -140,6 +140,7 @@ Based on the current design, here are the CRUD routes that might need to be crea
 
 - POST /books/{book_id}/pages - Add a new page to a book
 - GET /books/{book_id}/pages - Get pages of a book
+- GET /books/{book_id}/pages/{page_id} - Get page of a book
 - PUT /books/{book_id}/pages/{page_id} - Update a page
 - DELETE /books/{book_id}/pages/{page_id} - Delete a page
 

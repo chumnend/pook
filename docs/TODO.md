@@ -10,7 +10,7 @@ Here are the list of items to complete this project,
 - [X] Create Book model
 - [X] Create Book handler
 - [X] Create Page model
-- [] Create Page handler
+- [X] Create Page handler
 - [] Create Comment model
 - [] Create Comment handler
 - [] Create Rating model

@@ -79,3 +79,47 @@ curl -X PUT http://localhost:8080/v1/books/{book_id} \
 ```sh
 curl -X DELETE http://localhost:8080/v1/books/{book_id}
 ```
+
+## Page Routes
+
+### Create a Page
+
+```sh
+curl -X POST http://localhost:8080/books/{book_id}/pages \
+-H "Content-Type: application/json" \
+-d '{
+  "imageUrl": "https://example.com/image.jpg",
+  "caption": "Sample caption",
+  "pageOrder": 1
+}'
+```
+
+### Get All Pages of a Book
+
+```sh
+curl -X GET http://localhost:8080/books/{book_id}/pages
+```
+
+### Get a Specific Page
+
+```sh
+curl -X GET http://localhost:8080/books/{book_id}/pages/{page_id}
+```
+
+### Update a Page
+
+```sh
+curl -X PUT http://localhost:8080/books/{book_id}/pages/{page_id} \
+-H "Content-Type: application/json" \
+-d '{
+  "imageUrl": "https://example.com/updated-image.jpg",
+  "caption": "Updated caption",
+  "pageOrder": 2
+}'
+```
+
+### Delete a Page
+
+```sh
+curl -X DELETE http://localhost:8080/books/{book_id}/pages/{page_id}
+```
