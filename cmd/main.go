@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"syscall"
 
 	"github.com/chumnend/pook/internal/config"
@@ -30,6 +31,20 @@ func main() {
 
 	mux := http.NewServeMux()
 	routes.RegisterRoutes(mux)
+
+	// Serve React static files with fallback to index.html
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		reactBuildPath := filepath.Join("web", "pook-react", "dist")
+		filePath := filepath.Join(reactBuildPath, r.URL.Path)
+
+		// Check if the file exists
+		if _, err := os.Stat(filePath); os.IsNotExist(err) {
+			http.ServeFile(w, r, filepath.Join(reactBuildPath, "index.html"))
+			return
+		}
+
+		http.FileServer(http.Dir(reactBuildPath)).ServeHTTP(w, r)
+	})
 
 	log.Println("Starting server on port", config.Env.PORT)
 	log.Fatal(http.ListenAndServe(":"+config.Env.PORT, mux))

@@ -7,6 +7,7 @@ build:
 	@echo "Building..."
 	@mkdir -p bin/
 	@cd ./bin && go build ../cmd/main.go
+	@cd ./web/pook-react && yarn build
 	@echo "Build complete."
 
 .PHONY: start

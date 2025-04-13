@@ -18,7 +18,7 @@ Here are the list of items to complete this project,
 - [] Create authentication middleware
 - [] Add any missing unit tests
 - [] Generate API spec using Swagger
-- [] Setup frontend architecture
+- [X] Setup frontend architecture
 - [] Build Auth pages
 - [] Build Landing Page
 - [] Build User Library page
