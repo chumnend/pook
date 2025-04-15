@@ -30,6 +30,8 @@ func main() {
 	}()
 
 	mux := http.NewServeMux()
+
+	// Setup API routes
 	routes.RegisterRoutes(mux)
 
 	// Serve React static files with fallback to index.html
