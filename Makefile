@@ -7,6 +7,10 @@ build:
 	@echo "Building..."
 	@mkdir -p bin/
 	@cd ./bin && go build ../cmd/main.go
+	@if [ ! -d "./web/pook-react/node_modules" ]; then \
+			echo "Installing dependencies..."; \
+			cd ./web/pook-react && yarn; \
+	fi
 	@cd ./web/pook-react && yarn build
 	@echo "Build complete."
 
@@ -23,7 +27,7 @@ test:
 .PHONY: clean 
 clean:
 	@echo "Cleaning binaries..."
-	@rm -rf bin
+	@rm -rf bin web/**/dist web/**/node_modules
 	@echo "Clean complete."
 
 .PHONY: migrate
