@@ -19,9 +19,12 @@ Here are the list of items to complete this project,
 - [] Add any missing unit tests
 - [] Generate API spec using Swagger
 - [X] Setup frontend architecture
-- [] Build Auth pages
+- [] Build Landing Page
+- [] Build Register page
+- [] Build Login Page
 - [] Build Landing Page
 - [] Build User Library page
 - [] Build Book Creation page
 - [] Build Book viewing page
 - [] Build User profile page
+- [] Add any missing unit tests
