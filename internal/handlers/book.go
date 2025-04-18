@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/chumnend/pook/internal/models"
@@ -9,6 +10,8 @@ import (
 )
 
 func CreateBook(w http.ResponseWriter, req *http.Request) {
+	log.Println("Request made to" + req.URL.Path)
+
 	type requestInput struct {
 		UserID string `json:"userId"`
 		Title  string `json:"title"`
@@ -44,6 +47,8 @@ func CreateBook(w http.ResponseWriter, req *http.Request) {
 }
 
 func GetAllBooks(w http.ResponseWriter, req *http.Request) {
+	log.Println("Request made to" + req.URL.Path)
+
 	userID := req.URL.Query().Get("user_id")
 	if userID != "" {
 		parsedUUID, err := uuid.Parse(userID)
@@ -79,6 +84,8 @@ func GetAllBooks(w http.ResponseWriter, req *http.Request) {
 }
 
 func GetBook(w http.ResponseWriter, req *http.Request) {
+	log.Println("Request made to" + req.URL.Path)
+
 	bookID := req.PathValue("book_id")
 
 	parsedUUID, err := uuid.Parse(bookID)
@@ -101,6 +108,8 @@ func GetBook(w http.ResponseWriter, req *http.Request) {
 }
 
 func UpdateBook(w http.ResponseWriter, req *http.Request) {
+	log.Println("Request made to" + req.URL.Path)
+
 	bookID := req.PathValue("book_id")
 
 	parsedUUID, err := uuid.Parse(bookID)
@@ -137,6 +146,8 @@ func UpdateBook(w http.ResponseWriter, req *http.Request) {
 }
 
 func DeleteBook(w http.ResponseWriter, req *http.Request) {
+	log.Println("Request made to" + req.URL.Path)
+
 	bookID := req.PathValue("book_id")
 
 	parsedUUID, err := uuid.Parse(bookID)

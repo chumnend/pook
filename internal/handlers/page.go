@@ -10,6 +10,8 @@ import (
 )
 
 func CreatePage(w http.ResponseWriter, req *http.Request) {
+	log.Println("Request made to" + req.URL.Path)
+
 	bookID := req.PathValue("book_id")
 
 	type requestInput struct {
@@ -49,6 +51,8 @@ func CreatePage(w http.ResponseWriter, req *http.Request) {
 }
 
 func GetPages(w http.ResponseWriter, req *http.Request) {
+	log.Println("Request made to" + req.URL.Path)
+
 	bookID := req.PathValue("book_id")
 
 	parsedUUID, err := uuid.Parse(bookID)
@@ -72,6 +76,8 @@ func GetPages(w http.ResponseWriter, req *http.Request) {
 }
 
 func GetPage(w http.ResponseWriter, req *http.Request) {
+	log.Println("Request made to" + req.URL.Path)
+
 	pageID := req.PathValue("page_id")
 
 	parsedUUID, err := uuid.Parse(pageID)
@@ -94,6 +100,8 @@ func GetPage(w http.ResponseWriter, req *http.Request) {
 }
 
 func UpdatePage(w http.ResponseWriter, req *http.Request) {
+	log.Println("Request made to" + req.URL.Path)
+
 	pageID := req.PathValue("page_id")
 
 	type requestInput struct {
@@ -133,6 +141,8 @@ func UpdatePage(w http.ResponseWriter, req *http.Request) {
 }
 
 func DeletePage(w http.ResponseWriter, req *http.Request) {
+	log.Println("Request made to" + req.URL.Path)
+
 	pageID := req.PathValue("page_id")
 
 	parsedUUID, err := uuid.Parse(pageID)

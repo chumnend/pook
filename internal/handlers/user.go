@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/chumnend/pook/internal/models"
@@ -9,6 +10,8 @@ import (
 )
 
 func Register(w http.ResponseWriter, req *http.Request) {
+	log.Println("Request made to" + req.URL.Path)
+
 	type requestInput struct {
 		Email    string `json:"email"`
 		Username string `json:"username"`
@@ -43,6 +46,8 @@ func Register(w http.ResponseWriter, req *http.Request) {
 }
 
 func Login(w http.ResponseWriter, req *http.Request) {
+	log.Println("Request made to" + req.URL.Path)
+
 	type requestInput struct {
 		Username string `json:"username"`
 		Password string `json:"password"`
@@ -84,6 +89,8 @@ func Login(w http.ResponseWriter, req *http.Request) {
 }
 
 func GetUser(w http.ResponseWriter, req *http.Request) {
+	log.Println("Request made to" + req.URL.Path)
+
 	user_id := req.PathValue("user_id")
 
 	parsed_uuid, err := uuid.Parse(user_id)
