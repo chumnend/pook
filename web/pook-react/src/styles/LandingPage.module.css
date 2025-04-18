@@ -1,0 +1,12 @@
+.mainContent {
+  padding: 2rem;
+  text-align: center;
+}
+
+.mainContent h2 {
+  margin-bottom: 1rem;
+}
+
+.mainContent p {
+  color: #555;
+}

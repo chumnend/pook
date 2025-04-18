@@ -1,18 +1,11 @@
-import { Link } from 'react-router-dom';
+import Header from '../components/Header';
 
-import styles from './LandingPage.module.css';
+import styles from '../styles/LandingPage.module.css';
 
 const LandingPage = () => {
   return (
     <div>
-      {/* Navbar */}
-      <nav className={styles.navbar}>
-        <h1>Pook</h1>
-        <Link to="/login" className={styles.navLink}>Login</Link>
-        <Link to="/register" className={styles.navLink}>Register</Link>
-      </nav>
-
-      {/* Main Content */}
+      <Header />
       <div className={styles.mainContent}>
         <h2>Welcome to Pook!</h2>
         <p>
@@ -23,6 +16,5 @@ const LandingPage = () => {
     </div>
   );
 };
-
 
 export default LandingPage;
