@@ -1,0 +1,33 @@
+.navbar {
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #ddd;
+}
+
+.navbar h1 {
+  display: inline;
+  margin-right: 2rem;
+}
+
+.navLink {
+  margin-right: 1rem;
+  text-decoration: none;
+  color: #007bff;
+}
+
+.navLink:hover {
+  text-decoration: underline;
+}
+
+.mainContent {
+  padding: 2rem;
+  text-align: center;
+}
+
+.mainContent h2 {
+  margin-bottom: 1rem;
+}
+
+.mainContent p {
+  color: #555;
+}
