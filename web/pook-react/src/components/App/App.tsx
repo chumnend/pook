@@ -1,13 +1,13 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
-import LandingPage from './LandingPage';
-import RegisterPage from './RegisterPage';
-import LoginPage from './LoginPage';
-import LibraryPage from './LibraryPage';
-import BookCreationPage from './BookCreationPage';
-import BookViewingPage from './BookViewingPage';
-import UserProfilePage from './UserProfilePage';
-import NotFoundPage from './NotFoundPage';
+import LandingPage from '../LandingPage';
+import RegisterPage from '../RegisterPage';
+import LoginPage from '../LoginPage';
+import LibraryPage from '../LibraryPage';
+import BookCreationPage from '../BookCreationPage';
+import BookViewingPage from '../BookViewingPage';
+import UserProfilePage from '../UserProfilePage';
+import NotFoundPage from '../NotFoundPage';
 
 function App() {
   return (
