@@ -5,7 +5,7 @@ import styles from '../styles/Header.module.css';
 function Header() {
   return (
     <nav className={styles.navbar}>
-      <h1>Pook</h1>
+      <Link to="/" className={styles.brand}>Pook</Link>
       <Link to="/login" className={styles.navLink}>Login</Link>
       <Link to="/register" className={styles.navLink}>Register</Link>
     </nav>
