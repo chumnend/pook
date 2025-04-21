@@ -82,7 +82,10 @@ func Login(w http.ResponseWriter, req *http.Request) {
 	}
 
 	response := map[string]string{
-		"token": token,
+		"id":       user.ID.String(),
+		"email":    user.Email,
+		"username": user.Username,
+		"token":    token,
 	}
 
 	utils.SendJSON(w, response, http.StatusOK)

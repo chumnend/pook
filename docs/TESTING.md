@@ -10,9 +10,9 @@ Here are some curl commands to test the currently implemented routes in your pro
 curl -X POST http://localhost:8080/v1/register \
 -H "Content-Type: application/json" \
 -d '{
-  "email": "test@example.com",
-  "username": "testuser",
-  "password": "password123"
+  "email": "tester@xchumz.com",
+  "username": "tester",
+  "password": "test123"
 }'
 ```
 
@@ -22,8 +22,8 @@ curl -X POST http://localhost:8080/v1/register \
 curl -X POST http://localhost:8080/v1/login \
 -H "Content-Type: application/json" \
 -d '{
-  "username": "testuser",
-  "password": "password123"
+  "username": "tester",
+  "password": "test123"
 }'
 ```
 
