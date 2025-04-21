@@ -11,24 +11,26 @@ type Props = {
 const AuthProvider = ({ children }: Props) => {
   const [user, setUser] = useState<UserType | null>(null);
 
-  const register = async (email: string, username: string, password: string) => {
+  const register = async (email: string, username: string, password: string): Promise<boolean> => {
     try {
-      const data = await authService.register(email, username, password);
-      console.log('Registration successful:', data);
+      await authService.register(email, username, password);
+      return true;
     } catch (error) {
       console.error('Registration error:', error);
+      return false;
     }
-    setUser(null);
   }
 
-  const login = async (username: string, password: string) => { 
+  const login = async (username: string, password: string): Promise<boolean> => { 
     try {
       const data = await authService.login(username, password);
-      console.log('Login successful:', data);
+      setUser({ id: data.id, email: data.email, username: data.username, token: data.token });
+      return true;
     } catch (error) {
       console.error('Login error:', error);
+      setUser(null);
+      return false;
     }
-    setUser(null);
   }
 
   const logout = () => {

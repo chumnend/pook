@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import Header from '../components/Header';
 import useAuth from '../hooks/useAuth';
@@ -10,15 +11,22 @@ const LoginPage = () => {
     password: '',
   });
   const { login } = useAuth();
+    const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    login(formData.login, formData.password);
+    
+    const result = await login(formData.login, formData.password);
+    if (result) {
+      navigate('/');
+    } else {
+      alert('Login failed');
+    }
   }
 
   return (

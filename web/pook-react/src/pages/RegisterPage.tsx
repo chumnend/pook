@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import Header from '../components/Header';
 import useAuth from '../hooks/useAuth';
@@ -12,19 +13,27 @@ function RegisterPage() {
     confirmPassword: '',
   });
   const { register } = useAuth();
+  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords do not match!");
       return;
     }
-    register(formData.email, formData.username, formData.password);
+  
+    const result = await register(formData.email, formData.username, formData.password);
+    if (result) {
+      navigate('/login');
+    } else {
+      alert('Registration failed');
+    }
   }
 
   return (
