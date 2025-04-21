@@ -1,8 +1,11 @@
 import { createContext } from 'react';
 
+export type UserType = { token: string };
+
 export type AuthContextState = {
-  user: { email: string; username: string } | null;
-  login: (data: { email: string, username: string }) => void;
+  user: UserType | null;
+  register: (email: string, username: string, password: string) => void;
+  login: (username: string, password: string) => void;
   logout: () => void;
 };
 

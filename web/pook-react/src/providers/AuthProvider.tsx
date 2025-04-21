@@ -1,16 +1,34 @@
 import React, { useState } from 'react';
 
 import AuthContext from '../context/AuthContext';
+import type { UserType } from '../context/AuthContext';
+import authService from '../services/auth';
 
 type Props = {
   children: React.ReactNode;
 }
 
 const AuthProvider = ({ children }: Props) => {
-  const [user, setUser] = useState<{ email: string; username: string } | null>(null);
+  const [user, setUser] = useState<UserType | null>(null);
 
-  const login = (data: { email: string; username: string}) => {
-    setUser(data);
+  const register = async (email: string, username: string, password: string) => {
+    try {
+      const data = await authService.register(email, username, password);
+      console.log('Registration successful:', data);
+    } catch (error) {
+      console.error('Registration error:', error);
+    }
+    setUser(null);
+  }
+
+  const login = async (username: string, password: string) => { 
+    try {
+      const data = await authService.login(username, password);
+      console.log('Login successful:', data);
+    } catch (error) {
+      console.error('Login error:', error);
+    }
+    setUser(null);
   }
 
   const logout = () => {
@@ -18,7 +36,7 @@ const AuthProvider = ({ children }: Props) => {
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, register, login, logout }}>
       {children}
     </AuthContext.Provider>
   )

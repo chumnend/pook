@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import Header from '../components/Header';
+import useAuth from '../hooks/useAuth';
 import styles from '../styles/RegisterPage.module.css';
 
 function RegisterPage() {
@@ -10,6 +11,7 @@ function RegisterPage() {
     password: '',
     confirmPassword: '',
   });
+  const { register } = useAuth();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -22,8 +24,7 @@ function RegisterPage() {
       alert("Passwords do not match!");
       return;
     }
-    // TODO: Add logic for registration API
-    console.log('Form submitted:', formData)
+    register(formData.email, formData.username, formData.password);
   }
 
   return (

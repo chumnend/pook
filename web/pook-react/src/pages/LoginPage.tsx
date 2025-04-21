@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import Header from '../components/Header';
+import useAuth from '../hooks/useAuth';
 import styles from '../styles/LoginPage.module.css';
 
 const LoginPage = () => {
@@ -8,6 +9,7 @@ const LoginPage = () => {
     login: '',
     password: '',
   });
+  const { login } = useAuth();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -16,8 +18,7 @@ const LoginPage = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Add logic for registration API
-    console.log('Form submitted:', formData)
+    login(formData.login, formData.password);
   }
 
   return (
@@ -27,7 +28,7 @@ const LoginPage = () => {
       <h1>Login</h1>
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.formGroup}>
-            <label htmlFor="login">Username / Email</label>
+            <label htmlFor="login">Username</label>
             <input
               type="input"
               id="login"
