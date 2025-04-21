@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 
-export type UserType = { token: string };
+import type UserType from '../types/UserType';
 
 export type AuthContextState = {
   user: UserType | null;

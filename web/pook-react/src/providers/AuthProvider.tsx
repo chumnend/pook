@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 
 import AuthContext from '../context/AuthContext';
-import type { UserType } from '../context/AuthContext';
 import authService from '../services/auth';
+import type UserType from '../types/UserType';
 
 type Props = {
   children: React.ReactNode;
