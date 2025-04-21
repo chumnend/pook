@@ -1,0 +1,30 @@
+# TODO
+
+Here are the list of items to complete this project,
+
+- [X] Setup PostgreSQL database and tables
+- [X] Setup router with non-implemented routes
+- [X] Connect app with PostgeSQL
+- [X] Create User model
+- [X] Create User handler
+- [X] Create Book model
+- [X] Create Book handler
+- [X] Create Page model
+- [X] Create Page handler
+- [] Create Comment model
+- [] Create Comment handler
+- [] Create Rating model
+- [] Create Rating handler
+- [] Create authentication middleware
+- [] Add any missing unit tests
+- [] Generate API spec using Swagger
+- [X] Setup frontend architecture
+- [] Build Landing Page
+- [] Build Register page
+- [] Build Login Page
+- [] Build Landing Page
+- [] Build User Library page
+- [] Build Book Creation page
+- [] Build Book viewing page
+- [] Build User profile page
+- [] Add any missing unit tests

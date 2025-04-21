@@ -1,26 +1,39 @@
-.PHONY: install-all
-install-all: install-go install-react
+include .env
 
-.PHONY: install-go
-install-go:
-	@go mod tidy && go mod download
+all: build start
 
-.PHONY: start-server
-start-server:
-	@go run ./cmd/app
+.PHONY: build
+build:
+	@echo "Building..."
+	@mkdir -p bin/
+	@cd ./bin && go build ../cmd/main.go
+	@if [ ! -d "./web/pook-react/node_modules" ]; then \
+			echo "Installing dependencies..."; \
+			cd ./web/pook-react && yarn; \
+	fi
+	@cd ./web/pook-react && yarn build
+	@echo "Build complete."
 
-.PHONY: test-server
-test-server: 
-	@go test -cover -covermode=atomic ./internal/...
+.PHONY: start
+start:
+	@echo "Executing..."
+	@./bin/main
 
-.PHONY: install-react
-install-react:
-	@cd web/pook-react && npm install
+.PHONY: test
+test:
+	@echo "Running tests..."
+	@go test ./internal/...
 
-.PHONY: build-client
-build-client:
-	@cd web/pook-react/ && npm run build
+.PHONY: clean 
+clean:
+	@echo "Cleaning binaries..."
+	@rm -rf bin web/**/dist web/**/node_modules
+	@echo "Clean complete."
 
-.PHONY: start-client
-start-client:
-	@go run ./cmd/web
+.PHONY: migrate
+migrate:
+	migrate -database "${PG_URL}?sslmode=disable" -path migrations up
+
+.PHONY: rollback
+rollback:
+	migrate -database "${PG_URL}?sslmode=disable" -path migrations down
