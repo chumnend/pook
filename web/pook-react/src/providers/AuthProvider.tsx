@@ -10,13 +10,18 @@ type Props = {
 
 const AuthProvider = ({ children }: Props) => {
   const [user, setUser] = useState<UserType | null>(null);
+  const [authError, setAuthError] = useState<string | null>(null);
 
   const register = async (email: string, username: string, password: string): Promise<boolean> => {
     try {
       await authService.register(email, username, password);
-      return true;
+      return false;
     } catch (error) {
-      console.error('Registration error:', error);
+      if (error instanceof Error) {
+        setAuthError(error.message);
+      } else {
+        setAuthError('An unknown error occurred');
+      }
       return false;
     }
   }
@@ -27,7 +32,11 @@ const AuthProvider = ({ children }: Props) => {
       setUser({ id: data.id, email: data.email, username: data.username, token: data.token });
       return true;
     } catch (error) {
-      console.error('Login error:', error);
+      if (error instanceof Error) {
+        setAuthError(error.message);
+      } else {
+        setAuthError('An unknown error occurred');
+      }
       setUser(null);
       return false;
     }
@@ -38,7 +47,7 @@ const AuthProvider = ({ children }: Props) => {
   }
 
   return (
-    <AuthContext.Provider value={{ user, register, login, logout }}>
+    <AuthContext.Provider value={{ user, authError, register, login, logout }}>
       {children}
     </AuthContext.Provider>
   )

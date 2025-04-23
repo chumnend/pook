@@ -10,7 +10,7 @@ const LoginPage = () => {
     login: '',
     password: '',
   });
-  const { login } = useAuth();
+  const { authError, login } = useAuth();
     const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,11 +21,9 @@ const LoginPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const result = await login(formData.login, formData.password);
-    if (result) {
+    const isSuccess = await login(formData.login, formData.password);
+    if (isSuccess) {
       navigate('/');
-    } else {
-      alert('Login failed');
     }
   }
 
@@ -33,7 +31,8 @@ const LoginPage = () => {
     <div>
       <Header />
       <div className={styles.container}>
-      <h1>Login</h1>
+        <h1>Login</h1>
+        {authError && <p style={{ color: 'red' }}>{authError}</p>}
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.formGroup}>
             <label htmlFor="login">Username</label>

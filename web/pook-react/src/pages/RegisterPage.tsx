@@ -12,7 +12,7 @@ function RegisterPage() {
     password: '',
     confirmPassword: '',
   });
-  const { register } = useAuth();
+  const { authError, register } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,11 +28,9 @@ function RegisterPage() {
       return;
     }
   
-    const result = await register(formData.email, formData.username, formData.password);
-    if (result) {
+    const isSuccess = await register(formData.email, formData.username, formData.password);
+    if (isSuccess) {
       navigate('/login');
-    } else {
-      alert('Registration failed');
     }
   }
 
@@ -41,6 +39,7 @@ function RegisterPage() {
       <Header />
       <div className={styles.container}>
         <h1>Register</h1>
+        {authError && <p style={{ color: 'red' }}>{authError}</p>}
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.formGroup}>
             <label htmlFor="email">Email</label>
