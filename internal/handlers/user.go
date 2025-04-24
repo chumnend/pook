@@ -45,7 +45,7 @@ func Register(w http.ResponseWriter, req *http.Request) {
 
 	if err := models.CreateUser(input.Username, input.Email, input.Password); err != nil {
 		response := map[string]string{
-			"message": "unable to create user",
+			"message": err.Error(),
 		}
 		utils.SendJSON(w, response, http.StatusInternalServerError)
 		return
