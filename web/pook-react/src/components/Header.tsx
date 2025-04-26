@@ -12,7 +12,7 @@ function Header() {
         <Link to="/" className={styles.brand}>Pook</Link>
       </div>
       <div>
-        {isLoggedIn ? (
+        {!isLoggedIn ? (
           <>
             <Link to="/login" className={styles.navLink}>Login</Link>
             <Link to="/register" className={styles.navLink}>Register</Link>
@@ -21,7 +21,7 @@ function Header() {
           <>
             <Link to="#" className={styles.navLink}>New Book</Link>
             <Link to="#" className={styles.navLink}>My Library</Link>
-            <Link to="#" className={styles.navLink}>Logout</Link>
+            <Link to="/logout" className={styles.navLink}>Logout</Link>
           </>
         )}
       </div>
