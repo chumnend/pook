@@ -10,12 +10,9 @@ type Props = {
 }
 
 const AuthProvider = ({ children }: Props) => {
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [user, setUser] = useState<UserType | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
-
-  const clearAuthError = () => {
-    setAuthError(null);
-  }
 
   const register = async (email: string, username: string, password: string): Promise<boolean> => {
     try {
@@ -34,6 +31,7 @@ const AuthProvider = ({ children }: Props) => {
   const login = async (username: string, password: string): Promise<boolean> => { 
     try {
       const data = await authService.login(username, password);
+      setIsLoggedIn(true);
       setUser({ id: data.id, email: data.email, username: data.username, token: data.token });
       return true;
     } catch (error) {
@@ -42,17 +40,31 @@ const AuthProvider = ({ children }: Props) => {
       } else {
         setAuthError('An unknown error occurred');
       }
+      setIsLoggedIn(false);
       setUser(null);
       return false;
     }
   }
 
   const logout = () => {
+    setIsLoggedIn(false);
     setUser(null);
   }
 
+  const clearAuthError = () => {
+    setAuthError(null);
+  }
+
   return (
-    <AuthContext.Provider value={{ user, authError, clearAuthError, register, login, logout }}>
+    <AuthContext.Provider value={{
+      isLoggedIn,
+      user,
+      authError,
+      register,
+      login,
+      logout,
+      clearAuthError,
+    }}>
       {children}
     </AuthContext.Provider>
   )
