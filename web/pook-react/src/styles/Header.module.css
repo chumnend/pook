@@ -2,16 +2,10 @@
   padding: 1rem;
   background-color: #f8f9fa;
   border-bottom: 1px solid #ddd;
-}
-
-.navLink {
-  margin-right: 1rem;
-  text-decoration: none;
-  color: #007bff;
-}
-
-.navLink:hover {
-  text-decoration: underline;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .brand {
@@ -24,3 +18,14 @@
   text-decoration: none;
   font-size: 1.5rem;
 }
+
+.navLink {
+  margin-right: 1rem;
+  text-decoration: none;
+  color: #007bff;
+}
+
+.navLink:hover {
+  text-decoration: underline;
+}
+
