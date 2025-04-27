@@ -20,22 +20,34 @@ func Register(w http.ResponseWriter, req *http.Request) {
 
 	var input requestInput
 	if err := utils.ParseJSON(req, &input); err != nil {
-		http.Error(w, "invalid input", http.StatusBadRequest)
+		response := map[string]string{
+			"message": "invalid input",
+		}
+		utils.SendJSON(w, response, http.StatusBadRequest)
 		return
 	}
 
 	if input.Email == "" || input.Username == "" || input.Password == "" {
-		http.Error(w, "all fields (email, username, password) are required", http.StatusBadRequest)
+		response := map[string]string{
+			"message": "all fields (email, username, password) are required",
+		}
+		utils.SendJSON(w, response, http.StatusBadRequest)
 		return
 	}
 
 	if !utils.IsValidEmail(input.Email) {
-		http.Error(w, "invalid email format", http.StatusBadRequest)
+		response := map[string]string{
+			"message": "invalid email format",
+		}
+		utils.SendJSON(w, response, http.StatusBadRequest)
 		return
 	}
 
 	if err := models.CreateUser(input.Username, input.Email, input.Password); err != nil {
-		http.Error(w, "unable to create user", http.StatusBadRequest)
+		response := map[string]string{
+			"message": err.Error(),
+		}
+		utils.SendJSON(w, response, http.StatusInternalServerError)
 		return
 	}
 
@@ -55,29 +67,44 @@ func Login(w http.ResponseWriter, req *http.Request) {
 
 	var input requestInput
 	if err := utils.ParseJSON(req, &input); err != nil {
-		http.Error(w, "invalid input", http.StatusBadRequest)
+		response := map[string]string{
+			"message": "invalid input",
+		}
+		utils.SendJSON(w, response, http.StatusBadRequest)
 		return
 	}
 
 	if input.Username == "" || input.Password == "" {
-		http.Error(w, "all fields (username, password) are required", http.StatusBadRequest)
+		response := map[string]string{
+			"message": "all fields (username, password) are required",
+		}
+		utils.SendJSON(w, response, http.StatusBadRequest)
 		return
 	}
 
 	user, err := models.GetUserByUsername(input.Username)
 	if err != nil {
-		http.Error(w, "invalid username and/or password", http.StatusBadRequest)
+		response := map[string]string{
+			"message": "invalid username and/or password",
+		}
+		utils.SendJSON(w, response, http.StatusBadRequest)
 		return
 	}
 
 	if err := models.ComparePassword(user, input.Password); err != nil {
-		http.Error(w, "invalid username and/or password", http.StatusBadRequest)
+		response := map[string]string{
+			"message": "invalid username and/or password",
+		}
+		utils.SendJSON(w, response, http.StatusBadRequest)
 		return
 	}
 
 	token, err := models.GenerateUserToken(user)
 	if err != nil {
-		http.Error(w, "something went wrong", http.StatusInternalServerError)
+		response := map[string]string{
+			"message": "something went wrong",
+		}
+		utils.SendJSON(w, response, http.StatusInternalServerError)
 		return
 	}
 
@@ -87,7 +114,6 @@ func Login(w http.ResponseWriter, req *http.Request) {
 		"username": user.Username,
 		"token":    token,
 	}
-
 	utils.SendJSON(w, response, http.StatusOK)
 }
 
@@ -98,13 +124,19 @@ func GetUser(w http.ResponseWriter, req *http.Request) {
 
 	parsed_uuid, err := uuid.Parse(user_id)
 	if err != nil {
-		http.Error(w, "invalid user id", http.StatusBadRequest)
+		response := map[string]string{
+			"message": "invalid user id",
+		}
+		utils.SendJSON(w, response, http.StatusBadRequest)
 		return
 	}
 
 	user, err := models.GetUserByID(parsed_uuid)
 	if err != nil {
-		http.Error(w, "user not found", http.StatusBadRequest)
+		response := map[string]string{
+			"message": "user not found",
+		}
+		utils.SendJSON(w, response, http.StatusBadRequest)
 		return
 	}
 

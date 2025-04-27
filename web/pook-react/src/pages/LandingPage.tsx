@@ -1,17 +1,26 @@
-import Header from '../components/Header';
+import { Link } from 'react-router-dom';
 
+import Header from '../components/Header';
 import styles from '../styles/LandingPage.module.css';
 
 const LandingPage = () => {
   return (
     <div>
       <Header />
-      <div className={styles.mainContent}>
-        <h2>Welcome to Pook!</h2>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-          Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-        </p>
+      <div>
+        <div className={styles.hero}>
+          <img src="https://placehold.co/800x400" alt="placeholder hero" />
+        </div>
+        <div className={styles.mainContent}>
+          <h2>Welcome to Pook!</h2>
+          <p>
+            Create and share your storybooks with the world. Join our community of storytellers today!
+          </p>
+          <div className={styles.ctaButtons}>
+            <Link to="/register" className={styles.ctaButton}>Register</Link>
+            <Link to="/login" className={styles.ctaButton}>Login</Link>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -8,6 +8,7 @@ import (
 	"github.com/chumnend/pook/internal/db"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/google/uuid"
+	"github.com/lib/pq"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -29,6 +30,15 @@ func CreateUser(username string, email string, password string) error {
 
 	_, err = db.DB.Exec("INSERT INTO users (id, username, email, password_hash) VALUES ($1, $2, $3, $4)", uuid, username, email, hashedPassword)
 	if err != nil {
+		var pqErr *pq.Error
+		if errors.As(err, &pqErr) {
+			switch pqErr.Code.Name() {
+			case "unique_violation":
+				return errors.New("user with the same email or username already exists")
+			default:
+				return errors.New("unable to create user, please try again later")
+			}
+		}
 		return err
 	}
 
