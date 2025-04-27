@@ -22,7 +22,6 @@ Here are the list of items to complete this project,
 - [] Build Landing Page
 - [X] Build Register page
 - [X] Build Login Page
-- [] Build Landing Page
 - [] Build User Library page
 - [] Build Book Creation page
 - [] Build Book viewing page
