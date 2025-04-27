@@ -20,8 +20,8 @@ Here are the list of items to complete this project,
 - [] Generate API spec using Swagger
 - [X] Setup frontend architecture
 - [] Build Landing Page
-- [] Build Register page
-- [] Build Login Page
+- [X] Build Register page
+- [X] Build Login Page
 - [] Build Landing Page
 - [] Build User Library page
 - [] Build Book Creation page
