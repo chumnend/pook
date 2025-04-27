@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import AuthContext from '../context/AuthContext';
 import authService from '../services/auth';
@@ -13,6 +13,15 @@ const AuthProvider = ({ children }: Props) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [user, setUser] = useState<UserType | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
+      setIsLoggedIn(true);
+    }
+  }, []);
 
   const register = async (email: string, username: string, password: string): Promise<boolean> => {
     try {
@@ -32,7 +41,9 @@ const AuthProvider = ({ children }: Props) => {
     try {
       const data = await authService.login(username, password);
       setIsLoggedIn(true);
-      setUser({ id: data.id, email: data.email, username: data.username, token: data.token });
+      const userData = { id: data.id, email: data.email, username: data.username, token: data.token };
+      setUser(userData);
+      localStorage.setItem('user', JSON.stringify(userData));
       return true;
     } catch (error) {
       if (error instanceof Error) {
@@ -42,6 +53,7 @@ const AuthProvider = ({ children }: Props) => {
       }
       setIsLoggedIn(false);
       setUser(null);
+      localStorage.removeItem('user');
       return false;
     }
   }
@@ -49,6 +61,7 @@ const AuthProvider = ({ children }: Props) => {
   const logout = () => {
     setIsLoggedIn(false);
     setUser(null);
+    localStorage.removeItem('user');
   }
 
   const clearAuthError = () => {
