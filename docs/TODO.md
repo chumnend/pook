@@ -16,7 +16,6 @@ Here are the list of items to complete this project,
 - [] Create Rating model
 - [] Create Rating handler
 - [] Create authentication middleware
-- [] Add any missing unit tests
 - [] Generate API spec using Swagger
 - [X] Setup frontend architecture
 - [X] Build Landing Page
@@ -26,4 +25,4 @@ Here are the list of items to complete this project,
 - [] Build Book Creation page
 - [] Build Book viewing page
 - [] Build User profile page
-- [] Add any missing unit tests
+- [] Ensure test coverage
