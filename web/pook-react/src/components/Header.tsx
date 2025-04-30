@@ -4,7 +4,7 @@ import useAuth from '../hooks/useAuth';
 import styles from '../styles/Header.module.css';
 
 function Header() {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, user } = useAuth();
 
   return (
     <nav className={styles.navbar}>
@@ -19,8 +19,8 @@ function Header() {
           </>
         ) : (
           <>
-            <Link to="#" className={styles.navLink}>New Book</Link>
-            <Link to="#" className={styles.navLink}>My Library</Link>
+            <Link to="/book/new" className={styles.navLink}>New Book</Link>
+            <Link to={`/library/${user?.id}`} className={styles.navLink}>My Library</Link>
             <Link to="/logout" className={styles.navLink}>Logout</Link>
           </>
         )}
