@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import useAuth from '../../helpers/hooks/useAuth';
+import useAuth from '../../../helpers/hooks/useAuth';
 
 
 const LogoutPage = () => {

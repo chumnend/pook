@@ -1,3 +1,7 @@
+/* This file should only contain styles for html elements. Styling for a specific component 
+ * should be located closer to the component.
+ */
+
 *,
 *::before,
 *::after {

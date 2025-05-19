@@ -1,7 +1,7 @@
-import Header from '../../components/Header';
-import styles from '../../helpers/styles/LibraryPage.module.css';
+import Header from '../../shared/Header';
+import styles from './LibraryPage.module.css';
 
-import mockBooks from '../../../testing/books';
+import mockBooks from '../../../../testing/books';
 
 const LibraryPage = () => {
 

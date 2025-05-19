@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import Header from '../../components/Header';
-import useAuth from '../../helpers/hooks/useAuth';
-import styles from '../../helpers/styles/RegisterPage.module.css';
+import Header from '../../shared/Header';
+import useAuth from '../../../helpers/hooks/useAuth';
+import styles from './RegisterPage.module.css';
 
 function RegisterPage() {
   const [formData, setFormData] = useState({

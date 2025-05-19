@@ -1,16 +1,16 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 import ProtectedRoute from './ProtectedRoute';
-import LandingPage from './pages/LandingPage';
-import RegisterPage from './pages/RegisterPage';
-import LoginPage from './pages/LoginPage';
-import LogoutPage from './pages/LogoutPage';
-import LibraryPage from './pages/LibraryPage';
-import BookCreationPage from './pages/BookCreationPage';
-import BookViewingPage from './pages/BookViewingPage';
-import UserProfilePage from './pages/UserProfilePage';
-import NotFoundPage from './pages/NotFoundPage';
-import useAuth from '../helpers/hooks/useAuth';
+import LandingPage from '../pages/LandingPage';
+import RegisterPage from '../pages/RegisterPage';
+import LoginPage from '../pages/LoginPage';
+import LogoutPage from '../pages/LogoutPage';
+import LibraryPage from '../pages/LibraryPage';
+import BookCreationPage from '../pages/BookCreationPage';
+import BookViewingPage from '../pages/BookViewingPage';
+import UserProfilePage from '../pages/UserProfilePage';
+import NotFoundPage from '../pages/NotFoundPage';
+import useAuth from '../../helpers/hooks/useAuth';
 
 function App() {
   const { isLoggedIn, user } = useAuth()
