@@ -1,12 +1,12 @@
 import { createContext } from 'react';
 
-import type UserType from '../types/UserType';
+import type User from '../types/User';
 
 export type AuthContextState = {
   /* Is a user currently logged into the app */
   isLoggedIn: boolean;
   /* Infformation regarding the authenticated user if logged in */
-  user: UserType | null;
+  user: User | null;
   /* API related error message */
   authError: string | null;
   /* Function to make API call to create a new user */

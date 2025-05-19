@@ -1,8 +1,8 @@
-type UserType = {
+type User = {
   id: string;
   email: string;
   username: string;
   token: string;
 }
 
-export default UserType;
+export default User;
