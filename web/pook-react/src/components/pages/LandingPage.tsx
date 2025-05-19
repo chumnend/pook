@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 
-import Header from '../components/Header';
-import styles from '../styles/LandingPage.module.css';
+import Header from '../../components/Header';
+import styles from '../../helpers/styles/LandingPage.module.css';
 
 const LandingPage = () => {
   return (

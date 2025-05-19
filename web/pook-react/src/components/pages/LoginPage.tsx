@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import Header from '../components/Header';
-import useAuth from '../hooks/useAuth';
-import styles from '../styles/LoginPage.module.css';
+import Header from '../../components/Header';
+import useAuth from '../../helpers/hooks/useAuth';
+import styles from '../../helpers/styles/LoginPage.module.css';
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({

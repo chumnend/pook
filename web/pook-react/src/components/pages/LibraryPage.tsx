@@ -1,5 +1,5 @@
-import Header from "../components/Header";
-import styles from '../styles/LibraryPage.module.css';
+import Header from '../../components/Header';
+import styles from '../../helpers/styles/LibraryPage.module.css';
 
 const LibraryPage = () => {
 

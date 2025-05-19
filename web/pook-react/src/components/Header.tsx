@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 
-import useAuth from '../hooks/useAuth';
-import styles from '../styles/Header.module.css';
+import useAuth from '../helpers/hooks/useAuth';
+import styles from '../helpers/styles/Header.module.css';
 
 function Header() {
   const { isLoggedIn, user } = useAuth();
