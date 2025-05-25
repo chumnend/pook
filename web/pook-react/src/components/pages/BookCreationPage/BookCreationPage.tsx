@@ -1,80 +1,12 @@
 import { useState } from 'react';
 
+import Step1BookName from './components/Step1BookName';
+import Step2ManagePages from './components/Step2ManagePages';
+import Step3EditPage from './components/Step3EditPages';
+import Step4ValidateAndPublish from './components/Step4ValidateAndPublish';
+
 import Header from '../../shared/Header';
 import './BookCreationPage.module.css';
-
-export type Step1BookNameProps = {
-  title: string;
-  changeTitle: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  nextStep: () => void;
-}
-
-const Step1BookName = ({ title, changeTitle, nextStep }: Step1BookNameProps) => {
-  return (
-    <div>
-      <h1>Let's think of a book title.</h1>
-      <input 
-        id="title-input"
-        type="text" 
-        placeholder='Book Title'
-        value={title}
-        onChange={changeTitle}
-      />
-      <button onClick={nextStep}>Next</button>
-     </div>
-  );
-}
-
-export type Step2ManagePagesProps = {
-  title: string;
-  previousStep: () => void;
-  nextStep: () => void;
-};
-
-const Step2ManagePages = ({ title, previousStep, nextStep }: Step2ManagePagesProps) => {
-  return (
-    <div>
-      <h1>Time to create some pages.</h1>
-      <p>{title}</p>
-      <button onClick={previousStep}>Prveious</button>
-      <button onClick={nextStep}>Next</button>
-     </div>
-  );
-}
-
-export type Step3EditPageProps = {
-  title: string;
-  previousStep: () => void;
-  nextStep: () => void;
-};
-
-const Step3EditPage = ({ title, previousStep, nextStep }: Step3EditPageProps) => {
-  return (
-    <div>
-      <h1>Let's setup some content.</h1>
-      <p>{title}</p>
-      <button onClick={previousStep}>Prveious</button>
-      <button onClick={nextStep}>Next</button>
-     </div>
-  );
-}
-
-export type Step4ValidateAndPublishProps = {
-  title: string;
-  previousStep: () => void;
-  handlePublish: () => void;
-};
-
-const Step4ValidateAndPublish = ({ title, previousStep, handlePublish }: Step4ValidateAndPublishProps) => {
-  return (
-    <div>
-      <h1>Validate your current story.</h1>
-      <p>{title}</p>
-      <button onClick={previousStep}>Prveious</button>
-      <button onClick={handlePublish}>Publish</button>
-     </div>
-  );
-}
 
 const BookCreationPage = () => {
   const [step, setStep] = useState<number>(1);
