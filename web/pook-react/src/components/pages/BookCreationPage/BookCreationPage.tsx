@@ -6,7 +6,7 @@ import Step3EditPage from './components/Step3EditPages';
 import Step4ValidateAndPublish from './components/Step4ValidateAndPublish';
 
 import Header from '../../shared/Header';
-import './BookCreationPage.module.css';
+import styles from './BookCreationPage.module.css';
 
 const BookCreationPage = () => {
   const [step, setStep] = useState<number>(1);
@@ -29,7 +29,7 @@ const BookCreationPage = () => {
   }
 
   return (
-    <div>
+    <div className={styles.container}>
      <Header />
       {step === 1 && (
         <Step1BookName 
