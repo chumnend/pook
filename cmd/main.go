@@ -36,7 +36,7 @@ func main() {
 
 	// Serve React static files with fallback to index.html
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		reactBuildPath := filepath.Join("web", "pook-react", "dist")
+		reactBuildPath := filepath.Join("web", "dist")
 		filePath := filepath.Join(reactBuildPath, r.URL.Path)
 
 		// Check if the file exists

@@ -7,11 +7,11 @@ build:
 	@echo "Building..."
 	@mkdir -p bin/
 	@cd ./bin && go build ../cmd/main.go
-	@if [ ! -d "./web/pook-react/node_modules" ]; then \
+	@if [ ! -d "./web/node_modules" ]; then \
 			echo "Installing dependencies..."; \
-			cd ./web/pook-react && yarn; \
+			cd ./web && yarn; \
 	fi
-	@cd ./web/pook-react && yarn build
+	@cd ./web && yarn build
 	@echo "Build complete."
 
 .PHONY: start
