@@ -1,7 +1,7 @@
 type Book = {
+  id: string;
   title: string;
-  author: string;
-  imageUrl: string;
+  userId: string;
 }  
 
 export default Book;
