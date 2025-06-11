@@ -9,7 +9,7 @@ const Step4ValidateAndPublish = ({ title, previousStep, handlePublish }: Step4Va
     <div>
       <h1>Validate your current story.</h1>
       <p>{title}</p>
-      <button onClick={previousStep}>Prveious</button>
+      <button onClick={previousStep}>Previous</button>
       <button onClick={handlePublish}>Publish</button>
      </div>
   );

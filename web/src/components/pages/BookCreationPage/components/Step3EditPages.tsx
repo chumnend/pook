@@ -9,7 +9,7 @@ const Step3EditPage = ({ title, previousStep, nextStep }: Step3EditPageProps) =>
     <div>
       <h1>Let's setup some content.</h1>
       <p>{title}</p>
-      <button onClick={previousStep}>Prveious</button>
+      <button onClick={previousStep}>Previous</button>
       <button onClick={nextStep}>Next</button>
      </div>
   );

@@ -9,7 +9,7 @@ const Step2ManagePages = ({ title, previousStep, nextStep }: Step2ManagePagesPro
     <div>
       <h1>Time to create some pages.</h1>
       <p>{title}</p>
-      <button onClick={previousStep}>Prveious</button>
+      <button onClick={previousStep}>Previous</button>
       <button onClick={nextStep}>Next</button>
      </div>
   );
