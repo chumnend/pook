@@ -5,7 +5,7 @@ import Step2ManagePages from './components/Step2ManagePages';
 import Step3EditPage from './components/Step3EditPages';
 import Step4ValidateAndPublish from './components/Step4ValidateAndPublish';
 
-import Header from '../../shared/Header';
+import Header from '../../common/Header';
 import styles from './BookCreationPage.module.css';
 
 const BookCreationPage = () => {

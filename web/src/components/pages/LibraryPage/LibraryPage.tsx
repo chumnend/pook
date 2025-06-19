@@ -1,4 +1,4 @@
-import Header from '../../shared/Header';
+import Header from '../../common/Header';
 import styles from './LibraryPage.module.css';
 
 import mockBooks from '../../../../testing/books';

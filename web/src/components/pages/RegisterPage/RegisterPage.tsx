@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import Header from '../../shared/Header';
+import Header from '../../common/Header';
 import useAuth from '../../../helpers/hooks/useAuth';
 import styles from './RegisterPage.module.css';
 

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-import Header from '../../shared/Header';
+import Header from '../../common/Header';
 import styles from './LandingPage.module.css';
 
 const LandingPage = () => {
