@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 
 import AuthContext from '../../helpers/context/AuthContext';
 import authService from '../../helpers/services/auth';
-import type UserType from '../../helpers/types/User';
-import toSentenceCase from '../../helpers/utils/toSentenceCase';
+import type { User as UserType } from '../../helpers/types';
+import { toSentenceCase } from '../../helpers/utils';
 
 type Props = {
   children: React.ReactNode;

@@ -1,4 +1,4 @@
-import type Book from "../src/helpers/types/Book";
+import type { Book } from '../src/helpers/types';
 
 export function createMockBooks(count: number): Book[] {
   return Array.from({ length: count }, (_, i) => ({

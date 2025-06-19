@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 
-import type User from '../types/User';
+import type { User } from '../types';
 
 export type AuthContextState = {
   /* Is a user currently logged into the app */
