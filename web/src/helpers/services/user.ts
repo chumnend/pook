@@ -9,7 +9,7 @@ export async function register(email: string, username: string, password: string
     body: JSON.stringify({ email, username, password }),
   });
 
-  if(!response.ok) {
+  if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.message || 'Something went wrong');
   }
