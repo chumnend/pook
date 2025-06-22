@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import AuthContext from '../../helpers/context/AuthContext';
-import authService from '../../helpers/services/auth';
+import authService from '../../helpers/services/user';
 import type { User as UserType } from '../../helpers/types';
 import { toSentenceCase } from '../../helpers/utils';
 
