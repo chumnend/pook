@@ -7,6 +7,7 @@ Pook is a web platform that allows users to create fun "picture" books to share 
 ### Built With
 
 - Go v1.23
+- golang-migrate v4.16.2
 
 ## Getting Started
 
