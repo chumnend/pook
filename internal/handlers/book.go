@@ -13,8 +13,9 @@ func CreateBook(w http.ResponseWriter, req *http.Request) {
 	log.Println("Request made to" + req.URL.Path)
 
 	type requestInput struct {
-		UserID string `json:"userId"`
-		Title  string `json:"title"`
+		UserID   string `json:"userId"`
+		ImageURL string `json:"imageUrl"`
+		Title    string `json:"title"`
 	}
 
 	var input requestInput
@@ -23,7 +24,7 @@ func CreateBook(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if input.Title == "" || input.UserID == "" {
+	if input.ImageURL == "" || input.Title == "" || input.UserID == "" {
 		http.Error(w, "all fields (title, userId) are required", http.StatusBadRequest)
 		return
 	}
@@ -34,7 +35,7 @@ func CreateBook(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if err := models.CreateBook(parsedUUID, input.Title); err != nil {
+	if err := models.CreateBook(parsedUUID, input.ImageURL, input.Title); err != nil {
 		http.Error(w, "unable to create book", http.StatusBadRequest)
 		return
 	}
@@ -119,7 +120,8 @@ func UpdateBook(w http.ResponseWriter, req *http.Request) {
 	}
 
 	type requestInput struct {
-		Title string `json:"title"`
+		ImageURL string `json:"imageUrl"`
+		Title    string `json:"title"`
 	}
 
 	var input requestInput
@@ -128,12 +130,12 @@ func UpdateBook(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if input.Title == "" {
+	if input.ImageURL == "" || input.Title == "" {
 		http.Error(w, "title is required", http.StatusBadRequest)
 		return
 	}
 
-	if err := models.UpdateBookByID(parsedUUID, input.Title); err != nil {
+	if err := models.UpdateBookByID(parsedUUID, input.ImageURL, input.Title); err != nil {
 		http.Error(w, "unable to update book", http.StatusInternalServerError)
 		return
 	}
