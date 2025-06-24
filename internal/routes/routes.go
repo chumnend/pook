@@ -8,7 +8,7 @@ import (
 
 func RegisterRoutes(mux *http.ServeMux) {
 	// Health Check Route
-	mux.HandleFunc("GET /v1/status", handlers.CheckHealth)
+	mux.HandleFunc("GET /v1/status", handlers.Ping)
 	// User Routes
 	mux.HandleFunc("POST /v1/register", handlers.Register)
 	mux.HandleFunc("POST /v1/login", handlers.Login)
