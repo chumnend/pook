@@ -442,7 +442,7 @@ func TestGetAllBooksByUserId(t *testing.T) {
 	}
 }
 
-func TestGetAllBooksByUserIdInvalidId(t *testing.T) {
+func TestGetAllBooksByUserIdInvalidUserId(t *testing.T) {
 	req, err := http.NewRequest("GET", "/v1/books?user_id=invalid-uuid", nil)
 	if err != nil {
 		t.Fatal(err)
@@ -583,7 +583,7 @@ func TestGetBook(t *testing.T) {
 	}
 }
 
-func TestGetBookInvalidId(t *testing.T) {
+func TestGetBookInvalidUserId(t *testing.T) {
 	req, err := http.NewRequest("GET", "/v1/books/invalid-uuid", nil)
 	if err != nil {
 		t.Fatal(err)
@@ -642,6 +642,205 @@ func TestGetBookNotFound(t *testing.T) {
 
 	if !strings.Contains(rr.Body.String(), "book not found") {
 		t.Errorf("GetBook should return 'book not found' error message, got: %s", rr.Body.String())
+	}
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("Mock expectations were not met: %v", err)
+	}
+}
+
+func TestUpdateBook(t *testing.T) {
+	mockDB, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("Failed to create mock database: %v", err)
+	}
+	defer mockDB.Close()
+
+	originalDB := db.DB
+	db.DB = mockDB
+	defer func() {
+		db.DB = originalDB
+	}()
+
+	bookID := uuid.New()
+	requestBody := map[string]interface{}{
+		"imageUrl": "https://example.com/updated-book-cover.jpg",
+		"title":    "Updated Test Book Title",
+	}
+
+	mock.ExpectExec("UPDATE books SET image_url = \\$1, title = \\$2, updated_at = \\$3 WHERE id = \\$4").
+		WithArgs("https://example.com/updated-book-cover.jpg", "Updated Test Book Title", sqlmock.AnyArg(), bookID).
+		WillReturnResult(sqlmock.NewResult(1, 1))
+
+	jsonBody, _ := json.Marshal(requestBody)
+	req, err := http.NewRequest("PUT", "/v1/books/"+bookID.String(), bytes.NewBuffer(jsonBody))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.SetPathValue("book_id", bookID.String())
+
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(UpdateBook)
+
+	handler.ServeHTTP(rr, req)
+
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("UpdateBook returned wrong status code: got %v want %v", status, http.StatusOK)
+	}
+
+	expected := "application/json"
+	if contentType := rr.Header().Get("Content-Type"); contentType != expected {
+		t.Errorf("UpdateBook returned wrong content type: got %v want %v", contentType, expected)
+	}
+
+	var response map[string]string
+	if err := json.Unmarshal(rr.Body.Bytes(), &response); err != nil {
+		t.Errorf("Could not parse JSON response: %v", err)
+	}
+
+	expectedMessage := "book successfully updated"
+	if response["message"] != expectedMessage {
+		t.Errorf("UpdateBook returned wrong message: got %v want %v", response["message"], expectedMessage)
+	}
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("Mock expectations were not met: %v", err)
+	}
+}
+
+func TestUpdateBookInvalidUserId(t *testing.T) {
+	requestBody := map[string]interface{}{
+		"imageUrl": "https://example.com/updated-book-cover.jpg",
+		"title":    "Updated Test Book Title",
+	}
+
+	jsonBody, _ := json.Marshal(requestBody)
+	req, err := http.NewRequest("PUT", "/v1/books/invalid-uuid", bytes.NewBuffer(jsonBody))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.SetPathValue("book_id", "invalid-uuid")
+
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(UpdateBook)
+
+	handler.ServeHTTP(rr, req)
+
+	if status := rr.Code; status != http.StatusBadRequest {
+		t.Errorf("UpdateBook returned wrong status code for invalid UUID: got %v want %v", status, http.StatusBadRequest)
+	}
+
+	if !strings.Contains(rr.Body.String(), "invalid book_id") {
+		t.Errorf("UpdateBook should return 'invalid book_id' error message, got: %s", rr.Body.String())
+	}
+}
+
+func TestUpdateBookMissingRequiredField(t *testing.T) {
+	bookID := uuid.New()
+
+	testCases := []struct {
+		name string
+		body map[string]interface{}
+	}{
+		{
+			name: "missing title",
+			body: map[string]interface{}{
+				"imageUrl": "https://example.com/image.jpg",
+			},
+		},
+		{
+			name: "missing imageUrl",
+			body: map[string]interface{}{
+				"title": "Test Title",
+			},
+		},
+		{
+			name: "empty title",
+			body: map[string]interface{}{
+				"imageUrl": "https://example.com/image.jpg",
+				"title":    "",
+			},
+		},
+		{
+			name: "empty imageUrl",
+			body: map[string]interface{}{
+				"imageUrl": "",
+				"title":    "Test Title",
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			jsonBody, _ := json.Marshal(tc.body)
+			req, err := http.NewRequest("PUT", "/v1/books/"+bookID.String(), bytes.NewBuffer(jsonBody))
+			if err != nil {
+				t.Fatal(err)
+			}
+			req.Header.Set("Content-Type", "application/json")
+			req.SetPathValue("book_id", bookID.String())
+
+			rr := httptest.NewRecorder()
+			handler := http.HandlerFunc(UpdateBook)
+
+			handler.ServeHTTP(rr, req)
+
+			if status := rr.Code; status != http.StatusBadRequest {
+				t.Errorf("UpdateBook returned wrong status code for %s: got %v want %v", tc.name, status, http.StatusBadRequest)
+			}
+
+			responseBody := rr.Body.String()
+			if !strings.Contains(responseBody, "required") {
+				t.Errorf("UpdateBook should return error message about required fields for %s, got: %s", tc.name, responseBody)
+			}
+		})
+	}
+}
+
+func TestUpdateBookError(t *testing.T) {
+	mockDB, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("Failed to create mock database: %v", err)
+	}
+	defer mockDB.Close()
+
+	originalDB := db.DB
+	db.DB = mockDB
+	defer func() {
+		db.DB = originalDB
+	}()
+
+	bookID := uuid.New()
+	requestBody := map[string]interface{}{
+		"imageUrl": "https://example.com/updated-book-cover.jpg",
+		"title":    "Updated Test Book Title",
+	}
+
+	mock.ExpectExec("UPDATE books SET image_url = \\$1, title = \\$2, updated_at = \\$3 WHERE id = \\$4").
+		WithArgs("https://example.com/updated-book-cover.jpg", "Updated Test Book Title", sqlmock.AnyArg(), bookID).
+		WillReturnError(sqlmock.ErrCancelled)
+
+	jsonBody, _ := json.Marshal(requestBody)
+	req, err := http.NewRequest("PUT", "/v1/books/"+bookID.String(), bytes.NewBuffer(jsonBody))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.SetPathValue("book_id", bookID.String())
+
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(UpdateBook)
+
+	handler.ServeHTTP(rr, req)
+
+	if status := rr.Code; status != http.StatusInternalServerError {
+		t.Errorf("UpdateBook returned wrong status code for DB error: got %v want %v", status, http.StatusInternalServerError)
+	}
+
+	if !strings.Contains(rr.Body.String(), "unable to update book") {
+		t.Errorf("UpdateBook should return 'unable to update book' error message, got: %s", rr.Body.String())
 	}
 
 	if err := mock.ExpectationsWereMet(); err != nil {

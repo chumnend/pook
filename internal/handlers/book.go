@@ -131,8 +131,8 @@ func UpdateBook(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if input.ImageURL == "" || input.Title == "" {
-		http.Error(w, "title is required", http.StatusBadRequest)
+	if input.Title == "" || input.ImageURL == "" {
+		http.Error(w, "all fields (title, imageUrl) are required", http.StatusBadRequest)
 		return
 	}
 
