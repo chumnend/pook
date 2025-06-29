@@ -847,3 +847,124 @@ func TestUpdateBookError(t *testing.T) {
 		t.Errorf("Mock expectations were not met: %v", err)
 	}
 }
+
+func TestDeleteBook(t *testing.T) {
+	mockDB, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("Failed to create mock database: %v", err)
+	}
+	defer mockDB.Close()
+
+	originalDB := db.DB
+	db.DB = mockDB
+	defer func() {
+		db.DB = originalDB
+	}()
+
+	bookID := uuid.New()
+
+	mock.ExpectExec("DELETE FROM books WHERE id = \\$1").
+		WithArgs(bookID).
+		WillReturnResult(sqlmock.NewResult(1, 1))
+
+	req, err := http.NewRequest("DELETE", "/v1/books/"+bookID.String(), nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	req.SetPathValue("book_id", bookID.String())
+
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(DeleteBook)
+
+	handler.ServeHTTP(rr, req)
+
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("DeleteBook returned wrong status code: got %v want %v", status, http.StatusOK)
+	}
+
+	expected := "application/json"
+	if contentType := rr.Header().Get("Content-Type"); contentType != expected {
+		t.Errorf("DeleteBook returned wrong content type: got %v want %v", contentType, expected)
+	}
+
+	var response map[string]string
+	if err := json.Unmarshal(rr.Body.Bytes(), &response); err != nil {
+		t.Errorf("Could not parse JSON response: %v", err)
+	}
+
+	expectedMessage := "book successfully deleted"
+	if response["message"] != expectedMessage {
+		t.Errorf("DeleteBook returned wrong message: got %v want %v", response["message"], expectedMessage)
+	}
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("Mock expectations were not met: %v", err)
+	}
+}
+
+func TestDeleteBookInvalidBookId(t *testing.T) {
+	req, err := http.NewRequest("DELETE", "/v1/books/invalid-uuid", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	req.SetPathValue("book_id", "invalid-uuid")
+
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(DeleteBook)
+
+	handler.ServeHTTP(rr, req)
+
+	if status := rr.Code; status != http.StatusBadRequest {
+		t.Errorf("DeleteBook returned wrong status code for invalid UUID: got %v want %v", status, http.StatusBadRequest)
+	}
+
+	if !strings.Contains(rr.Body.String(), "invalid book_id") {
+		t.Errorf("DeleteBook should return 'invalid book_id' error message, got: %s", rr.Body.String())
+	}
+}
+
+func TestDeleteBookError(t *testing.T) {
+	mockDB, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("Failed to create mock database: %v", err)
+	}
+	defer mockDB.Close()
+
+	originalDB := db.DB
+	db.DB = mockDB
+	defer func() {
+		db.DB = originalDB
+	}()
+
+	bookID := uuid.New()
+
+	mock.ExpectExec("DELETE FROM books WHERE id = \\$1").
+		WithArgs(bookID).
+		WillReturnError(sqlmock.ErrCancelled)
+
+	req, err := http.NewRequest("DELETE", "/v1/books/"+bookID.String(), nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	req.SetPathValue("book_id", bookID.String())
+
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(DeleteBook)
+
+	handler.ServeHTTP(rr, req)
+
+	if status := rr.Code; status != http.StatusInternalServerError {
+		t.Errorf("DeleteBook returned wrong status code for DB error: got %v want %v", status, http.StatusInternalServerError)
+	}
+
+	if !strings.Contains(rr.Body.String(), "unable to delete book") {
+		t.Errorf("DeleteBook should return 'unable to delete book' error message, got: %s", rr.Body.String())
+	}
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("Mock expectations were not met: %v", err)
+	}
+}
