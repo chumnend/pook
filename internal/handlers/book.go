@@ -69,6 +69,7 @@ func GetAllBooks(w http.ResponseWriter, req *http.Request) {
 		}
 
 		utils.SendJSON(w, response, http.StatusOK)
+		return
 	}
 
 	books, err := models.GetAllBooks()
