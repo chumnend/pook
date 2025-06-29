@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestPingHandler(t *testing.T) {
+func TestPing(t *testing.T) {
 	req, err := http.NewRequest("GET", "/ping", nil)
 	if err != nil {
 		t.Fatal(err)

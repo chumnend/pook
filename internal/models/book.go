@@ -21,8 +21,8 @@ func CreateBook(userID uuid.UUID, imageUrl string, title string) error {
 	createdAt := time.Now()
 
 	_, err := db.DB.Exec(
-		"INSERT INTO books (id, user_id, image_url, title, created_at, updated_at) VALUES ($1, $2, $3, $4, $5)",
-		id, userID, title, createdAt, createdAt,
+		"INSERT INTO books (id, user_id, image_url, title, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6)",
+		id, userID, imageUrl, title, createdAt, createdAt,
 	)
 	return err
 }

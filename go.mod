@@ -12,3 +12,5 @@ require (
 	github.com/joho/godotenv v1.5.1
 	golang.org/x/crypto v0.37.0
 )
+
+require github.com/DATA-DOG/go-sqlmock v1.5.2 // indirect
