@@ -503,3 +503,148 @@ func TestGetAllBooksByUserIdError(t *testing.T) {
 		t.Errorf("Mock expectations were not met: %v", err)
 	}
 }
+
+func TestGetBook(t *testing.T) {
+	mockDB, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("Failed to create mock database: %v", err)
+	}
+	defer mockDB.Close()
+
+	originalDB := db.DB
+	db.DB = mockDB
+	defer func() {
+		db.DB = originalDB
+	}()
+
+	bookID := uuid.New()
+	userID := uuid.New()
+
+	testBook := models.Book{
+		ID:       bookID,
+		UserID:   userID,
+		ImageURL: "https://example.com/book.jpg",
+		Title:    "Test Book",
+	}
+
+	rows := sqlmock.NewRows([]string{"id", "user_id", "image_url", "title", "created_at", "updated_at"}).
+		AddRow(testBook.ID, testBook.UserID, testBook.ImageURL, testBook.Title, testBook.CreatedAt, testBook.UpdatedAt)
+
+	mock.ExpectQuery("SELECT id, user_id, image_url, title, created_at, updated_at FROM books WHERE id = \\$1").
+		WithArgs(bookID).
+		WillReturnRows(rows)
+
+	req, err := http.NewRequest("GET", "/v1/books/"+bookID.String(), nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	req.SetPathValue("book_id", bookID.String())
+
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(GetBook)
+
+	handler.ServeHTTP(rr, req)
+
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("GetBook returned wrong status code: got %v want %v", status, http.StatusOK)
+	}
+
+	expected := "application/json"
+	if contentType := rr.Header().Get("Content-Type"); contentType != expected {
+		t.Errorf("GetBook returned wrong content type: got %v want %v", contentType, expected)
+	}
+
+	var response map[string]interface{}
+	if err := json.Unmarshal(rr.Body.Bytes(), &response); err != nil {
+		t.Errorf("Could not parse JSON response: %v", err)
+	}
+
+	book, ok := response["book"]
+	if !ok {
+		t.Errorf("Response should contain 'book' key")
+	}
+
+	bookMap, ok := book.(map[string]interface{})
+	if !ok {
+		t.Errorf("Book should be an object")
+	}
+
+	if bookMap["title"] != testBook.Title {
+		t.Errorf("Expected book title %s, got %v", testBook.Title, bookMap["title"])
+	}
+
+	if bookMap["imageUrl"] != testBook.ImageURL {
+		t.Errorf("Expected book imageUrl %s, got %v", testBook.ImageURL, bookMap["imageUrl"])
+	}
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("Mock expectations were not met: %v", err)
+	}
+}
+
+func TestGetBookInvalidId(t *testing.T) {
+	req, err := http.NewRequest("GET", "/v1/books/invalid-uuid", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	req.SetPathValue("book_id", "invalid-uuid")
+
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(GetBook)
+
+	handler.ServeHTTP(rr, req)
+
+	if status := rr.Code; status != http.StatusBadRequest {
+		t.Errorf("GetBook returned wrong status code for invalid UUID: got %v want %v", status, http.StatusBadRequest)
+	}
+
+	if !strings.Contains(rr.Body.String(), "invalid book_id") {
+		t.Errorf("GetBook should return 'invalid book_id' error message, got: %s", rr.Body.String())
+	}
+}
+
+func TestGetBookNotFound(t *testing.T) {
+	mockDB, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("Failed to create mock database: %v", err)
+	}
+	defer mockDB.Close()
+
+	originalDB := db.DB
+	db.DB = mockDB
+	defer func() {
+		db.DB = originalDB
+	}()
+
+	bookID := uuid.New()
+
+	mock.ExpectQuery("SELECT id, user_id, image_url, title, created_at, updated_at FROM books WHERE id = \\$1").
+		WithArgs(bookID).
+		WillReturnError(sqlmock.ErrCancelled)
+
+	req, err := http.NewRequest("GET", "/v1/books/"+bookID.String(), nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	req.SetPathValue("book_id", bookID.String())
+
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(GetBook)
+
+	handler.ServeHTTP(rr, req)
+
+	if status := rr.Code; status != http.StatusNotFound {
+		t.Errorf("GetBook returned wrong status code for book not found: got %v want %v", status, http.StatusNotFound)
+	}
+
+	if !strings.Contains(rr.Body.String(), "book not found") {
+		t.Errorf("GetBook should return 'book not found' error message, got: %s", rr.Body.String())
+	}
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("Mock expectations were not met: %v", err)
+	}
+}
