@@ -26,7 +26,7 @@ const AuthProvider = ({ children }: Props) => {
   const register = async (email: string, username: string, password: string): Promise<boolean> => {
     try {
       await authService.register(email, username, password);
-      return false;
+      return true;
     } catch (error) {
       if (error instanceof Error) {
         setAuthError(toSentenceCase(error.message));
