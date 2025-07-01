@@ -1,11 +1,40 @@
+import { useEffect, useState } from 'react';
+
 import Header from '../../common/Header';
+import useAuth from '../../../helpers/hooks/useAuth';
+import { getAllBooksByUserId } from '../../../helpers/services/book';
+import type { Book } from '../../../helpers/types';
 import styles from './LibraryPage.module.css';
 
-import mockBooks from '../../../../testing/books';
-
 const LibraryPage = () => {
+  const [books, setBooks] = useState<Book[]>([]);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    const fetchBooks = async () => {
+      if (user) {
+        try {
+          const data = await getAllBooksByUserId(user.id);
+          setBooks(data.books ?? []);
+        } catch(error) {
+          console.error(error);
+          return;
+        }
+      }
+    }
+
+    fetchBooks();
+  }, [user])
 
   const renderBooks = (books: { title: string; imageUrl: string }[]) => {
+    if (books.length === 0) {
+      return (
+        <div>
+          <h2>Nothing is here yet...</h2>
+        </div>
+      )
+    }
+
     return books.map((book, index) => (
       <div key={index} className={styles.bookContainer}>
         <img src={book.imageUrl} alt={`${book.title} cover`} />
@@ -25,7 +54,7 @@ const LibraryPage = () => {
           <p>Page x of y</p>
         </div>
         <div className={styles.booksContainer}>
-          {renderBooks(mockBooks)}
+          {renderBooks(books)}
         </div>
         <div className={styles.bottomPageHeader}>
           <div>
