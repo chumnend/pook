@@ -6,7 +6,10 @@ export type User = {
 }
 
 export type Book = {
-  title: string;
-  author: string;
+  id: string;
+  userId: string;
   imageUrl: string;
+  title: string;
+  createdAt: Date;
+  updatedAt: Date;
 }  

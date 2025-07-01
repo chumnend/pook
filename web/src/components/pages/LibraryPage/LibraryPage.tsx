@@ -5,13 +5,12 @@ import mockBooks from '../../../../testing/books';
 
 const LibraryPage = () => {
 
-  const renderBooks = (books: { title: string; author: string; imageUrl: string }[]) => {
+  const renderBooks = (books: { title: string; imageUrl: string }[]) => {
     return books.map((book, index) => (
       <div key={index} className={styles.bookContainer}>
         <img src={book.imageUrl} alt={`${book.title} cover`} />
         <div>
           <p>{book.title}</p>
-          <p>By {book.author}</p>
         </div>
       </div>
     ));
